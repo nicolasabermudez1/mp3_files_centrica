@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centrica Procurement — The Human Story</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    background: #0F2067;
+    color: #0F2067;
+  }
+  .stage {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    height: 64px;
+    flex-shrink: 0;
+    background: #fff;
+    border-bottom: 1px solid #F6F7FA;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: relative;
+  }
+  .header-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #9B2BF7;
+    transition: width 400ms ease;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: #0F2067; display: flex; align-items: center; justify-content: center;
+    color: #85DB9C; font-weight: bold;
+  }
+  .brand-title { font-size: 15px; font-weight: bold; color: #0F2067; }
+  .brand-sub { font-size: 11px; color: #555; margin-top: -2px; }
+  .header-right { display: flex; align-items: center; gap: 12px; color: #555; font-size: 11px; }
+  .scene-tag { text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+
+  .canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer {
+    height: 60px;
+    flex-shrink: 0;
+    background: #F6F7FA;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+  .controls { display: flex; align-items: center; gap: 8px; }
+  .btn {
+    background: #fff; border: 1px solid #d1d5db;
+    border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #0F2067; font-size: 13px;
+    transition: transform 150ms;
+  }
+  .btn:hover { transform: scale(1.05); }
+  .btn.primary { background: #0F2067; color: #fff; border-color: #0F2067; width: 36px; height: 36px; font-size: 14px; }
+  .speeds { display: flex; gap: 4px; margin-left: 12px; }
+  .speed-btn {
+    background: transparent; border: 1px solid #d1d5db; color: #555;
+    padding: 4px 8px; font-size: 11px; font-weight: 600; border-radius: 4px;
+    cursor: pointer;
+  }
+  .speed-btn.active { background: #0F2067; color: #fff; border-color: #0F2067; }
+  .fs-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 6px;
+    background: #9B2BF7; color: #fff; border: 1px solid #9B2BF7;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+
+  /* ── SCENE STYLES ── */
+  .scene-panel {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 600ms ease;
+    pointer-events: none;
+  }
+  .scene-panel.active { opacity: 1; pointer-events: auto; }
+
+  /* INTRO */
+  .intro {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 0 60px;
+    background: radial-gradient(ellipse at center, rgba(222,207,255,0.2) 0%, #fff 70%);
+  }
+  .intro-kicker { font-size: 13px; font-weight: bold; color: #9B2BF7; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 24px; }
+  .intro-title { font-size: 52px; line-height: 1.05; font-weight: bold; color: #0F2067; margin-bottom: 24px; max-width: 1000px; }
+  .intro-title em { font-style: italic; }
+  .intro-title .purple { color: #9B2BF7; }
+  .intro-title .strike { text-decoration: line-through; color: #9CA3AF; }
+  .intro-stats { display: flex; gap: 40px; margin-top: 40px; align-items: center; }
+  .stat-num { font-size: 56px; font-weight: bold; line-height: 1; }
+  .stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #555; margin-top: 4px; }
+  .stat-divider { width: 1px; height: 48px; background: #e5e7eb; }
+  .intro-sub { margin-top: 40px; font-size: 14px; color: #555; }
+
+  /* TODAY */
+  .today { display: flex; background: #F6F7FA; }
+  .today-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 30px; }
+  .today-header { position: absolute; top: 24px; left: 32px; }
+  .today-kicker { font-size: 11px; font-weight: bold; color: #555; letter-spacing: 0.2em; text-transform: uppercase; }
+  .today-h1 { font-size: 26px; font-weight: bold; color: #0F2067; }
+  .today-h2 { font-size: 13px; color: #555; margin-top: 4px; }
+
+  .silhouette { position: relative; width: 240px; height: 300px; }
+  .silhouette svg { width: 100%; height: 100%; }
+  .chip {
+    position: absolute; background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: #555; font-weight: 500;
+    animation: bob 2.2s ease-in-out infinite;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+  .today-right { width: 440px; padding: 40px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
+  .week-clock { font-size: 64px; font-weight: bold; color: #0F2067; line-height: 1; }
+  .week-of { font-size: 16px; color: #9CA3AF; }
+  .week-bar { margin-top: 12px; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+  .week-bar-fill { height: 100%; background: #555; transition: width 700ms ease; }
+  .breakdown-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+  .breakdown-title { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; color: #555; margin-bottom: 12px; }
+  .breakdown-bar { height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden; display: flex; }
+  .breakdown-legend { display: flex; justify-content: space-between; font-size: 11px; color: #555; margin-top: 8px; }
+  .quote-card { background: #0F2067; color: #fff; border-radius: 12px; padding: 20px; min-height: 120px; }
+  .quote-tag { font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; color: #85DB9C; margin-bottom: 8px; }
+  .quote-text { font-size: 15px; font-style: italic; line-height: 1.4; margin-bottom: 8px; }
+  .quote-attr { font-size: 11px; color: #85DB9C; }
+
+  /* MEET */
+  .meet { padding: 32px 48px; background: #fff; }
+  .meet-header { margin-bottom: 20px; }
+  .meet-kicker { font-size: 11px; font-weight: bold; color: #9B2BF7; letter-spacing: 0.2em; text-transform: uppercase; }
+  .meet-h1 { font-size: 32px; font-weight: bold; color: #0F2067; line-height: 1.1; }
+  .meet-h2 { font-size: 13px; color: #555; margin-top: 4px; }
+  .meet-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; height: calc(100% - 100px); }
+  .agent-card {
+    border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px;
+    display: flex; flex-direction: column;
+    transition: all 500ms ease;
+    opacity: 0.3; transform: scale(0.95);
+  }
+  .agent-card.revealed { opacity: 1; transform: scale(1); }
+  .agent-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .agent-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .agent-name { font-size: 13px; font-weight: bold; color: #0F2067; line-height: 1.2; }
+  .agent-blurb { font-size: 11px; color: #555; line-height: 1.4; }
+  .human-card {
+    background: linear-gradient(135deg, #0F2067, #9B2BF7);
+    color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .human-card .heart { font-size: 32px; }
+  .human-card .label { font-size: 14px; font-weight: bold; margin-top: 8px; }
+  .human-card .sub { font-size: 10px; color: #cbd5e1; margin-top: 4px; }
+
+  /* PROCESS (choreography) */
+  .process { display: flex; background: #fff; }
+  .process-canvas { flex: 1; position: relative; background: linear-gradient(180deg, #fff, #F6F7FA); }
+  .lane-divider { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: #e5e7eb; }
+  .shared-band { position: absolute; left: 4%; right: 4%; top: 42%; height: 16%; background: rgba(222,207,255,0.35); border-radius: 12px; }
+  .lane-label { position: absolute; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .lane-strategic { left: 12px; top: 12%; color: #0F2067; }
+  .lane-tactical { left: 12px; top: 72%; color: #28B23E; }
+
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transition: all 500ms ease;
+    z-index: 2;
+  }
+  .node.active { z-index: 6; }
+  .node-inner {
+    width: 96px; padding: 8px 4px;
+    background: #fff; border: 2px solid; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    transition: all 500ms ease;
+  }
+  .node.active .node-inner { background: var(--c); color: #fff; box-shadow: 0 0 0 4px var(--c-faint), 0 0 16px var(--c-glow); transform: scale(1.1); }
+  .node.dimmed .node-inner { opacity: 0.55; }
+  .node-icon { font-size: 18px; }
+  .node-label { font-size: 10px; font-weight: bold; line-height: 1.1; text-align: center; color: #0F2067; }
+  .node.active .node-label { color: #fff; }
+
+  .human-node-inner {
+    width: 96px; padding: 8px 4px;
+    background: rgba(133,219,156,0.4); border: 2px solid #85DB9C; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    transition: all 500ms ease;
+  }
+  .node.human.active .human-node-inner { background: #85DB9C; box-shadow: 0 0 0 4px rgba(133,219,156,0.3), 0 0 18px rgba(133,219,156,0.6); transform: scale(1.12); }
+  .node.human .node-label { color: #0F2067; }
+
+  .process-panel {
+    width: 320px; flex-shrink: 0;
+    background: #F6F7FA; border-left: 1px solid #e5e7eb;
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .stage-counter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .stage-counter-text { font-size: 10px; font-weight: bold; color: #9B2BF7; letter-spacing: 0.2em; text-transform: uppercase; }
+  .lane-pill { font-size: 9px; font-weight: bold; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; padding: 2px 8px; border-radius: 4px; }
+  .lane-pill.strategic { background: #0F2067; }
+  .lane-pill.tactical { background: #28B23E; }
+  .stage-name { font-size: 22px; font-weight: bold; color: #0F2067; line-height: 1.15; }
+  .panel-section-title { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; color: #555; margin-bottom: 6px; }
+  .agent-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+  .agent-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 999px; color: #fff;
+    font-size: 10px; font-weight: 600;
+  }
+  .human-box {
+    border-radius: 8px; padding: 10px;
+    background: rgba(133,219,156,0.2); border: 1px solid #85DB9C;
+  }
+  .human-box.autonomous { background: #fff; border-color: #e5e7eb; }
+  .human-box-title { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; color: #0F2067; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .human-box.autonomous .human-box-title { color: #9CA3AF; }
+  .human-box-text { font-size: 11px; color: #0F2067; line-height: 1.4; }
+  .action-text { font-size: 12px; color: #0F2067; line-height: 1.4; }
+  .impact-card { margin-top: auto; background: #fff; border: 2px solid #9B2BF7; border-radius: 12px; padding: 14px; }
+  .impact-number { font-size: 26px; font-weight: bold; color: #9B2BF7; line-height: 1; }
+  .impact-sub { font-size: 10px; color: #555; margin-top: 4px; }
+
+  /* HUMAN LIFT */
+  .human-scene { display: flex; }
+  .human-left { flex: 1; background: #F6F7FA; padding: 36px; display: flex; flex-direction: column; }
+  .human-right { flex: 1; padding: 36px; display: flex; flex-direction: column; background: linear-gradient(135deg, rgba(222,207,255,0.2), #fff); position: relative; overflow: hidden; }
+  .human-pivot {
+    width: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff;
+  }
+  .pivot-line { width: 1px; flex: 1; background: #e5e7eb; }
+  .pivot-circle {
+    width: 48px; height: 48px; border-radius: 50%; background: #9B2BF7;
+    display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px;
+    box-shadow: 0 0 24px rgba(155,43,247,0.4);
+  }
+  .human-kicker { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px; }
+  .human-kicker.today { color: #555; }
+  .human-kicker.tomorrow { color: #9B2BF7; }
+  .human-h1 { font-size: 26px; font-weight: bold; line-height: 1.1; margin-bottom: 20px; }
+  .human-h1.today { color: #555; }
+  .human-h1.tomorrow { color: #0F2067; }
+  .human-tasks { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+  .human-task { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .human-task.before { color: #555; }
+  .human-task.before .dot { width: 6px; height: 6px; border-radius: 50%; background: #9CA3AF; }
+  .human-task.before span { text-decoration: line-through; }
+  .human-task.after { color: #0F2067; font-weight: 500; }
+  .human-task.after .check { color: #28B23E; }
+  .human-takeaway {
+    position: absolute; bottom: 24px; right: 24px;
+    background: #0F2067; color: #fff; padding: 14px 18px; border-radius: 12px; max-width: 260px;
+  }
+  .human-takeaway-kicker { font-size: 10px; font-weight: bold; color: #85DB9C; text-transform: uppercase; letter-spacing: 0.1em; }
+  .human-takeaway-text { font-size: 13px; font-weight: 600; margin-top: 6px; line-height: 1.3; }
+
+  /* IMPACT */
+  .impact { padding: 40px; background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%); color: #fff; display: flex; flex-direction: column; }
+  .impact-kicker { font-size: 11px; font-weight: bold; color: #85DB9C; letter-spacing: 0.3em; text-transform: uppercase; }
+  .impact-h1 { font-size: 34px; font-weight: bold; color: #fff; line-height: 1.1; }
+  .impact-h1 .mint { color: #85DB9C; }
+  .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; flex: 1; margin-top: 24px; }
+  .impact-tile {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px); border-radius: 16px; padding: 20px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: all 500ms ease;
+    opacity: 0; transform: translateY(20px);
+  }
+  .impact-tile.revealed { opacity: 1; transform: translateY(0); }
+  .impact-tile-icon { font-size: 22px; }
+  .impact-tile-number { font-size: 36px; font-weight: bold; line-height: 1; }
+  .impact-tile-label { font-size: 12px; color: #cbd5e1; margin-top: 6px; }
+  .impact-tag { margin-top: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #fff; transition: opacity 700ms ease; opacity: 0; }
+  .impact-tag.revealed { opacity: 1; }
+
+  /* DEBUG TOAST */
+  .debug-toast {
+    position: fixed; top: 78px; right: 14px; z-index: 100;
+    background: #0F2067; color: #fff;
+    padding: 8px 12px; border-radius: 8px; font-family: ui-monospace, monospace;
+    font-size: 11px; max-width: 320px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .debug-toast.playing { background: #85DB9C; color: #0F2067; }
+  .debug-toast.error { background: #9B2BF7; }
+
+  /* INSTRUCTIONS OVERLAY */
+  .instructions {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(15,32,103,0.96);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; padding: 40px;
+  }
+  .instructions-card { max-width: 600px; text-align: center; }
+  .instructions h1 { font-size: 32px; margin-bottom: 16px; }
+  .instructions p { font-size: 15px; margin-bottom: 12px; color: #cbd5e1; line-height: 1.5; }
+  .instructions kbd {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
+    padding: 2px 8px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px;
+  }
+  .start-btn {
+    margin-top: 24px; padding: 14px 32px; font-size: 16px; font-weight: bold;
+    background: #85DB9C; color: #0F2067; border: none; border-radius: 8px; cursor: pointer;
+  }
+  .start-btn:hover { background: #6ec986; }
+</style>
+</head>
+<body>
+
+<!-- INSTRUCTIONS / START GATE -->
+<div class="instructions" id="instructions">
+  <div class="instructions-card">
+    <h1>Centrica Procurement — The Human Story</h1>
+    <p>This video uses pre-generated narration. The audio files are hosted alongside this page and load automatically.</p>
+    <p>Click <strong>Start</strong> to begin. The video runs automatically. Press <kbd>F</kbd> for fullscreen, <kbd>Space</kbd> to pause, <kbd>←</kbd> <kbd>→</kbd> to step.</p>
+    <button class="start-btn" id="startBtn">▶ Start the video</button>
+    <p style="margin-top: 16px; font-size: 12px; color: #9CA3AF;">Audio path (edit only if files have moved):</p>
+    <input id="audioPath" value="./" style="margin-top: 8px; padding: 6px 10px; border-radius: 4px; border: 1px solid #555; background: #1a2f8a; color: #fff; width: 320px; text-align: center; font-family: ui-monospace, monospace;">
+  </div>
+</div>
+
+<div class="stage" id="stage" style="display: none;">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-mark">✦</div>
+      <div>
+        <div class="brand-title">Centrica Procurement</div>
+        <div class="brand-sub">The Human Story · End-to-end agent process</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="scene-tag" id="sceneTag">Opening</div>
+      <div id="sceneCounter">Scene 1 / 6</div>
+    </div>
+    <div class="header-progress" id="headerProgress" style="width: 0%;"></div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas" id="canvas"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="controls">
+      <button class="btn" id="resetBtn" title="Reset">↺</button>
+      <button class="btn" id="prevBtn" title="Previous">⏮</button>
+      <button class="btn primary" id="playBtn" title="Play/Pause">⏸</button>
+      <button class="btn" id="nextBtn" title="Next">⏭</button>
+      <button class="btn" id="muteBtn" title="Mute" style="margin-left: 12px;">🔊</button>
+      <div class="speeds">
+        <button class="speed-btn" data-speed="0.5">0.5×</button>
+        <button class="speed-btn active" data-speed="1">1×</button>
+        <button class="speed-btn" data-speed="1.5">1.5×</button>
+        <button class="speed-btn" data-speed="2">2×</button>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 10px; color: #555;">Centrica × Accenture · Procurement Transformation</span>
+      <button class="fs-btn" id="fsBtn">⛶ Fullscreen</button>
+    </div>
+  </div>
+</div>
+
+<div class="debug-toast" id="debug" style="display: none;"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════════
+const C = {
+  navy:'#0F2067', mint:'#85DB9C', lavender:'#B999F6', paleLavender:'#DECFFF',
+  purple:'#9B2BF7', green:'#28B23E', midBlue:'#3675C1', grey:'#555', greyLight:'#9CA3AF'
+};
+
+const AGENTS = {
+  market:   { name: 'Market Watcher',    color: C.navy,     icon: '👁' },
+  rfx:      { name: 'RFx Assistant',     color: C.lavender, icon: '📊' },
+  nego:     { name: 'Negotiation Buddy', color: C.mint,     icon: '🤝' },
+  contract: { name: 'Contracting Agent', color: C.purple,   icon: '📝' },
+  tail:     { name: 'Tail-Spend Agent',  color: C.green,    icon: '🛒' },
+  vendor:   { name: 'Vendor Onboarding', color: C.midBlue,  icon: '👤' },
+  srm:      { name: 'SRM Agent',         color: C.purple,   icon: '📈' },
+};
+
+const STAGES = [
+  { lane: 'STRATEGIC', name: 'Category signal',            active: ['market'],              action: 'Continuous market & supplier intel ingested from paid + public feeds.', metric: 'dozens of feeds',  sub: '→ one platform',           humanRole: 'Category Manager',     humanDoes: 'Reads the Monday brief instead of building it' },
+  { lane: 'STRATEGIC', name: 'Category strategy refresh',  active: ['market','rfx'],        action: 'AI drafts strategy refresh from live signals; Category Manager curates.',  metric: '2–3 weeks',         sub: '→ 2–3 days',               humanRole: 'Category Manager',     humanDoes: 'Curates, challenges and approves the AI draft' },
+  { lane: 'STRATEGIC', name: 'RFx pack generation',        active: ['rfx'],                 action: 'Full RFx pack auto-generated from strategy inside Ariba.',                  metric: '1–2 days',          sub: '→ 30 minutes',             humanRole: 'Category Manager',     humanDoes: 'Reviews the pack and approves the go-to-market' },
+  { lane: 'STRATEGIC', name: 'Bid intake & normalisation', active: ['rfx'],                 action: 'Bids in Word/PDF/Excel normalised into one common matrix.',                 metric: 'manual days',       sub: '→ automatic',              humanRole: 'Buyer',                humanDoes: 'Skips spreadsheet hell — goes straight to evaluation' },
+  { lane: 'STRATEGIC', name: 'First-pass scoring',         active: ['rfx'],                 action: 'Defensible AI score before SMEs open the bid; SMEs validate.',              metric: '–70 to –80%',       sub: 'SME effort',               humanRole: 'SMEs',                 humanDoes: 'Validate the score; add qualitative judgement' },
+  { lane: 'STRATEGIC', name: 'Negotiation prep',           active: ['nego','market','srm'], action: 'AI brief: supplier history + market index + behaviour profile.',           metric: '4–6 hours',         sub: '→ 15 minutes',             humanRole: 'Category Manager',     humanDoes: 'Reads brief, sets strategy and walk-away price' },
+  { lane: 'STRATEGIC', name: 'Live negotiation',           active: ['nego'],                action: 'In-ear coach fact-checks claims, prompts CM, captures outcome.',            metric: '+3 to 15%',         sub: 'EBITDA per negotiation',   humanRole: 'Category Manager',     humanDoes: 'Leads the call — agent whispers in the ear' },
+  { lane: 'STRATEGIC', name: 'Contract drafting',          active: ['contract','nego'],     action: 'AI clause-by-clause playbook comparison; AI-drafted redlines.',             metric: '4–6 hours',         sub: '→ 5–10 minutes',           humanRole: 'Legal',                humanDoes: 'Reviews redlines, decides non-standard clauses' },
+  { lane: 'STRATEGIC', name: 'Contract execution',         active: ['contract'],            action: 'Zero-touch e-sign on standard clauses; DocuSign punch-out to Ariba.',       metric: '>50%',              sub: 'NDAs zero-touch',          humanRole: 'Legal',                humanDoes: 'Only touches the exceptions — bandwidth back' },
+  { lane: 'STRATEGIC', name: 'Vendor onboarding',          active: ['vendor'],              action: 'AI form-fix pre-submit; parallel sanctions/tax/banking checks.',            metric: 'weeks → 48 hrs',    sub: '30% rejection → <5%',      humanRole: 'Relationship Owner',   humanDoes: 'Freed up to actually meet the new supplier' },
+  { lane: 'STRATEGIC', name: 'Ongoing SRM',                active: ['srm'],                 action: 'Auto QBR/MBR packs from live record; rebate & indexation tracking.',        metric: '1–2%',              sub: 'of spend recovered',       humanRole: 'Account Manager',      humanDoes: 'Walks into QBR prepared, with real insight' },
+  { lane: 'STRATEGIC', name: 'Continuous learning loop',   active: ['srm','nego','market'], action: 'Supplier behaviour and commitments feed next strategy cycle.',              metric: 'closed-loop',       sub: 'intelligence',             humanRole: 'Procurement Leadership', humanDoes: 'Sets next cycle ambition; tunes the agents' },
+  { lane: 'TACTICAL',  name: 'Business need (plain English)',          active: ['tail'],    action: 'Self-serve requisition routed to autonomous lane — no CM touch.',           metric: '0',                 sub: 'CM time on £2K deals',     humanRole: 'Business User',        humanDoes: 'Self-serves in plain English — no forms' },
+  { lane: 'TACTICAL',  name: 'Autonomous shortlist & price discovery', active: ['tail','market'], action: 'Agent shortlists suppliers, pulls market benchmark.',                 metric: '100%',              sub: 'on-system',                humanRole: 'Autonomous',           humanDoes: 'No human touch — straight-through' },
+  { lane: 'TACTICAL',  name: 'Bot-to-supplier negotiation',            active: ['tail'],    action: 'Autonomous negotiation against standard terms.',                            metric: '24/7',              sub: 'no human in the loop',     humanRole: 'Autonomous',           humanDoes: 'Bot-to-bot — humans set the policy, not the price' },
+  { lane: 'TACTICAL',  name: 'Standard NDA / terms',                   active: ['contract'],action: 'Zero-touch e-sign on standard back-to-back terms.',                          metric: '>50%',              sub: 'zero-touch',               humanRole: 'Legal',                humanDoes: 'Owns the playbook — the agent applies it' },
+  { lane: 'TACTICAL',  name: 'Vendor onboarding',                      active: ['vendor'],  action: 'Same 48-hour cycle; clean master data day one.',                            metric: '48 hrs',            sub: 'supplier ready to invoice', humanRole: 'Vendor Ops',          humanDoes: 'Handles exceptions only' },
+  { lane: 'TACTICAL',  name: 'PO issuance & policy check',             active: ['tail'],    action: 'Straight-through PR → PO with policy guardrails.',                          metric: '38K POs',           sub: 'bottleneck removed',       humanRole: 'Procurement Ops',      humanDoes: 'Sets guardrails once — agent enforces forever' },
+  { lane: 'TACTICAL',  name: 'SRM record updated',                     active: ['srm','tail'], action: 'Every transaction rolled up into supplier 360 view.',                    metric: 'maverick spend',    sub: '→ 0',                      humanRole: 'Procurement',          humanDoes: 'Reads aggregated insight — acts on patterns' },
+  { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '~€10M',             sub: 'annual savings (ref.)',    humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
+];
+
+const SCENES = [
+  { key: 'intro',   name: 'Opening',         duration: 16000 },
+  { key: 'today',   name: 'Today',           duration: 19000 },
+  { key: 'meet',    name: 'Meet the Seven',  duration: 26000 },
+  { key: 'process', name: 'Choreography',    duration: 0     },
+  { key: 'human',   name: 'The Human Lift',  duration: 25000 },
+  { key: 'impact',  name: 'The Outcome',     duration: 22000 },
+];
+
+const QUOTES = [
+  { q: "I'm extracting the same data three times for three different reports — same supplier, same week.", by: "Category Manager, Infrastructure" },
+  { q: "I have nine browser tabs open just to prep one negotiation.", by: "Andy, Supply Management Programme" },
+  { q: "I have 80 negotiations a year. I can prepare properly for maybe fifteen.", by: "Category Manager, Direct Materials" },
+  { q: "By the time the business comes to me, they've already chosen the supplier.", by: "Category Manager, Group Functions" },
+  { q: "We negotiated a 5% volume rebate. I have no idea if we ever claimed it.", by: "Andy, Strategic Suppliers" },
+  { q: "If an auditor asked me to prove how I awarded this contract, I would panic.", by: "Category Manager, Smart Home" },
+  { q: "Renewals get signed because the calendar says so. Nobody has time to re-bid.", by: "Francis, Senior Procurement" },
+  { q: "We just onboarded this supplier in Group. Tomorrow I'll onboard them again in CES.", by: "Jasmine, Vendor Governance" },
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+let sceneIdx = 0;
+let stageIdx = 0;
+let playing = false;
+let muted = false;
+let speed = 1;
+let audioBase = './';
+let currentAudio = null;
+let advanceTimer = null;
+let safetyTimer = null;
+let minTimer = null;
+let minElapsed = false;
+let endFired = false;
+
+// ═══════════════════════════════════════════════════════════════
+//  AUDIO
+// ═══════════════════════════════════════════════════════════════
+function audioUrl(key) {
+  if (key.startsWith('scene:')) return audioBase + 'scene-' + key.slice(6) + '.mp3';
+  if (key.startsWith('stage:')) return audioBase + 'stage-' + String(parseInt(key.slice(6)) + 1).padStart(2,'0') + '.mp3';
+  return null;
+}
+
+function showDebug(msg, cls) {
+  const d = document.getElementById('debug');
+  d.style.display = 'block';
+  d.className = 'debug-toast' + (cls ? ' ' + cls : '');
+  d.textContent = msg;
+}
+function hideDebug() { document.getElementById('debug').style.display = 'none'; }
+
+function stopAudio() {
+  if (currentAudio) {
+    try { currentAudio.pause(); currentAudio.onended = null; currentAudio.onerror = null; } catch(e) {}
+    currentAudio = null;
+  }
+}
+
+function playNarration(cacheKey, onEnd) {
+  stopAudio();
+  if (muted) { onEnd && onEnd(); return; }
+  const url = audioUrl(cacheKey);
+  if (!url) { onEnd && onEnd(); return; }
+  const a = new Audio(url);
+  currentAudio = a;
+  a.playbackRate = speed;
+  a.onplaying = () => showDebug('♪ ' + url.split('/').pop(), 'playing');
+  a.onended = () => { hideDebug(); onEnd && onEnd(); };
+  a.onerror = () => {
+    showDebug('⚠ ' + url.split('/').pop() + ' — ' + (a.error?.code === 4 ? 'not found or wrong format' : 'error'), 'error');
+    onEnd && onEnd();
+  };
+  a.play().catch(err => {
+    showDebug('⚠ play blocked — click anywhere', 'error');
+    onEnd && onEnd();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SCENE RENDERING
+// ═══════════════════════════════════════════════════════════════
+function render() {
+  const scene = SCENES[sceneIdx];
+  const canvas = document.getElementById('canvas');
+
+  document.getElementById('sceneTag').textContent = scene.key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` : scene.name;
+  document.getElementById('sceneCounter').textContent = `Scene ${sceneIdx + 1} / ${SCENES.length}`;
+  const progress = scene.key === 'process'
+    ? ((sceneIdx + (stageIdx + 1) / STAGES.length) / SCENES.length) * 100
+    : ((sceneIdx + 1) / SCENES.length) * 100;
+  document.getElementById('headerProgress').style.width = progress + '%';
+
+  if (scene.key === 'intro')   canvas.innerHTML = renderIntro();
+  if (scene.key === 'today')   canvas.innerHTML = renderToday();
+  if (scene.key === 'meet')    canvas.innerHTML = renderMeet();
+  if (scene.key === 'process') canvas.innerHTML = renderProcess();
+  if (scene.key === 'human')   canvas.innerHTML = renderHuman();
+  if (scene.key === 'impact')  canvas.innerHTML = renderImpact();
+
+  if (scene.key === 'today') startTodayAnimations();
+  if (scene.key === 'meet') startMeetAnimations();
+  if (scene.key === 'human') startHumanAnimations();
+  if (scene.key === 'impact') startImpactAnimations();
+}
+
+function renderIntro() {
+  return `
+    <div class="scene-panel intro active">
+      <div class="intro-kicker">A new operating model for buying</div>
+      <div class="intro-title">
+        What if our buyers spent <span class="purple">80%</span><br>
+        of their time on the <em>thinking</em>,<br>
+        not the <span class="strike">paperwork</span>?
+      </div>
+      <div class="intro-stats">
+        <div style="text-align: center;"><div class="stat-num" style="color: ${C.navy};">7</div><div class="stat-label">Agents</div></div>
+        <div class="stat-divider"></div>
+        <div style="text-align: center;"><div class="stat-num" style="color: ${C.purple};">2</div><div class="stat-label">Swim lanes</div></div>
+        <div class="stat-divider"></div>
+        <div style="text-align: center;"><div class="stat-num" style="color: ${C.green};">1</div><div class="stat-label">Operating model</div></div>
+      </div>
+      <div class="intro-sub">A walkthrough of the end-to-end procurement system — and what it means for the people inside it.</div>
+    </div>
+  `;
+}
+
+function renderToday() {
+  return `
+    <div class="scene-panel today active">
+      <div class="today-left">
+        <div class="today-header">
+          <div class="today-kicker">Today</div>
+          <div class="today-h1">The Category Manager</div>
+          <div class="today-h2">One sourcing event. Twelve weeks. Counting.</div>
+        </div>
+        <div class="silhouette">
+          <svg viewBox="0 0 200 260">
+            <circle cx="100" cy="60" r="32" fill="#c7c9d1"/>
+            <path d="M 40 220 Q 40 130 100 130 Q 160 130 160 220 Z" fill="#8a8e9c"/>
+            <rect x="20" y="220" width="160" height="6" rx="2" fill="#9ca3af"/>
+          </svg>
+          <div class="chip" style="top: -10px; left: -90px;">✉ <span id="emailCount">12</span> unread</div>
+          <div class="chip" style="top: 30px; right: -100px; animation-delay: 0.4s;">📄 RFx v17.docx</div>
+          <div class="chip" style="top: 120px; left: -110px; animation-delay: 0.8s;">📊 Bids_master.xlsx</div>
+          <div class="chip" style="top: 180px; right: -110px; animation-delay: 1.2s;">📝 MSA redlines</div>
+          <div class="chip" style="top: 240px; left: -80px; animation-delay: 1.6s;">⚠ Onboarding stuck</div>
+          <div class="chip" style="top: 260px; right: -80px; animation-delay: 2.0s;">⏱ <span id="taskCount">8</span> tasks</div>
+        </div>
+      </div>
+      <div class="today-right">
+        <div>
+          <div class="quote-tag" style="color: ${C.grey};">Sourcing event clock</div>
+          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 6px;">
+            <div class="week-clock">Week <span id="weekNum">1</span></div>
+            <div class="week-of">of 12</div>
+          </div>
+          <div class="week-bar"><div class="week-bar-fill" id="weekFill" style="width: 8%;"></div></div>
+        </div>
+        <div class="breakdown-card">
+          <div class="breakdown-title">How a buyer's week breaks down</div>
+          <div class="breakdown-bar">
+            <div style="width: 80%; background: ${C.grey};"></div>
+            <div style="width: 20%; background: ${C.lavender};"></div>
+          </div>
+          <div class="breakdown-legend">
+            <span><b>80%</b> admin & doc-wrangling</span>
+            <span><b>20%</b> strategy</span>
+          </div>
+        </div>
+        <div class="quote-card">
+          <div class="quote-tag">What they tell us</div>
+          <div class="quote-text" id="quoteText">"${QUOTES[0].q}"</div>
+          <div class="quote-attr" id="quoteAttr">— ${QUOTES[0].by}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+let todayInts = [];
+function startTodayAnimations() {
+  todayInts.forEach(clearInterval);
+  todayInts = [];
+  let week = 1, emails = 12, tasks = 8, qi = 0;
+  todayInts.push(setInterval(() => {
+    week = Math.min(week + 1, 12);
+    emails += Math.floor(Math.random() * 5) + 2;
+    tasks = Math.min(tasks + Math.floor(Math.random() * 3), 32);
+    const w = document.getElementById('weekNum'); if (w) w.textContent = week;
+    const f = document.getElementById('weekFill'); if (f) f.style.width = (week / 12 * 100) + '%';
+    const e = document.getElementById('emailCount'); if (e) e.textContent = emails + ' unread';
+    const t = document.getElementById('taskCount'); if (t) t.textContent = tasks + ' tasks';
+  }, 900));
+  todayInts.push(setInterval(() => {
+    qi = (qi + 1) % QUOTES.length;
+    const qt = document.getElementById('quoteText'); if (qt) qt.textContent = '"' + QUOTES[qi].q + '"';
+    const qa = document.getElementById('quoteAttr'); if (qa) qa.textContent = '— ' + QUOTES[qi].by;
+  }, 3200));
+}
+
+function renderMeet() {
+  const order = ['market','rfx','nego','contract','tail','vendor','srm'];
+  const blurbs = {
+    market: 'One trusted intelligence layer. Monday brief, risk alerts, comparable suppliers — replacing dozens of feeds.',
+    rfx: 'Sourcing events drafted from category strategy. Every bid normalised. Defensible first-pass scoring inside Ariba.',
+    nego: 'Best-negotiator playbook for every CM. Prep brief, in-call coach, automatic outcome write-back.',
+    contract: 'Reads every contract before lawyers do. Playbook gap analysis, AI redlines, DocuSign zero-touch on standards.',
+    tail: 'Removes procurement from low-value spend. Plain-English requisition → autonomous negotiation → PO.',
+    vendor: 'New supplier in 48 hours, not weeks. AI form-fix pre-submit. One supplier ID across Group, CES, PH Jones, CBS.',
+    srm: 'One true view per supplier. Performance, risk, contracts, spend. Auto QBR/MBR. Rebate and indexation recovery.',
+  };
+  const cards = order.map((k, i) => {
+    const a = AGENTS[k];
+    return `
+      <div class="agent-card" data-idx="${i}" style="border-color: ${a.color};">
+        <div class="agent-card-header">
+          <div class="agent-icon" style="background: ${a.color};">${a.icon}</div>
+          <div class="agent-name">${a.name}</div>
+        </div>
+        <div class="agent-blurb">${blurbs[k]}</div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="scene-panel meet active">
+      <div class="meet-header">
+        <div class="meet-kicker">The team</div>
+        <div class="meet-h1">Seven agents. One operating model.</div>
+        <div class="meet-h2">Each takes the drudgery; humans take the judgement.</div>
+      </div>
+      <div class="meet-grid">
+        ${cards}
+        <div class="agent-card human-card" data-idx="7">
+          <div class="heart">💚</div>
+          <div class="label">+ Humans</div>
+          <div class="sub">Strategy, judgement, relationships, exceptions.</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function startMeetAnimations() {
+  const cards = document.querySelectorAll('.agent-card');
+  cards.forEach((c, i) => {
+    setTimeout(() => c.classList.add('revealed'), 200 + i * 1200);
+  });
+}
+
+function renderProcess() {
+  const stage = STAGES[stageIdx];
+  const isActive = (k) => stage.active.includes(k);
+  const humanInLoop = stage.humanRole && stage.humanRole !== 'Autonomous';
+
+  const pos = {
+    market:   { x: 8,  y: 50 },
+    rfx:      { x: 28, y: 16 },
+    nego:     { x: 47, y: 16 },
+    contract: { x: 66, y: 16 },
+    srm:      { x: 92, y: 50 },
+    tail:     { x: 38, y: 84 },
+    vendor:   { x: 66, y: 84 },
+  };
+  const humanPos = { x: 50, y: 50 };
+  const primaryAgent = stage.active[0];
+  const primary = primaryAgent ? pos[primaryAgent] : null;
+
+  const arrows = [];
+  function arrow(from, to, isActiveArrow, color, dashed) {
+    arrows.push(`
+      <path d="M ${from.x} ${from.y} L ${to.x} ${to.y}"
+        stroke="${isActiveArrow ? color : '#d1d5db'}"
+        stroke-width="${isActiveArrow ? 0.4 : 0.25}"
+        stroke-dasharray="${dashed ? '0.8 0.8' : (isActiveArrow ? '1.2 0.8' : 'none')}"
+        opacity="${isActiveArrow ? 1 : 0.45}"
+        fill="none"
+        vector-effect="non-scaling-stroke"
+        style="${isActiveArrow ? 'animation: dash 1.2s linear infinite;' : ''}"
+      />
+    `);
+  }
+  arrow(pos.market, pos.rfx, isActive('market') || isActive('rfx'), AGENTS.rfx.color);
+  arrow(pos.rfx, pos.nego, isActive('nego') && stageIdx >= 5, AGENTS.nego.color);
+  arrow(pos.nego, pos.contract, isActive('contract') && stage.lane === 'STRATEGIC', AGENTS.contract.color);
+  arrow(pos.contract, pos.srm, isActive('srm') && stage.lane === 'STRATEGIC', AGENTS.srm.color);
+  arrow(pos.market, pos.tail, isActive('tail') && (isActive('market') || stage.lane === 'TACTICAL'), AGENTS.tail.color);
+  arrow(pos.tail, pos.vendor, isActive('tail') && stageIdx >= 15, AGENTS.vendor.color);
+  arrow(pos.vendor, pos.srm, isActive('srm') && stage.lane === 'TACTICAL', AGENTS.srm.color);
+  arrow(pos.vendor, pos.contract, isActive('vendor'), AGENTS.vendor.color, true);
+  if (humanInLoop && primary) arrow(humanPos, primary, true, C.mint);
+
+  const nodes = Object.entries(pos).map(([k, p]) => {
+    const a = AGENTS[k];
+    const active = isActive(k);
+    return `
+      <div class="node ${active ? 'active' : 'dimmed'}" style="left: ${p.x}%; top: ${p.y}%; --c: ${a.color}; --c-faint: ${a.color}33; --c-glow: ${a.color}88;">
+        <div class="node-inner" style="border-color: ${a.color};">
+          <div class="node-icon" style="color: ${active ? '#fff' : a.color};">${a.icon}</div>
+          <div class="node-label">${a.name}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const humanNode = `
+    <div class="node human ${humanInLoop ? 'active' : 'dimmed'}" style="left: ${humanPos.x}%; top: ${humanPos.y}%;">
+      <div class="human-node-inner">
+        <div class="node-icon" style="color: ${C.navy};">💚</div>
+        <div class="node-label">${humanInLoop ? stage.humanRole : 'Humans'}</div>
+      </div>
+    </div>
+  `;
+
+  const pills = stage.active.map(k => {
+    const a = AGENTS[k];
+    return `<span class="agent-pill" style="background: ${a.color};">${a.icon} ${a.name}</span>`;
+  }).join('');
+
+  return `
+    <div class="scene-panel process active">
+      <div class="process-canvas">
+        <div class="lane-label lane-strategic">Strategic</div>
+        <div class="lane-label lane-tactical">Tactical</div>
+        <div class="lane-divider"></div>
+        <div class="shared-band"></div>
+        <svg style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+          ${arrows.join('')}
+        </svg>
+        ${nodes}
+        ${humanNode}
+      </div>
+      <div class="process-panel">
+        <div class="stage-counter">
+          <span class="stage-counter-text">Stage ${stageIdx + 1} / ${STAGES.length}</span>
+          <span class="lane-pill ${stage.lane.toLowerCase()}">${stage.lane}</span>
+        </div>
+        <div class="stage-name">${stage.name}</div>
+        <div>
+          <div class="panel-section-title">Active agents</div>
+          <div class="agent-pills">${pills}</div>
+        </div>
+        ${stage.humanRole ? `
+          <div class="human-box ${humanInLoop ? '' : 'autonomous'}">
+            <div class="human-box-title">${humanInLoop ? '💚 Human in the loop · ' + stage.humanRole : '○ Autonomous lane'}</div>
+            <div class="human-box-text">${stage.humanDoes}</div>
+          </div>
+        ` : ''}
+        <div>
+          <div class="panel-section-title">What's happening</div>
+          <div class="action-text">${stage.action}</div>
+        </div>
+        <div class="impact-card">
+          <div class="panel-section-title">Impact</div>
+          <div class="impact-number">${stage.metric}</div>
+          <div class="impact-sub">${stage.sub}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderHuman() {
+  const before = [
+    'Build RFx in Word', 'Normalise bid spreadsheets', 'Chase suppliers for clarifications',
+    'Cross-check market prices in tabs', 'Redline NDAs line-by-line', 'Wrestle vendor master forms',
+    'Reconcile maverick spend', 'Write QBR decks from scratch',
+  ];
+  const after = [
+    'Set category strategy & ambition', 'Coach the agents on edge cases', 'Build the supplier relationships',
+    'Decide on the 2% of exceptions', 'Drive innovation & sustainability', 'Lead joint value creation',
+    'Capture rebates & indexation upside', 'Be in front of the business, not the inbox',
+  ];
+  return `
+    <div class="scene-panel human-scene active">
+      <div class="human-left">
+        <div class="human-kicker today">Today</div>
+        <div class="human-h1 today">A buyer's week</div>
+        <div class="breakdown-bar"><div style="width: 80%; background: #9CA3AF;"></div><div style="width: 20%; background: ${C.lavender};"></div></div>
+        <div class="breakdown-legend"><span><b>80%</b> admin & doc work</span><span><b>20%</b> strategy</span></div>
+        <div class="human-tasks" id="beforeTasks">
+          ${before.map((t,i) => `<div class="human-task before" data-idx="${i}" style="opacity: 0;"><div class="dot"></div><span>${t}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="human-pivot">
+        <div class="pivot-line"></div>
+        <div class="pivot-circle" id="pivotCircle" style="transform: scale(0); opacity: 0; transition: all 600ms;">✦</div>
+        <div class="pivot-line"></div>
+      </div>
+      <div class="human-right">
+        <div class="human-kicker tomorrow">Tomorrow</div>
+        <div class="human-h1 tomorrow">A buyer's week</div>
+        <div class="breakdown-bar"><div style="width: 20%; background: #9CA3AF;"></div><div style="width: 80%; background: ${C.green};"></div></div>
+        <div class="breakdown-legend"><span><b>20%</b> review & exceptions</span><span><b style="color: ${C.green};">80%</b> strategy & relationships</span></div>
+        <div class="human-tasks" id="afterTasks">
+          ${after.map((t,i) => `<div class="human-task after" data-idx="${i}" style="opacity: 0;"><div class="check">✓</div><span>${t}</span></div>`).join('')}
+        </div>
+        <div class="human-takeaway" id="humanTakeaway" style="opacity: 0; transform: translateY(20px); transition: all 700ms;">
+          <div class="human-takeaway-kicker">The shift</div>
+          <div class="human-takeaway-text">Same people. Bigger jobs. The agents do the work; humans do the thinking.</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function startHumanAnimations() {
+  document.querySelectorAll('.human-task.before').forEach((el, i) => {
+    setTimeout(() => { el.style.transition = 'opacity 400ms'; el.style.opacity = '0.85'; }, 1000 + i * 60);
+  });
+  setTimeout(() => {
+    const p = document.getElementById('pivotCircle');
+    if (p) { p.style.transform = 'scale(1)'; p.style.opacity = '1'; }
+  }, 3500);
+  document.querySelectorAll('.human-task.after').forEach((el, i) => {
+    setTimeout(() => { el.style.transition = 'opacity 400ms'; el.style.opacity = '1'; }, 3500 + i * 70);
+  });
+  setTimeout(() => {
+    const t = document.getElementById('humanTakeaway');
+    if (t) { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; }
+  }, 6500);
+}
+
+function renderImpact() {
+  const stats = [
+    { n: '+3–15%',  label: 'EBITDA per negotiation', color: C.mint,     icon: '📈' },
+    { n: '48 hrs',  label: 'New supplier onboarded', color: C.midBlue,  icon: '⚡' },
+    { n: '–80%',    label: 'SME effort on bids',     color: C.lavender, icon: '🎯' },
+    { n: '~€10M',   label: 'Tail-spend savings p.a.',color: C.green,    icon: '🛒' },
+    { n: '1–2%',    label: 'Spend recovered by SRM', color: C.purple,   icon: '📊' },
+    { n: '80 → 20', label: '% of CM time on admin',  color: C.navy,     icon: '☕' },
+  ];
+  return `
+    <div class="scene-panel impact active">
+      <div>
+        <div class="impact-kicker">The outcome</div>
+        <div class="impact-h1">Humans amplified. <span class="mint">Buying transformed.</span></div>
+      </div>
+      <div class="impact-grid">
+        ${stats.map((s,i) => `
+          <div class="impact-tile" data-idx="${i}">
+            <div class="impact-tile-icon">${s.icon}</div>
+            <div>
+              <div class="impact-tile-number" style="color: ${s.color};">${s.n}</div>
+              <div class="impact-tile-label">${s.label}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="impact-tag" id="impactTag">💡 Procurement stops being a paperwork function — and starts being a value engine the business can lean on.</div>
+    </div>
+  `;
+}
+
+function startImpactAnimations() {
+  document.querySelectorAll('.impact-tile').forEach((el, i) => {
+    setTimeout(() => el.classList.add('revealed'), 200 + i * 700);
+  });
+  setTimeout(() => {
+    const t = document.getElementById('impactTag');
+    if (t) t.classList.add('revealed');
+  }, 200 + 6 * 700);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PLAYBACK
+// ═══════════════════════════════════════════════════════════════
+function advance() {
+  if (sceneIdx === SCENES.findIndex(s => s.key === 'process')) {
+    if (stageIdx + 1 < STAGES.length) {
+      stageIdx++;
+    } else {
+      stageIdx = 0;
+      sceneIdx = (sceneIdx + 1) % SCENES.length;
+    }
+  } else {
+    sceneIdx = (sceneIdx + 1) % SCENES.length;
+    stageIdx = 0;
+  }
+  startSegment();
+}
+
+function clearTimers() {
+  clearTimeout(minTimer); clearTimeout(safetyTimer); clearTimeout(advanceTimer);
+  minTimer = safetyTimer = advanceTimer = null;
+}
+
+function startSegment() {
+  clearTimers();
+  stopAudio();
+  render();
+  if (!playing) return;
+
+  const scene = SCENES[sceneIdx];
+  const isProc = scene.key === 'process';
+  const cacheKey = isProc ? `stage:${stageIdx}` : `scene:${scene.key}`;
+  const minMs = (isProc ? 3500 : 5000) / speed;
+  const silentMs = (isProc ? 7000 : scene.duration) / speed;
+  const maxMs = (isProc ? 25000 : 45000) / speed;
+
+  minElapsed = false; endFired = false;
+  let advanced = false;
+  const tryAdv = () => { if (!advanced && minElapsed && endFired) { advanced = true; advance(); } };
+
+  minTimer = setTimeout(() => { minElapsed = true; tryAdv(); }, minMs);
+  safetyTimer = setTimeout(() => { if (!advanced) { advanced = true; advance(); } }, maxMs);
+
+  if (muted) {
+    advanceTimer = setTimeout(() => { if (!advanced) { advanced = true; advance(); } }, silentMs);
+  } else {
+    playNarration(cacheKey, () => { endFired = true; tryAdv(); });
+  }
+}
+
+function pause() { playing = false; clearTimers(); stopAudio(); document.getElementById('playBtn').textContent = '▶'; }
+function play() { playing = true; document.getElementById('playBtn').textContent = '⏸'; startSegment(); }
+function reset() { pause(); sceneIdx = 0; stageIdx = 0; play(); }
+function next() { pause(); advance(); play(); }
+function prev() {
+  pause();
+  if (sceneIdx === SCENES.findIndex(s => s.key === 'process') && stageIdx > 0) stageIdx--;
+  else {
+    sceneIdx = (sceneIdx - 1 + SCENES.length) % SCENES.length;
+    stageIdx = SCENES[sceneIdx].key === 'process' ? STAGES.length - 1 : 0;
+  }
+  play();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EVENT HANDLERS
+// ═══════════════════════════════════════════════════════════════
+document.getElementById('startBtn').addEventListener('click', () => {
+  audioBase = document.getElementById('audioPath').value || './';
+  if (!audioBase.endsWith('/')) audioBase += '/';
+  document.getElementById('instructions').style.display = 'none';
+  document.getElementById('stage').style.display = 'flex';
+  play();
+});
+
+document.getElementById('playBtn').addEventListener('click', () => playing ? pause() : play());
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.getElementById('resetBtn').addEventListener('click', reset);
+document.getElementById('muteBtn').addEventListener('click', () => {
+  muted = !muted;
+  document.getElementById('muteBtn').textContent = muted ? '🔇' : '🔊';
+  if (muted) stopAudio();
+});
+document.getElementById('fsBtn').addEventListener('click', () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+});
+document.querySelectorAll('.speed-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    speed = parseFloat(btn.dataset.speed);
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (currentAudio) currentAudio.playbackRate = speed;
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('instructions').style.display !== 'none') return;
+  if (e.key === ' ') { e.preventDefault(); playing ? pause() : play(); }
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+  if (e.key === 'r' || e.key === 'R') reset();
+  if (e.key === 'f' || e.key === 'F') document.getElementById('fsBtn').click();
+  if (e.key === 'm' || e.key === 'M') document.getElementById('muteBtn').click();
+});
+
+const styleTag = document.createElement('style');
+styleTag.textContent = `@keyframes dash { to { stroke-dashoffset: -8; } }`;
+document.head.appendChild(styleTag);
+</script>
+</body>
+</html>
