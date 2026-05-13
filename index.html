@@ -362,6 +362,22 @@
     color: #fff; cursor: pointer;
   }
   .modules-btn:hover { background: rgba(255,255,255,0.15); }
+  .reorder-btns { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+  .reorder-btn {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+    color: #cbd5e1; width: 24px; height: 18px; border-radius: 4px;
+    font-size: 9px; cursor: pointer; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 150ms;
+  }
+  .reorder-btn:hover { background: rgba(155,43,247,0.4); color: #fff; }
+  .reorder-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+  .module-order-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #9B2BF7; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: bold; flex-shrink: 0;
+  }
 
   /* ── ENGINE MODULE ── */
   .engine-scene {
@@ -1348,7 +1364,12 @@ function initModuleList() {
     card.dataset.id = mod.id;
     card.draggable = true;
     card.innerHTML = `
-      <div class="drag-handle">⠿</div>
+      <div class="drag-handle" title="Drag to reorder">⠿</div>
+      <div class="reorder-btns">
+        <button class="reorder-btn reorder-up" title="Move up">▲</button>
+        <button class="reorder-btn reorder-dn" title="Move down">▼</button>
+      </div>
+      <div class="module-order-num">1</div>
       <div class="module-card-icon">${mod.icon}</div>
       <div class="module-card-body">
         <div class="module-card-name">${mod.title}</div>
@@ -1361,44 +1382,91 @@ function initModuleList() {
     `;
     list.appendChild(card);
   });
+  refreshOrderNumbers();
+  initReorder(list);
   initDragDrop(list);
+}
+
+function refreshOrderNumbers() {
+  let n = 1;
+  document.querySelectorAll('.module-card').forEach(card => {
+    const num = card.querySelector('.module-order-num');
+    const isOn = card.querySelector('input').checked;
+    if (num) {
+      num.textContent = isOn ? n : '–';
+      num.style.background = isOn ? '#9B2BF7' : '#374151';
+    }
+    if (isOn) n++;
+  });
+  const cards = Array.from(document.querySelectorAll('.module-card'));
+  cards.forEach((card, i) => {
+    const up = card.querySelector('.reorder-up');
+    const dn = card.querySelector('.reorder-dn');
+    if (up) up.disabled = i === 0;
+    if (dn) dn.disabled = i === cards.length - 1;
+  });
+}
+
+function initReorder(list) {
+  list.addEventListener('click', e => {
+    const card = e.target.closest('.module-card');
+    if (!card) return;
+    if (e.target.classList.contains('reorder-up')) {
+      e.preventDefault(); e.stopPropagation();
+      if (card.previousElementSibling) list.insertBefore(card, card.previousElementSibling);
+      refreshOrderNumbers();
+    } else if (e.target.classList.contains('reorder-dn')) {
+      e.preventDefault(); e.stopPropagation();
+      if (card.nextElementSibling) list.insertBefore(card.nextElementSibling, card);
+      refreshOrderNumbers();
+    }
+  });
+  list.addEventListener('change', e => {
+    if (e.target.matches('.toggle-wrap input')) refreshOrderNumbers();
+  });
 }
 
 function initDragDrop(list) {
   let dragSrc = null;
   list.addEventListener('dragstart', e => {
-    dragSrc = e.target.closest('.module-card');
-    if (!dragSrc) return;
+    const card = e.target.closest('.module-card');
+    if (!card) return;
+    dragSrc = card;
+    try {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', card.dataset.id || '');
+    } catch (err) {}
     setTimeout(() => dragSrc && dragSrc.classList.add('dragging'), 0);
   });
   list.addEventListener('dragend', () => {
     if (dragSrc) dragSrc.classList.remove('dragging');
     list.querySelectorAll('.module-card').forEach(c => c.classList.remove('drag-over'));
     dragSrc = null;
+    refreshOrderNumbers();
   });
   list.addEventListener('dragover', e => {
     e.preventDefault();
+    try { e.dataTransfer.dropEffect = 'move'; } catch (err) {}
+    if (!dragSrc) return;
     const card = e.target.closest('.module-card');
     if (!card || card === dragSrc) return;
-    list.querySelectorAll('.module-card').forEach(c => c.classList.remove('drag-over'));
-    card.classList.add('drag-over');
     const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
     list.insertBefore(dragSrc, e.clientY < mid ? card : card.nextSibling);
+    refreshOrderNumbers();
   });
-  list.addEventListener('drop', e => {
-    e.preventDefault();
-    list.querySelectorAll('.module-card').forEach(c => c.classList.remove('drag-over'));
-  });
+  list.addEventListener('drop', e => { e.preventDefault(); });
 }
 
 function buildPlaylist() {
   const pl = [];
-  document.querySelectorAll('.module-card').forEach(card => {
-    if (card.querySelector('input').checked) {
+  document.querySelectorAll('#moduleList .module-card').forEach(card => {
+    const cb = card.querySelector('input[type="checkbox"]');
+    if (cb && cb.checked) {
       const mod = MODULES.find(m => m.id === card.dataset.id);
       if (mod) mod.scenes.forEach(s => pl.push(s));
     }
   });
+  console.log('[playlist]', pl);
   return pl.length ? pl : ['intro'];
 }
 
