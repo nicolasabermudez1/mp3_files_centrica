@@ -426,8 +426,14 @@
   }
   .eng-badge.vis { opacity: 1; }
   .badge-agentic { background: rgba(155,43,247,0.35); color: #D4B3FF; border: 1px solid rgba(155,43,247,0.7); }
-  .badge-human { background: rgba(40,178,62,0.25); color: #85DB9C; border: 1px solid rgba(133,219,156,0.7); }
+  .badge-led     { background: rgba(155,43,247,0.35); color: #D4B3FF; border: 1px solid rgba(155,43,247,0.7); }
+  .badge-human    { background: rgba(40,178,62,0.25); color: #85DB9C; border: 1px solid rgba(133,219,156,0.7); }
   .badge-assisted { background: rgba(54,117,193,0.3); color: #90c4f0; border: 1px solid rgba(54,117,193,0.7); }
+  .eng-badge { transition: background 600ms ease, color 600ms ease, border-color 600ms ease; }
+  .engine-year-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 6px;
+    justify-content: center;
+  }
   .engine-center {
     width: 180px; flex-shrink: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -652,32 +658,39 @@ const STAGES = [
   { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '1–3%',              sub: 'of tail spend saved',     humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
 ];
 
-const ENGINE_STAGES = 2;
+const ENGINE_STAGES = 1;
 
 const ENGINE_INPUTS = [
-  { label: 'Risks',        type: 'agentic'  },
-  { label: 'Suppliers',    type: 'assisted' },
-  { label: 'Spend',        type: 'agentic'  },
-  { label: 'Market Data',  type: 'agentic'  },
-  { label: 'M&A',          type: 'human'    },
-  { label: 'Business',     type: 'human'    },
-  { label: 'Others',       type: 'assisted' },
+  { id: 'risks',      label: 'Risks' },
+  { id: 'suppliers',  label: 'Suppliers' },
+  { id: 'spend',      label: 'Spend' },
+  { id: 'marketdata', label: 'Market Data' },
+  { id: 'ma',         label: 'M&A' },
+  { id: 'business',   label: 'Business' },
+  { id: 'others',     label: 'Others' },
 ];
 const ENGINE_OUTPUTS = [
-  { label: 'Sole Sourcing',      type: 'human'    },
-  { label: 'Partnerships',       type: 'human'    },
-  { label: 'Supplier Lists',     type: 'agentic'  },
-  { label: 'Catalogs',           type: 'agentic'  },
-  { label: 'Category Strategy',  type: 'human'    },
-  { label: 'Tactical Sourcing',  type: 'agentic'  },
-  { label: 'Strategic Sourcing', type: 'assisted' },
+  { id: 'solesourcing',      label: 'Sole Sourcing' },
+  { id: 'partnerships',      label: 'Partnerships' },
+  { id: 'supplierlists',     label: 'Supplier Lists' },
+  { id: 'catalogs',          label: 'Catalogs' },
+  { id: 'categorystrategy',  label: 'Category Strategy' },
+  { id: 'tacticalsourcing',  label: 'Tactical Sourcing' },
+  { id: 'strategicsourcing', label: 'Strategic Sourcing' },
 ];
 const BADGE_LABELS = {
-  agentic:  '🤖 Fully Agentic',
-  human:    '💚 Human-Led',
-  assisted: '🔀 Machine-Assisted',
+  human:    '💚 Human',
+  assisted: '🔀 Assisted',
+  led:      '🤖 Machine-Led',
 };
-const BADGE_CLASS = { agentic: 'badge-agentic', human: 'badge-human', assisted: 'badge-assisted' };
+const BADGE_CLASS = { human: 'badge-human', assisted: 'badge-assisted', led: 'badge-led' };
+function bucketFor(yi, id) {
+  const t = TIMELINE[yi];
+  if (t.human.includes(id)) return 'human';
+  if (t.assisted.includes(id)) return 'assisted';
+  if (t.led.includes(id)) return 'led';
+  return 'human';
+}
 
 const ITEM_LABELS = {
   risks:'Risks', suppliers:'Suppliers', spend:'Spend', marketdata:'Market Data',
@@ -797,7 +810,7 @@ function render() {
   const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  const engineSubTitles = ['The Engine', 'The Balance 2025–2027'];
+  const engineSubTitles = ['The Engine · 2025 → 2027'];
   document.getElementById('sceneTag').textContent =
     key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` :
     key === 'engine'  ? (engineSubTitles[stageIdx] || 'The Engine') :
@@ -1190,26 +1203,25 @@ function startImpactAnimations() {
 }
 
 function renderEngine() {
-  if (stageIdx === 0) return renderEngineIntro();
-  return renderEngineTimeline();
+  return renderEngineIntro();
 }
 
-function _engineCols(showBadges) {
+function _engineCols() {
   const inItems = ENGINE_INPUTS.map((it, i) => `
-    <div class="engine-item${showBadges ? ' visible' : ''}" id="eng-in-${i}">
+    <div class="engine-item" id="eng-in-${i}" data-id="${it.id}">
       <div class="eng-tag-wrap">
         <div class="engine-item-tag">${it.label}</div>
-        ${showBadges ? `<div class="eng-badge ${BADGE_CLASS[it.type]}" id="ebadge-in-${i}">${BADGE_LABELS[it.type]}</div>` : ''}
+        <div class="eng-badge badge-human vis" data-badge-for="${it.id}">${BADGE_LABELS.human}</div>
       </div>
       <div class="engine-item-arrow">→</div>
     </div>`).join('');
 
   const outItems = ENGINE_OUTPUTS.map((it, i) => `
-    <div class="engine-item${showBadges ? ' visible' : ''}" id="eng-out-${i}">
+    <div class="engine-item" id="eng-out-${i}" data-id="${it.id}">
       <div class="engine-item-arrow">←</div>
       <div class="eng-tag-wrap">
         <div class="engine-item-tag">${it.label}</div>
-        ${showBadges ? `<div class="eng-badge ${BADGE_CLASS[it.type]}" id="ebadge-out-${i}">${BADGE_LABELS[it.type]}</div>` : ''}
+        <div class="eng-badge badge-human vis" data-badge-for="${it.id}">${BADGE_LABELS.human}</div>
       </div>
     </div>`).join('');
 
@@ -1217,13 +1229,17 @@ function _engineCols(showBadges) {
 }
 
 function renderEngineIntro() {
-  const { inItems, outItems } = _engineCols(false);
+  const { inItems, outItems } = _engineCols();
+  const yrPills = TIMELINE.map((t, i) =>
+    `<div class="tl-yr-pill${i === 0 ? ' on' : ''}" id="tl-yr-${i}">${t.year}</div>` +
+    (i < TIMELINE.length - 1 ? '<span class="tl-yr-arrow">→</span>' : '')
+  ).join('');
   return `
     <div class="scene-panel engine-scene active">
       <div class="engine-gear-bg">⚙</div>
       <div class="engine-header">
-        <div class="engine-kicker">The Engine</div>
-        <div class="engine-title">Category Strategy &amp; Procurement</div>
+        <div class="engine-kicker">Category Strategy &amp; Procurement</div>
+        <div class="engine-year-row">${yrPills}</div>
       </div>
       <div class="engine-layout">
         <div class="engine-col engine-inputs">
@@ -1233,53 +1249,23 @@ function renderEngineIntro() {
         <div class="engine-center">
           <div class="engine-center-icon">⚙</div>
           <div class="engine-center-name">The Engine</div>
-          <div class="engine-center-sub">Always running</div>
+          <div class="engine-center-sub">Finding the balance</div>
         </div>
         <div class="engine-col engine-outputs">
           <div class="engine-col-label">Outputs →</div>
           ${outItems}
         </div>
       </div>
-    </div>`;
-}
-
-function renderEngineTimeline() {
-  const yrPills = TIMELINE.map((t, i) =>
-    `<div class="tl-yr-pill${i === 0 ? ' on' : ''}" id="tl-yr-${i}">${t.year}</div>` +
-    (i < TIMELINE.length - 1 ? '<span class="tl-yr-arrow">→</span>' : '')
-  ).join('');
-
-  const allItemsHtml = ALL_ITEM_IDS.map(id =>
-    `<div class="tl-item" data-id="${id}">${ITEM_LABELS[id]}</div>`
-  ).join('');
-
-  return `
-    <div class="scene-panel engine-timeline-scene active">
-      <div class="engine-gear-bg">⚙</div>
-      <div class="tl-header">
-        <div class="tl-kicker">The North Star · Human → Machine balance</div>
-        <div class="tl-year-row">${yrPills}</div>
-      </div>
-      <div class="tl-cols">
-        <div class="tl-col tl-col-human">
-          <div class="tl-col-head"><span>💚 Human</span><span class="tl-col-count" id="tl-count-human">14</span></div>
-          <div class="tl-col-body" id="tl-body-human">${allItemsHtml}</div>
-        </div>
-        <div class="tl-col tl-col-assisted">
-          <div class="tl-col-head"><span>🔀 Machine-Assisted</span><span class="tl-col-count" id="tl-count-assisted">0</span></div>
-          <div class="tl-col-body" id="tl-body-assisted"></div>
-        </div>
-        <div class="tl-col tl-col-led">
-          <div class="tl-col-head"><span>🤖 Machine-Led</span><span class="tl-col-count" id="tl-count-led">0</span></div>
-          <div class="tl-col-body" id="tl-body-led"></div>
-        </div>
+      <div class="engine-balance-legend">
+        <div class="ebl-item"><div class="ebl-dot" style="background:#85DB9C;"></div>Human</div>
+        <div class="ebl-item"><div class="ebl-dot" style="background:#3675C1;"></div>Machine-Assisted</div>
+        <div class="ebl-item"><div class="ebl-dot" style="background:#9B2BF7;"></div>Machine-Led</div>
       </div>
     </div>`;
 }
 
 function startEngineAnimations() {
-  if (stageIdx === 0) startEngineIntroAnimations();
-  else startEngineTimelineAnimation();
+  startEngineIntroAnimations();
 }
 
 function startEngineIntroAnimations() {
@@ -1295,61 +1281,26 @@ function startEngineIntroAnimations() {
       if (el) el.classList.add('visible');
     }, 300 + i * 180);
   });
-}
 
-function startEngineTimelineAnimation() {
-  function setTimelineYear(yi) {
-    const state = TIMELINE[yi];
-    const items = Array.from(document.querySelectorAll('.tl-item'));
-    if (!items.length) return;
-
-    // FLIP: record old positions
-    const oldPos = new Map();
-    items.forEach(el => oldPos.set(el.dataset.id, el.getBoundingClientRect()));
-
-    // Move items into target columns
-    const cols = {
-      human:    document.getElementById('tl-body-human'),
-      assisted: document.getElementById('tl-body-assisted'),
-      led:      document.getElementById('tl-body-led'),
-    };
-    if (!cols.human || !cols.assisted || !cols.led) return;
-    const byId = id => document.querySelector(`.tl-item[data-id="${id}"]`);
-    state.human.forEach(id    => { const el = byId(id); if (el) cols.human.appendChild(el); });
-    state.assisted.forEach(id => { const el = byId(id); if (el) cols.assisted.appendChild(el); });
-    state.led.forEach(id      => { const el = byId(id); if (el) cols.led.appendChild(el); });
-
-    // FLIP: invert + play
-    items.forEach(el => {
-      const oldR = oldPos.get(el.dataset.id);
-      const newR = el.getBoundingClientRect();
-      const dx = oldR.left - newR.left;
-      const dy = oldR.top  - newR.top;
-      if (dx === 0 && dy === 0) return;
-      el.style.transition = 'none';
-      el.style.transform  = `translate(${dx}px, ${dy}px)`;
-      requestAnimationFrame(() => {
-        el.style.transition = 'transform 850ms cubic-bezier(0.4,0,0.2,1)';
-        el.style.transform  = 'translate(0,0)';
-      });
+  function setEngineYear(yi) {
+    ALL_ITEM_IDS.forEach(id => {
+      const bucket = bucketFor(yi, id);
+      const badge = document.querySelector(`[data-badge-for="${id}"]`);
+      if (!badge) return;
+      badge.classList.remove('badge-human','badge-assisted','badge-led');
+      badge.classList.add(BADGE_CLASS[bucket]);
+      badge.textContent = BADGE_LABELS[bucket];
     });
-
-    // Update year pills
     TIMELINE.forEach((_, j) => {
       const p = document.getElementById('tl-yr-' + j);
       if (p) p.classList.toggle('on', j === yi);
     });
-
-    // Update counts
-    const hc = document.getElementById('tl-count-human');    if (hc) hc.textContent = state.human.length;
-    const ac = document.getElementById('tl-count-assisted'); if (ac) ac.textContent = state.assisted.length;
-    const lc = document.getElementById('tl-count-led');      if (lc) lc.textContent = state.led.length;
   }
-
-  setTimelineYear(0);
-  setTimeout(() => setTimelineYear(1), 13000);
-  setTimeout(() => setTimelineYear(2), 26000);
+  setEngineYear(0);
+  setTimeout(() => setEngineYear(1), 38000);
+  setTimeout(() => setEngineYear(2), 52000);
 }
+
 
 // ═══════════════════════════════════════════════════════════════
 //  PLAYBACK
