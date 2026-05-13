@@ -362,6 +362,115 @@
     color: #fff; cursor: pointer;
   }
   .modules-btn:hover { background: rgba(255,255,255,0.15); }
+
+  /* ── ENGINE MODULE ── */
+  .engine-scene {
+    background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%);
+    color: #fff; display: flex; flex-direction: column;
+    padding: 22px 36px; position: relative; overflow: hidden;
+  }
+  .engine-gear-bg {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.04; font-size: 480px; color: #fff; line-height: 1;
+    pointer-events: none; user-select: none;
+  }
+  .engine-header { text-align: center; position: relative; z-index: 1; margin-bottom: 14px; }
+  .engine-kicker { font-size: 10px; font-weight: bold; color: #85DB9C; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 6px; }
+  .engine-title { font-size: 26px; font-weight: bold; color: #fff; line-height: 1.15; }
+  .engine-layout { flex: 1; display: flex; align-items: center; width: 100%; position: relative; z-index: 1; }
+  .engine-col { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+  .engine-col-label {
+    font-size: 9px; font-weight: bold; letter-spacing: 0.25em;
+    text-transform: uppercase; color: #85DB9C; margin-bottom: 8px;
+    padding-bottom: 5px; border-bottom: 1px solid rgba(133,219,156,0.3);
+  }
+  .engine-inputs { align-items: flex-end; padding-right: 16px; }
+  .engine-outputs { align-items: flex-start; padding-left: 16px; }
+  .engine-item {
+    display: flex; align-items: center; gap: 6px;
+    opacity: 0; transform: translateX(-14px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .engine-outputs .engine-item { transform: translateX(14px); }
+  .engine-item.visible { opacity: 1; transform: translateX(0); }
+  .eng-tag-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .engine-inputs .eng-tag-wrap { align-items: flex-end; }
+  .engine-outputs .eng-tag-wrap { align-items: flex-start; }
+  .engine-item-tag {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px; padding: 5px 10px;
+    font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap;
+  }
+  .engine-item-arrow { font-size: 12px; color: rgba(133,219,156,0.8); flex-shrink: 0; }
+  .eng-badge {
+    font-size: 8px; font-weight: bold; padding: 1px 5px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    opacity: 0; transition: opacity 400ms ease; white-space: nowrap;
+  }
+  .eng-badge.vis { opacity: 1; }
+  .badge-agentic { background: rgba(155,43,247,0.35); color: #D4B3FF; border: 1px solid rgba(155,43,247,0.7); }
+  .badge-human { background: rgba(40,178,62,0.25); color: #85DB9C; border: 1px solid rgba(133,219,156,0.7); }
+  .badge-assisted { background: rgba(54,117,193,0.3); color: #90c4f0; border: 1px solid rgba(54,117,193,0.7); }
+  .engine-center {
+    width: 180px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 10px;
+  }
+  .engine-center-icon {
+    width: 86px; height: 86px; border-radius: 50%;
+    background: rgba(155,43,247,0.25); border: 2px solid rgba(155,43,247,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; box-shadow: 0 0 28px rgba(155,43,247,0.4);
+  }
+  .engine-center-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .engine-center-sub { font-size: 10px; color: #9CA3AF; }
+  .engine-balance-legend {
+    position: relative; z-index: 1;
+    display: flex; gap: 20px; justify-content: center; margin-top: 10px;
+  }
+  .ebl-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #9CA3AF; }
+  .ebl-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* RATIO STAGE */
+  .engine-ratio-scene {
+    background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%);
+    color: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 22px; padding: 32px 60px;
+  }
+  .ratio-kicker { font-size: 10px; font-weight: bold; color: #85DB9C; letter-spacing: 0.3em; text-transform: uppercase; }
+  .ratio-title { font-size: 22px; font-weight: bold; color: #fff; text-align: center; line-height: 1.25; }
+  .ratio-year-display { font-size: 84px; font-weight: bold; color: #fff; text-align: center; line-height: 1; transition: opacity 300ms ease; }
+  .ratio-bar {
+    height: 52px; border-radius: 26px; overflow: hidden; display: flex;
+    width: 100%; max-width: 640px; border: 2px solid rgba(255,255,255,0.12);
+  }
+  .ratio-human-seg {
+    background: linear-gradient(90deg, #28B23E, #85DB9C);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #0F2067;
+    transition: width 900ms cubic-bezier(0.4,0,0.2,1);
+    overflow: hidden; white-space: nowrap; padding: 0 12px;
+  }
+  .ratio-machine-seg {
+    background: linear-gradient(90deg, #7B22D4, #B999F6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #fff;
+    flex: 1; overflow: hidden; white-space: nowrap; padding: 0 12px;
+    transition: flex 900ms cubic-bezier(0.4,0,0.2,1);
+  }
+  .ratio-legend { display: flex; gap: 28px; justify-content: center; }
+  .ratio-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #fff; }
+  .ratio-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .ratio-timeline { display: flex; gap: 20px; justify-content: center; align-items: flex-start; }
+  .ratio-yr { text-align: center; opacity: 0.3; transition: opacity 500ms ease; }
+  .ratio-yr.on { opacity: 1; }
+  .ratio-yr-num { font-size: 15px; font-weight: bold; color: #fff; }
+  .ratio-yr-split { font-size: 10px; color: #9CA3AF; margin-top: 3px; }
+  .ratio-yr-pip { width: 6px; height: 6px; border-radius: 50%; background: #555; margin: 6px auto 0; transition: background 500ms ease; }
+  .ratio-yr.on .ratio-yr-pip { background: #9B2BF7; }
+  .ratio-yr-arrow { font-size: 16px; color: #555; padding-top: 4px; }
 </style>
 </head>
 <body>
@@ -471,22 +580,58 @@ const STAGES = [
   { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '1–3%',              sub: 'of tail spend saved',     humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
 ];
 
+const ENGINE_STAGES = 3;
+
+const ENGINE_INPUTS = [
+  { label: 'Risks',        type: 'agentic'  },
+  { label: 'Suppliers',    type: 'assisted' },
+  { label: 'Spend',        type: 'agentic'  },
+  { label: 'Market Data',  type: 'agentic'  },
+  { label: 'M&A',          type: 'human'    },
+  { label: 'Business',     type: 'human'    },
+  { label: 'Others',       type: 'assisted' },
+];
+const ENGINE_OUTPUTS = [
+  { label: 'Sole Sourcing',      type: 'human'    },
+  { label: 'Partnerships',       type: 'human'    },
+  { label: 'Supplier Lists',     type: 'agentic'  },
+  { label: 'Catalogs',           type: 'agentic'  },
+  { label: 'Category Strategy',  type: 'human'    },
+  { label: 'Tactical Sourcing',  type: 'agentic'  },
+  { label: 'Strategic Sourcing', type: 'assisted' },
+];
+const BADGE_LABELS = {
+  agentic:  '🤖 Fully Agentic',
+  human:    '💚 Human-Led',
+  assisted: '🔀 Machine-Assisted',
+};
+const BADGE_CLASS = { agentic: 'badge-agentic', human: 'badge-human', assisted: 'badge-assisted' };
+
+const RATIO_YEARS = [
+  { year: '2026', human: 50,  machine: 50  },
+  { year: '2027', human: 40,  machine: 60  },
+  { year: '2028', human: 30,  machine: 70  },
+  { year: '2029', human: 25,  machine: 75  },
+];
+
 const SCENES = [
   { key: 'intro',   name: 'Opening',         duration: 16000 },
   { key: 'today',   name: 'Today',           duration: 19000 },
   { key: 'meet',    name: 'Meet the Seven',  duration: 26000 },
   { key: 'process', name: 'Choreography',    duration: 0     },
+  { key: 'engine',  name: 'The Engine',      duration: 20000 },
   { key: 'human',   name: 'The Human Lift',  duration: 25000 },
   { key: 'impact',  name: 'The Outcome',     duration: 22000 },
 ];
 
 const MODULES = [
-  { id: 'intro',   icon: '✦',  title: 'Opening',                    desc: 'Vision and operating model overview',              scenes: ['intro']   },
-  { id: 'today',   icon: '📅', title: 'The Category Manager Today',  desc: 'How the role is spent today',                      scenes: ['today']   },
-  { id: 'agents',  icon: '🤖', title: 'The Seven Focus Agents',      desc: 'The agents we are bringing in beside the human',   scenes: ['meet']    },
-  { id: 'process', icon: '🔄', title: 'The End-to-End Process',      desc: '20 stages across strategic and tactical lanes',    scenes: ['process'] },
-  { id: 'human',   icon: '💚', title: 'The Human Lift',              desc: 'What changes for the people inside procurement',   scenes: ['human']   },
-  { id: 'impact',  icon: '📊', title: 'The Outcome',                 desc: 'The numbers behind the transformation',            scenes: ['impact']  },
+  { id: 'intro',   icon: '✦',  title: 'Opening',                    desc: 'Vision and operating model overview',                              scenes: ['intro']   },
+  { id: 'today',   icon: '📅', title: 'The Category Manager Today',  desc: 'How the role is spent today',                                      scenes: ['today']   },
+  { id: 'agents',  icon: '🤖', title: 'The Seven Focus Agents',      desc: 'The agents we are bringing in beside the human',                   scenes: ['meet']    },
+  { id: 'process', icon: '🔄', title: 'The End-to-End Process',      desc: '20 stages across strategic and tactical lanes',                    scenes: ['process'] },
+  { id: 'engine',  icon: '⚙️', title: 'The Engine',                  desc: 'Inputs, outputs, and the human-to-machine balance over time',      scenes: ['engine']  },
+  { id: 'human',   icon: '💚', title: 'The Human Lift',              desc: 'What changes for the people inside procurement',                   scenes: ['human']   },
+  { id: 'impact',  icon: '📊', title: 'The Outcome',                 desc: 'The numbers behind the transformation',                            scenes: ['impact']  },
 ];
 
 const QUOTES = [
@@ -519,8 +664,9 @@ let safetyTimer = null;
 //  AUDIO
 // ═══════════════════════════════════════════════════════════════
 function audioUrl(key) {
-  if (key.startsWith('scene:')) return audioBase + 'scene-' + key.slice(6) + '.mp3';
-  if (key.startsWith('stage:')) return audioBase + 'stage-' + String(parseInt(key.slice(6)) + 1).padStart(2,'0') + '.mp3';
+  if (key.startsWith('scene:'))  return audioBase + 'scene-' + key.slice(6) + '.mp3';
+  if (key.startsWith('stage:'))  return audioBase + 'stage-' + String(parseInt(key.slice(6)) + 1).padStart(2,'0') + '.mp3';
+  if (key.startsWith('engine:')) return audioBase + 'engine-' + String(parseInt(key.slice(7)) + 1).padStart(2,'0') + '.mp3';
   return null;
 }
 
@@ -562,10 +708,16 @@ function render() {
   const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  document.getElementById('sceneTag').textContent = key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` : (mod ? mod.title : key);
+  const engineSubTitles = ['The Engine', 'Human vs Machine', 'The Ratio 2026–2029'];
+  document.getElementById('sceneTag').textContent =
+    key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` :
+    key === 'engine'  ? (engineSubTitles[stageIdx] || 'The Engine') :
+    (mod ? mod.title : key);
   document.getElementById('sceneCounter').textContent = `Module ${playlistIdx + 1} / ${playlist.length}`;
   const progress = key === 'process'
     ? ((playlistIdx + (stageIdx + 1) / STAGES.length) / playlist.length) * 100
+    : key === 'engine'
+    ? ((playlistIdx + (stageIdx + 1) / ENGINE_STAGES) / playlist.length) * 100
     : ((playlistIdx + 1) / playlist.length) * 100;
   document.getElementById('headerProgress').style.width = progress + '%';
 
@@ -573,12 +725,14 @@ function render() {
   if (key === 'today')   canvas.innerHTML = renderToday();
   if (key === 'meet')    canvas.innerHTML = renderMeet();
   if (key === 'process') canvas.innerHTML = renderProcess();
+  if (key === 'engine')  canvas.innerHTML = renderEngine();
   if (key === 'human')   canvas.innerHTML = renderHuman();
   if (key === 'impact')  canvas.innerHTML = renderImpact();
 
-  if (key === 'today') startTodayAnimations();
-  if (key === 'meet') startMeetAnimations();
-  if (key === 'human') startHumanAnimations();
+  if (key === 'today')  startTodayAnimations();
+  if (key === 'meet')   startMeetAnimations();
+  if (key === 'engine') startEngineAnimations();
+  if (key === 'human')  startHumanAnimations();
   if (key === 'impact') startImpactAnimations();
 }
 
@@ -946,11 +1100,185 @@ function startImpactAnimations() {
   }, 200 + 6 * 700);
 }
 
+function renderEngine() {
+  if (stageIdx === 0) return renderEngineIntro();
+  if (stageIdx === 1) return renderEngineBalance();
+  return renderEngineRatio();
+}
+
+function _engineCols(showBadges) {
+  const inItems = ENGINE_INPUTS.map((it, i) => `
+    <div class="engine-item${showBadges ? ' visible' : ''}" id="eng-in-${i}">
+      <div class="eng-tag-wrap">
+        <div class="engine-item-tag">${it.label}</div>
+        ${showBadges ? `<div class="eng-badge ${BADGE_CLASS[it.type]}" id="ebadge-in-${i}">${BADGE_LABELS[it.type]}</div>` : ''}
+      </div>
+      <div class="engine-item-arrow">→</div>
+    </div>`).join('');
+
+  const outItems = ENGINE_OUTPUTS.map((it, i) => `
+    <div class="engine-item${showBadges ? ' visible' : ''}" id="eng-out-${i}">
+      <div class="engine-item-arrow">←</div>
+      <div class="eng-tag-wrap">
+        <div class="engine-item-tag">${it.label}</div>
+        ${showBadges ? `<div class="eng-badge ${BADGE_CLASS[it.type]}" id="ebadge-out-${i}">${BADGE_LABELS[it.type]}</div>` : ''}
+      </div>
+    </div>`).join('');
+
+  return { inItems, outItems };
+}
+
+function renderEngineIntro() {
+  const { inItems, outItems } = _engineCols(false);
+  return `
+    <div class="scene-panel engine-scene active">
+      <div class="engine-gear-bg">⚙</div>
+      <div class="engine-header">
+        <div class="engine-kicker">The Engine</div>
+        <div class="engine-title">Category Strategy &amp; Procurement</div>
+      </div>
+      <div class="engine-layout">
+        <div class="engine-col engine-inputs">
+          <div class="engine-col-label">← Inputs</div>
+          ${inItems}
+        </div>
+        <div class="engine-center">
+          <div class="engine-center-icon">⚙</div>
+          <div class="engine-center-name">The Engine</div>
+          <div class="engine-center-sub">Always running</div>
+        </div>
+        <div class="engine-col engine-outputs">
+          <div class="engine-col-label">Outputs →</div>
+          ${outItems}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderEngineBalance() {
+  const { inItems, outItems } = _engineCols(true);
+  return `
+    <div class="scene-panel engine-scene active">
+      <div class="engine-gear-bg">⚙</div>
+      <div class="engine-header">
+        <div class="engine-kicker">North Star</div>
+        <div class="engine-title">Finding the right Human–Machine balance</div>
+      </div>
+      <div class="engine-layout">
+        <div class="engine-col engine-inputs">
+          <div class="engine-col-label">← Inputs</div>
+          ${inItems}
+        </div>
+        <div class="engine-center">
+          <div class="engine-center-icon">⚙</div>
+          <div class="engine-center-name">The Engine</div>
+          <div class="engine-center-sub">Categorise deliberately</div>
+        </div>
+        <div class="engine-col engine-outputs">
+          <div class="engine-col-label">Outputs →</div>
+          ${outItems}
+        </div>
+      </div>
+      <div class="engine-balance-legend">
+        <div class="ebl-item"><div class="ebl-dot badge-agentic" style="background:#9B2BF7;"></div>Fully Agentic</div>
+        <div class="ebl-item"><div class="ebl-dot badge-human" style="background:#28B23E;"></div>Human-Led</div>
+        <div class="ebl-item"><div class="ebl-dot badge-assisted" style="background:#3675C1;"></div>Machine-Assisted</div>
+      </div>
+    </div>`;
+}
+
+function renderEngineRatio() {
+  const yr = RATIO_YEARS[0];
+  const timelineItems = RATIO_YEARS.map((y, i) => `
+    <div class="ratio-yr${i === 0 ? ' on' : ''}" id="ratio-yr-${i}">
+      <div class="ratio-yr-num">${y.year}</div>
+      <div class="ratio-yr-split">${y.human}/${y.machine}</div>
+      <div class="ratio-yr-pip"></div>
+    </div>
+    ${i < RATIO_YEARS.length - 1 ? '<div class="ratio-yr-arrow">→</div>' : ''}`).join('');
+
+  return `
+    <div class="scene-panel engine-ratio-scene active">
+      <div>
+        <div class="ratio-kicker">The North Star</div>
+        <div class="ratio-title">Human-to-machine ratio — finding the right balance</div>
+      </div>
+      <div class="ratio-year-display" id="ratio-year-display">${yr.year}</div>
+      <div class="ratio-bar">
+        <div class="ratio-human-seg" id="ratio-human-seg" style="width:${yr.human}%;">💚 ${yr.human}% Human</div>
+        <div class="ratio-machine-seg" id="ratio-machine-seg">🤖 ${yr.machine}% Machine</div>
+      </div>
+      <div class="ratio-legend">
+        <div class="ratio-legend-item"><div class="ratio-legend-dot" style="background: linear-gradient(90deg,#28B23E,#85DB9C);"></div>Human-led</div>
+        <div class="ratio-legend-item"><div class="ratio-legend-dot" style="background: linear-gradient(90deg,#7B22D4,#B999F6);"></div>Machine-led</div>
+      </div>
+      <div class="ratio-timeline">${timelineItems}</div>
+    </div>`;
+}
+
+function startEngineAnimations() {
+  if (stageIdx === 0) startEngineIntroAnimations();
+  else if (stageIdx === 1) startEngineBalanceAnimations();
+  else startEngineRatioAnimation();
+}
+
+function startEngineIntroAnimations() {
+  ENGINE_INPUTS.forEach((_, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('eng-in-' + i);
+      if (el) el.classList.add('visible');
+    }, 300 + i * 180);
+  });
+  ENGINE_OUTPUTS.forEach((_, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('eng-out-' + i);
+      if (el) el.classList.add('visible');
+    }, 300 + i * 180);
+  });
+}
+
+function startEngineBalanceAnimations() {
+  const allCount = ENGINE_INPUTS.length + ENGINE_OUTPUTS.length;
+  ENGINE_INPUTS.forEach((_, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('ebadge-in-' + i);
+      if (el) el.classList.add('vis');
+    }, 400 + i * 200);
+  });
+  ENGINE_OUTPUTS.forEach((_, i) => {
+    setTimeout(() => {
+      const el = document.getElementById('ebadge-out-' + i);
+      if (el) el.classList.add('vis');
+    }, 400 + i * 200);
+  });
+}
+
+function startEngineRatioAnimation() {
+  function setYear(yi) {
+    const y = RATIO_YEARS[yi];
+    const seg = document.getElementById('ratio-human-seg');
+    const disp = document.getElementById('ratio-year-display');
+    if (seg) { seg.style.width = y.human + '%'; seg.textContent = '💚 ' + y.human + '% Human'; }
+    const mseg = document.getElementById('ratio-machine-seg');
+    if (mseg) mseg.textContent = '🤖 ' + y.machine + '% Machine';
+    if (disp) disp.textContent = y.year;
+    RATIO_YEARS.forEach((_, j) => {
+      const el = document.getElementById('ratio-yr-' + j);
+      if (el) el.classList.toggle('on', j === yi);
+    });
+  }
+  setYear(0);
+  [11000, 22000, 33000].forEach((delay, i) => setTimeout(() => setYear(i + 1), delay));
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  PLAYBACK
 // ═══════════════════════════════════════════════════════════════
 function advance() {
-  if (currentSceneKey() === 'process' && stageIdx + 1 < STAGES.length) {
+  const key = currentSceneKey();
+  if (key === 'process' && stageIdx + 1 < STAGES.length) {
+    stageIdx++;
+  } else if (key === 'engine' && stageIdx + 1 < ENGINE_STAGES) {
     stageIdx++;
   } else {
     stageIdx = 0;
@@ -972,8 +1300,9 @@ function startSegment() {
 
   const key = currentSceneKey();
   const scene = SCENES.find(s => s.key === key) || {};
-  const isProc = key === 'process';
-  const cacheKey = isProc ? `stage:${stageIdx}` : `scene:${key}`;
+  const isProc   = key === 'process';
+  const isEngine = key === 'engine';
+  const cacheKey = isProc ? `stage:${stageIdx}` : isEngine ? `engine:${stageIdx}` : `scene:${key}`;
 
   let advanced = false;
   const doAdvance = () => { if (!advanced) { advanced = true; advance(); } };
@@ -981,7 +1310,7 @@ function startSegment() {
   safetyTimer = setTimeout(doAdvance, 300000 / speed);
 
   if (muted) {
-    advanceTimer = setTimeout(doAdvance, (isProc ? 7000 : (scene.duration || 10000)) / speed);
+    advanceTimer = setTimeout(doAdvance, (isProc ? 7000 : isEngine ? 18000 : (scene.duration || 10000)) / speed);
   } else {
     playNarration(cacheKey, doAdvance);
   }
@@ -993,10 +1322,15 @@ function reset() { pause(); playlistIdx = 0; stageIdx = 0; play(); }
 function next() { pause(); advance(); play(); }
 function prev() {
   pause();
-  if (currentSceneKey() === 'process' && stageIdx > 0) stageIdx--;
-  else {
+  const key = currentSceneKey();
+  if ((key === 'process' && stageIdx > 0) || (key === 'engine' && stageIdx > 0)) {
+    stageIdx--;
+  } else {
     playlistIdx = (playlistIdx - 1 + playlist.length) % playlist.length;
-    stageIdx = currentSceneKey() === 'process' ? STAGES.length - 1 : 0;
+    const newKey = playlist[playlistIdx];
+    if (newKey === 'process') stageIdx = STAGES.length - 1;
+    else if (newKey === 'engine') stageIdx = ENGINE_STAGES - 1;
+    else stageIdx = 0;
   }
   play();
 }
