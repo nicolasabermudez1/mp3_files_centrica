@@ -474,6 +474,13 @@
   .e-item-human    { background: rgba(40,178,62,0.22);  border-color: rgba(133,219,156,0.6); color: #d6f5dd; }
   .e-item-assisted { background: rgba(54,117,193,0.30); border-color: rgba(54,117,193,0.7);  color: #d2eafb; }
   .e-item-led      { background: rgba(155,43,247,0.30); border-color: rgba(155,43,247,0.7);  color: #ecdcff; }
+  .engine-nonex {
+    position: absolute; top: 12px; right: 18px;
+    font-size: 10px; color: rgba(255,255,255,0.45);
+    font-style: italic; letter-spacing: 0.04em; z-index: 2;
+    background: rgba(0,0,0,0.18); padding: 3px 8px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
   .engine-center {
     width: 180px; flex-shrink: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1288,18 +1295,19 @@ function renderEngineIntro() {
     <div class="scene-panel engine-scene active">
       <div class="engine-gear-bg">⚙</div>
       <div class="engine-header">
-        <div class="engine-kicker">Category Strategy &amp; Procurement</div>
+        <div class="engine-kicker">The Engine</div>
         <div class="engine-year-row">${yrPills}</div>
       </div>
       <div class="engine-layout engine-layout-buckets">
         ${colHtml('in', inputItemsHtml)}
         <div class="engine-center">
           <div class="engine-center-icon">⚙</div>
-          <div class="engine-center-name">The Engine</div>
-          <div class="engine-center-sub">Finding the balance</div>
+          <div class="engine-center-name">Procurement</div>
+          <div class="engine-center-sub">Category Strategy &amp; Supplier Relationship</div>
         </div>
         ${colHtml('out', outputItemsHtml)}
       </div>
+      <div class="engine-nonex">* Lists are non-exhaustive — illustrative</div>
     </div>`;
 }
 
