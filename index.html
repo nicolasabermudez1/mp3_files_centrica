@@ -326,19 +326,60 @@
     background: #85DB9C; color: #0F2067; border: none; border-radius: 8px; cursor: pointer;
   }
   .start-btn:hover { background: #6ec986; }
+
+  /* ── LAUNCHER ── */
+  .launcher { max-width: 700px; width: 100%; display: flex; flex-direction: column; gap: 24px; }
+  .launcher-top { text-align: center; }
+  .launcher-brand { font-size: 12px; font-weight: bold; color: #85DB9C; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 12px; }
+  .launcher-title { font-size: 28px; font-weight: bold; color: #fff; line-height: 1.2; }
+  .launcher-sub { font-size: 14px; color: #9CA3AF; margin-top: 8px; }
+  .module-list { display: flex; flex-direction: column; gap: 8px; }
+  .module-card {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: grab; user-select: none; transition: background 200ms;
+  }
+  .module-card:hover { background: rgba(255,255,255,0.12); }
+  .module-card.dragging { opacity: 0.35; cursor: grabbing; }
+  .module-card.drag-over { border-color: #9B2BF7; background: rgba(155,43,247,0.12); }
+  .drag-handle { font-size: 18px; color: #6b7280; flex-shrink: 0; }
+  .module-card-icon { font-size: 22px; width: 32px; text-align: center; flex-shrink: 0; }
+  .module-card-body { flex: 1; }
+  .module-card-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .module-card-desc { font-size: 11px; color: #9CA3AF; margin-top: 3px; }
+  .toggle-wrap { position: relative; cursor: pointer; flex-shrink: 0; }
+  .toggle-wrap input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-track { display: block; width: 42px; height: 24px; background: #374151; border-radius: 12px; position: relative; transition: background 200ms; }
+  .toggle-wrap input:checked + .toggle-track { background: #9B2BF7; }
+  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 200ms; }
+  .toggle-wrap input:checked + .toggle-track .toggle-thumb { transform: translateX(18px); }
+  .launcher-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
+  .launcher-hint { font-size: 11px; color: #6b7280; }
+  .modules-btn {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600;
+    color: #fff; cursor: pointer;
+  }
+  .modules-btn:hover { background: rgba(255,255,255,0.15); }
 </style>
 </head>
 <body>
 
-<!-- INSTRUCTIONS / START GATE -->
+<!-- LAUNCHER / MODULE SELECTOR -->
 <div class="instructions" id="instructions">
-  <div class="instructions-card">
-    <h1>Centrica Procurement — The Human Story</h1>
-    <p>This video uses pre-generated narration. The audio files are hosted alongside this page and load automatically.</p>
-    <p>Click <strong>Start</strong> to begin. The video runs automatically. Press <kbd>F</kbd> for fullscreen, <kbd>Space</kbd> to pause, <kbd>←</kbd> <kbd>→</kbd> to step.</p>
-    <button class="start-btn" id="startBtn">▶ Start the video</button>
-    <p style="margin-top: 16px; font-size: 12px; color: #9CA3AF;">Audio path (edit only if files have moved):</p>
-    <input id="audioPath" value="./" style="margin-top: 8px; padding: 6px 10px; border-radius: 4px; border: 1px solid #555; background: #1a2f8a; color: #fff; width: 320px; text-align: center; font-family: ui-monospace, monospace;">
+  <div class="launcher">
+    <div class="launcher-top">
+      <div class="launcher-brand">✦ Centrica Procurement</div>
+      <div class="launcher-title">Our vision for procurement at Centrica</div>
+      <div class="launcher-sub">Select modules and drag to set the presentation order</div>
+    </div>
+    <div class="module-list" id="moduleList"></div>
+    <div class="launcher-bottom">
+      <div class="launcher-hint">⠿ Drag to reorder &nbsp;·&nbsp; Toggle to include or skip</div>
+      <button class="start-btn" id="startBtn">▶ Start presentation</button>
+    </div>
+    <input id="audioPath" value="./" style="display:none;">
   </div>
 </div>
 
@@ -355,7 +396,8 @@
     </div>
     <div class="header-right">
       <div class="scene-tag" id="sceneTag">Opening</div>
-      <div id="sceneCounter">Scene 1 / 6</div>
+      <div id="sceneCounter">Module 1 / 6</div>
+      <button class="modules-btn" id="modulesBtn">⊞ Modules</button>
     </div>
     <div class="header-progress" id="headerProgress" style="width: 0%;"></div>
   </div>
@@ -438,6 +480,15 @@ const SCENES = [
   { key: 'impact',  name: 'The Outcome',     duration: 22000 },
 ];
 
+const MODULES = [
+  { id: 'intro',   icon: '✦',  title: 'Opening',                    desc: 'Vision and operating model overview',              scenes: ['intro']   },
+  { id: 'today',   icon: '📅', title: 'The Category Manager Today',  desc: 'How the role is spent today',                      scenes: ['today']   },
+  { id: 'agents',  icon: '🤖', title: 'The Seven Focus Agents',      desc: 'The agents we are bringing in beside the human',   scenes: ['meet']    },
+  { id: 'process', icon: '🔄', title: 'The End-to-End Process',      desc: '20 stages across strategic and tactical lanes',    scenes: ['process'] },
+  { id: 'human',   icon: '💚', title: 'The Human Lift',              desc: 'What changes for the people inside procurement',   scenes: ['human']   },
+  { id: 'impact',  icon: '📊', title: 'The Outcome',                 desc: 'The numbers behind the transformation',            scenes: ['impact']  },
+];
+
 const QUOTES = [
   { q: "I'm extracting the same data three times for three different reports — same supplier, same week.", by: "Category Manager, Infrastructure" },
   { q: "I have nine browser tabs open just to prep one negotiation.", by: "Andy, Supply Management Programme" },
@@ -452,8 +503,10 @@ const QUOTES = [
 // ═══════════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════════
-let sceneIdx = 0;
+let playlist = ['intro','today','meet','process','human','impact'];
+let playlistIdx = 0;
 let stageIdx = 0;
+function currentSceneKey() { return playlist[playlistIdx] || 'intro'; }
 let playing = false;
 let muted = false;
 let speed = 1;
@@ -505,27 +558,28 @@ function playNarration(cacheKey, onEnd) {
 //  SCENE RENDERING
 // ═══════════════════════════════════════════════════════════════
 function render() {
-  const scene = SCENES[sceneIdx];
+  const key = currentSceneKey();
+  const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  document.getElementById('sceneTag').textContent = scene.key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` : scene.name;
-  document.getElementById('sceneCounter').textContent = `Scene ${sceneIdx + 1} / ${SCENES.length}`;
-  const progress = scene.key === 'process'
-    ? ((sceneIdx + (stageIdx + 1) / STAGES.length) / SCENES.length) * 100
-    : ((sceneIdx + 1) / SCENES.length) * 100;
+  document.getElementById('sceneTag').textContent = key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` : (mod ? mod.title : key);
+  document.getElementById('sceneCounter').textContent = `Module ${playlistIdx + 1} / ${playlist.length}`;
+  const progress = key === 'process'
+    ? ((playlistIdx + (stageIdx + 1) / STAGES.length) / playlist.length) * 100
+    : ((playlistIdx + 1) / playlist.length) * 100;
   document.getElementById('headerProgress').style.width = progress + '%';
 
-  if (scene.key === 'intro')   canvas.innerHTML = renderIntro();
-  if (scene.key === 'today')   canvas.innerHTML = renderToday();
-  if (scene.key === 'meet')    canvas.innerHTML = renderMeet();
-  if (scene.key === 'process') canvas.innerHTML = renderProcess();
-  if (scene.key === 'human')   canvas.innerHTML = renderHuman();
-  if (scene.key === 'impact')  canvas.innerHTML = renderImpact();
+  if (key === 'intro')   canvas.innerHTML = renderIntro();
+  if (key === 'today')   canvas.innerHTML = renderToday();
+  if (key === 'meet')    canvas.innerHTML = renderMeet();
+  if (key === 'process') canvas.innerHTML = renderProcess();
+  if (key === 'human')   canvas.innerHTML = renderHuman();
+  if (key === 'impact')  canvas.innerHTML = renderImpact();
 
-  if (scene.key === 'today') startTodayAnimations();
-  if (scene.key === 'meet') startMeetAnimations();
-  if (scene.key === 'human') startHumanAnimations();
-  if (scene.key === 'impact') startImpactAnimations();
+  if (key === 'today') startTodayAnimations();
+  if (key === 'meet') startMeetAnimations();
+  if (key === 'human') startHumanAnimations();
+  if (key === 'impact') startImpactAnimations();
 }
 
 function renderIntro() {
@@ -896,16 +950,11 @@ function startImpactAnimations() {
 //  PLAYBACK
 // ═══════════════════════════════════════════════════════════════
 function advance() {
-  if (sceneIdx === SCENES.findIndex(s => s.key === 'process')) {
-    if (stageIdx + 1 < STAGES.length) {
-      stageIdx++;
-    } else {
-      stageIdx = 0;
-      sceneIdx = (sceneIdx + 1) % SCENES.length;
-    }
+  if (currentSceneKey() === 'process' && stageIdx + 1 < STAGES.length) {
+    stageIdx++;
   } else {
-    sceneIdx = (sceneIdx + 1) % SCENES.length;
     stageIdx = 0;
+    playlistIdx = (playlistIdx + 1) % playlist.length;
   }
   startSegment();
 }
@@ -921,19 +970,18 @@ function startSegment() {
   render();
   if (!playing) return;
 
-  const scene = SCENES[sceneIdx];
-  const isProc = scene.key === 'process';
-  const cacheKey = isProc ? `stage:${stageIdx}` : `scene:${scene.key}`;
+  const key = currentSceneKey();
+  const scene = SCENES.find(s => s.key === key) || {};
+  const isProc = key === 'process';
+  const cacheKey = isProc ? `stage:${stageIdx}` : `scene:${key}`;
 
   let advanced = false;
   const doAdvance = () => { if (!advanced) { advanced = true; advance(); } };
 
-  // Hard safety cap — only fires if audio completely hangs or fails to load
   safetyTimer = setTimeout(doAdvance, 300000 / speed);
 
   if (muted) {
-    // No audio — use fixed durations so it still auto-advances
-    advanceTimer = setTimeout(doAdvance, (isProc ? 7000 : scene.duration) / speed);
+    advanceTimer = setTimeout(doAdvance, (isProc ? 7000 : (scene.duration || 10000)) / speed);
   } else {
     playNarration(cacheKey, doAdvance);
   }
@@ -941,14 +989,14 @@ function startSegment() {
 
 function pause() { playing = false; clearTimers(); stopAudio(); document.getElementById('playBtn').textContent = '▶'; }
 function play() { playing = true; document.getElementById('playBtn').textContent = '⏸'; startSegment(); }
-function reset() { pause(); sceneIdx = 0; stageIdx = 0; play(); }
+function reset() { pause(); playlistIdx = 0; stageIdx = 0; play(); }
 function next() { pause(); advance(); play(); }
 function prev() {
   pause();
-  if (sceneIdx === SCENES.findIndex(s => s.key === 'process') && stageIdx > 0) stageIdx--;
+  if (currentSceneKey() === 'process' && stageIdx > 0) stageIdx--;
   else {
-    sceneIdx = (sceneIdx - 1 + SCENES.length) % SCENES.length;
-    stageIdx = SCENES[sceneIdx].key === 'process' ? STAGES.length - 1 : 0;
+    playlistIdx = (playlistIdx - 1 + playlist.length) % playlist.length;
+    stageIdx = currentSceneKey() === 'process' ? STAGES.length - 1 : 0;
   }
   play();
 }
@@ -956,14 +1004,89 @@ function prev() {
 // ═══════════════════════════════════════════════════════════════
 //  EVENT HANDLERS
 // ═══════════════════════════════════════════════════════════════
+// ── MODULE LAUNCHER ─────────────────────────────────────────
+function initModuleList() {
+  const list = document.getElementById('moduleList');
+  list.innerHTML = '';
+  MODULES.forEach(mod => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.dataset.id = mod.id;
+    card.draggable = true;
+    card.innerHTML = `
+      <div class="drag-handle">⠿</div>
+      <div class="module-card-icon">${mod.icon}</div>
+      <div class="module-card-body">
+        <div class="module-card-name">${mod.title}</div>
+        <div class="module-card-desc">${mod.desc}</div>
+      </div>
+      <label class="toggle-wrap">
+        <input type="checkbox" checked>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+    `;
+    list.appendChild(card);
+  });
+  initDragDrop(list);
+}
+
+function initDragDrop(list) {
+  let dragSrc = null;
+  list.addEventListener('dragstart', e => {
+    dragSrc = e.target.closest('.module-card');
+    if (!dragSrc) return;
+    setTimeout(() => dragSrc && dragSrc.classList.add('dragging'), 0);
+  });
+  list.addEventListener('dragend', () => {
+    if (dragSrc) dragSrc.classList.remove('dragging');
+    list.querySelectorAll('.module-card').forEach(c => c.classList.remove('drag-over'));
+    dragSrc = null;
+  });
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+    const card = e.target.closest('.module-card');
+    if (!card || card === dragSrc) return;
+    list.querySelectorAll('.module-card').forEach(c => c.classList.remove('drag-over'));
+    card.classList.add('drag-over');
+    const mid = card.getBoundingClientRect().top + card.getBoundingClientRect().height / 2;
+    list.insertBefore(dragSrc, e.clientY < mid ? card : card.nextSibling);
+  });
+  list.addEventListener('drop', e => {
+    e.preventDefault();
+    list.querySelectorAll('.module-card').forEach(c => c.classList.remove('drag-over'));
+  });
+}
+
+function buildPlaylist() {
+  const pl = [];
+  document.querySelectorAll('.module-card').forEach(card => {
+    if (card.querySelector('input').checked) {
+      const mod = MODULES.find(m => m.id === card.dataset.id);
+      if (mod) mod.scenes.forEach(s => pl.push(s));
+    }
+  });
+  return pl.length ? pl : ['intro'];
+}
+
+function showLauncher() {
+  pause();
+  document.getElementById('instructions').style.display = 'flex';
+  document.getElementById('stage').style.display = 'none';
+}
+
+// ── EVENT HANDLERS ───────────────────────────────────────────
 document.getElementById('startBtn').addEventListener('click', () => {
   audioBase = document.getElementById('audioPath').value || './';
   if (!audioBase.endsWith('/')) audioBase += '/';
+  playlist = buildPlaylist();
+  playlistIdx = 0;
+  stageIdx = 0;
   document.getElementById('instructions').style.display = 'none';
   document.getElementById('stage').style.display = 'flex';
   play();
 });
 
+document.getElementById('modulesBtn').addEventListener('click', showLauncher);
 document.getElementById('playBtn').addEventListener('click', () => playing ? pause() : play());
 document.getElementById('nextBtn').addEventListener('click', next);
 document.getElementById('prevBtn').addEventListener('click', prev);
@@ -999,6 +1122,8 @@ document.addEventListener('keydown', e => {
 const styleTag = document.createElement('style');
 styleTag.textContent = `@keyframes dash { to { stroke-dashoffset: -8; } }`;
 document.head.appendChild(styleTag);
+
+initModuleList();
 </script>
 </body>
 </html>
