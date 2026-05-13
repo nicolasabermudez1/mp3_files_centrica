@@ -407,7 +407,7 @@ const AGENTS = {
 };
 
 const STAGES = [
-  { lane: 'STRATEGIC', name: 'Category signal',            active: ['market'],              action: 'Continuous market & supplier intel ingested from paid + public feeds.', metric: 'dozens of feeds',  sub: '→ one platform',           humanRole: 'Category Manager',     humanDoes: 'Reads the Monday brief instead of building it' },
+  { lane: 'STRATEGIC', name: 'Category signal',            active: ['market'],              action: 'Market Watcher scouts the market continuously — guided buying signals, supplier benchmarks, and risk alerts ingested from paid and public feeds into one platform.', metric: 'dozens of feeds',  sub: '→ one platform',           humanRole: 'Category Manager',     humanDoes: 'Reads the Monday brief instead of building it' },
   { lane: 'STRATEGIC', name: 'Category strategy refresh',  active: ['market','rfx'],        action: 'AI drafts strategy refresh from live signals; Category Manager curates.',  metric: '2–3 weeks',         sub: '→ 2–3 days',               humanRole: 'Category Manager',     humanDoes: 'Curates, challenges and approves the AI draft' },
   { lane: 'STRATEGIC', name: 'RFx pack generation',        active: ['rfx'],                 action: 'Full RFx pack auto-generated from strategy inside Ariba.',                  metric: '1–2 days',          sub: '→ 30 minutes',             humanRole: 'Category Manager',     humanDoes: 'Reviews the pack and approves the go-to-market' },
   { lane: 'STRATEGIC', name: 'Bid intake & normalisation', active: ['rfx'],                 action: 'Bids in Word/PDF/Excel normalised into one common matrix.',                 metric: 'manual days',       sub: '→ automatic',              humanRole: 'Category Manager',     humanDoes: 'Skips spreadsheet work — goes straight to evaluation' },
@@ -416,14 +416,14 @@ const STAGES = [
   { lane: 'STRATEGIC', name: 'Live negotiation',           active: ['nego'],                action: 'In-ear coach fact-checks claims, prompts CM, captures outcome.',            metric: '+1–3%',             sub: 'EBITDA per negotiation',   humanRole: 'Category Manager',     humanDoes: 'Leads the call — agent whispers in the ear' },
   { lane: 'STRATEGIC', name: 'Contract drafting',          active: ['contract','nego'],     action: 'AI clause-by-clause playbook comparison; AI-drafted redlines.',             metric: '4–6 hours',         sub: '→ 5–10 minutes',           humanRole: 'Legal',                humanDoes: 'Reviews redlines, decides non-standard clauses' },
   { lane: 'STRATEGIC', name: 'Contract execution',         active: ['contract'],            action: 'Zero-touch e-sign on standard clauses; DocuSign punch-out to Ariba.',       metric: '>50%',              sub: 'NDAs zero-touch',          humanRole: 'Legal',                humanDoes: 'Only touches the exceptions — bandwidth back' },
-  { lane: 'STRATEGIC', name: 'Vendor registration',        active: ['vendor'],              action: 'AI form-fix pre-submit; parallel sanctions/tax/banking checks.',            metric: 'weeks → 48 hrs',    sub: '30% rejection → <5%',      humanRole: 'Relationship Owner',   humanDoes: 'Freed up to actually meet the new supplier' },
+  { lane: 'STRATEGIC', name: 'Vendor registration',        active: ['vendor'],              action: 'Vendor Registration agent runs pre-qualification: credential validation, sanctions, tax and banking checks, and AI form-fix pre-submit. Full onboarding completed in 48 hrs.', metric: 'weeks → 48 hrs',    sub: '30% rejection → <5%',      humanRole: 'Relationship Owner',   humanDoes: 'Freed up to actually meet the new supplier' },
   { lane: 'STRATEGIC', name: 'Ongoing SRM',                active: ['srm'],                 action: 'Auto QBR/MBR packs from live record; rebate & indexation tracking.',        metric: '1–2%',              sub: 'of spend recovered',       humanRole: 'Account Manager',      humanDoes: 'Walks into QBR prepared, with real insight' },
   { lane: 'STRATEGIC', name: 'Continuous learning loop',   active: ['srm','nego','market'], action: 'Supplier behaviour and commitments feed next strategy cycle.',              metric: 'closed-loop',       sub: 'intelligence',             humanRole: 'Procurement Leadership', humanDoes: 'Sets next cycle ambition; tunes the agents' },
   { lane: 'TACTICAL',  name: 'Business need (plain English)',          active: ['tail'],    action: 'Self-serve requisition routed to autonomous lane — no CM touch.',           metric: '0',                 sub: 'CM time on £2K deals',     humanRole: 'Business User',        humanDoes: 'Self-serves in plain English — no forms' },
   { lane: 'TACTICAL',  name: 'Autonomous shortlist & price discovery', active: ['tail','market'], action: 'Agent shortlists suppliers, pulls market benchmark.',                 metric: '100%',              sub: 'on-system',                humanRole: 'Autonomous',           humanDoes: 'No human touch — straight-through' },
   { lane: 'TACTICAL',  name: 'Bot-to-supplier negotiation',            active: ['tail'],    action: 'Autonomous negotiation against standard terms.',                            metric: '24/7',              sub: 'no human in the loop',     humanRole: 'Autonomous',           humanDoes: 'Bot-to-bot — humans set the policy, not the price' },
   { lane: 'TACTICAL',  name: 'Standard NDA / terms',                   active: ['contract'],action: 'Zero-touch e-sign on standard back-to-back terms.',                          metric: '>50%',              sub: 'zero-touch',               humanRole: 'Legal',                humanDoes: 'Owns the playbook — the agent applies it' },
-  { lane: 'TACTICAL',  name: 'Vendor registration',                    active: ['vendor'],  action: 'Same 48-hour cycle; clean master data day one.',                            metric: '48 hrs',            sub: 'vendor registered & ready', humanRole: 'Vendor Ops',          humanDoes: 'Handles exceptions only' },
+  { lane: 'TACTICAL',  name: 'Vendor registration',                    active: ['vendor'],  action: 'Same pre-qualification and onboarding cycle: AI-validated application, parallel checks, clean master data — vendor registered and ready to invoice in 48 hrs.', metric: '48 hrs',            sub: 'vendor registered & ready', humanRole: 'Vendor Ops',          humanDoes: 'Handles exceptions only' },
   { lane: 'TACTICAL',  name: 'PO issuance & policy check',             active: ['tail'],    action: 'Straight-through PR → PO with policy guardrails.',                          metric: '38K POs',           sub: 'bottleneck removed',       humanRole: 'Procurement Ops',      humanDoes: 'Sets guardrails once — agent enforces forever' },
   { lane: 'TACTICAL',  name: 'SRM record updated',                     active: ['srm','tail'], action: 'SRM Agent consolidates every tail-spend transaction into the supplier 360: spend, delivery, compliance, and contract commitments — automatically, no manual entry.', metric: 'maverick spend',    sub: '→ 0',                      humanRole: 'Procurement',          humanDoes: 'Reads aggregated supplier insight; acts on patterns across the portfolio' },
   { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '1–3%',              sub: 'of tail spend saved',     humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
@@ -634,12 +634,12 @@ function startTodayAnimations() {
 function renderMeet() {
   const order = ['market','rfx','nego','contract','tail','vendor','srm'];
   const blurbs = {
-    market: 'One trusted intelligence layer. Monday brief, risk alerts, comparable suppliers — replacing dozens of feeds.',
+    market: 'Guided buying and market scouting in one layer. Continuous benchmarking, risk alerts, and real-time market signals — routing spend decisions and surfacing the right suppliers before a category manager even starts a sourcing event.',
     rfx: 'Sourcing events drafted from category strategy. Every bid normalised. Defensible first-pass scoring inside Ariba.',
     nego: 'Best-negotiator playbook for every CM. Prep brief, in-call coach, automatic outcome write-back.',
     contract: 'Reads every contract before lawyers do. Playbook gap analysis, AI redlines, DocuSign zero-touch on standards.',
     tail: 'Removes procurement from low-value spend. Plain-English requisition → autonomous negotiation → PO.',
-    vendor: 'Vendor registration in 48 hours, not weeks. AI form-fix pre-submit. One supplier ID across Group, CES, PH Jones, CBS.',
+    vendor: 'End-to-end vendor pre-qualification and onboarding. AI-validated applications, parallel sanctions and tax checks, and a clean supplier record live in forty-eight hours — one ID across Group, CES, PH Jones, and CBS.',
     srm: 'One true view per supplier. Performance, risk, contracts, spend. Auto QBR/MBR. Rebate and indexation recovery.',
   };
   const cards = order.map((k, i) => {
@@ -758,9 +758,24 @@ function renderProcess() {
         <div class="shared-band"></div>
         <svg style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
           ${arrows.join('')}
+          <path d="M 92 51 Q 50 97 8 51"
+            stroke="#E8B84B" stroke-width="0.6" stroke-dasharray="1.6 0.9"
+            fill="none" opacity="0.85"
+            style="animation: dash 2.4s linear infinite;"
+          />
+          <circle cx="8" cy="51" r="1" fill="#E8B84B" opacity="0.9"/>
+          <circle cx="92" cy="51" r="1" fill="#E8B84B" opacity="0.9"/>
         </svg>
         ${nodes}
         ${humanNode}
+        <div style="
+          position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+          background: rgba(232,184,75,0.10); border: 1px solid rgba(232,184,75,0.6);
+          border-radius: 20px; padding: 4px 14px;
+          font-size: 9px; font-weight: 700; color: #A07820;
+          text-transform: uppercase; letter-spacing: 0.13em; white-space: nowrap;
+          pointer-events: none;
+        ">⚡ Company-wide Data Intelligence Layer · SRM Agent ↔ Market Watcher</div>
       </div>
       <div class="process-panel">
         <div class="stage-counter">
