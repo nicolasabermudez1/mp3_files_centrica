@@ -474,13 +474,8 @@ function audioUrl(key) {
   return null;
 }
 
-function showDebug(msg, cls) {
-  const d = document.getElementById('debug');
-  d.style.display = 'block';
-  d.className = 'debug-toast' + (cls ? ' ' + cls : '');
-  d.textContent = msg;
-}
-function hideDebug() { document.getElementById('debug').style.display = 'none'; }
+function showDebug(msg, cls) {}
+function hideDebug() {}
 
 function stopAudio() {
   if (currentAudio) {
