@@ -626,7 +626,7 @@ const C = {
 };
 
 const AGENTS = {
-  market:   { name: 'Market Watcher',    color: C.navy,     icon: '👁' },
+  market:   { name: 'Category Watcher',  color: C.navy,     icon: '👁' },
   rfx:      { name: 'RFx Assistant',     color: C.lavender, icon: '📊' },
   nego:     { name: 'Negotiation Buddy', color: C.mint,     icon: '🤝' },
   contract: { name: 'Contracting Agent', color: C.purple,   icon: '📝' },
@@ -636,7 +636,7 @@ const AGENTS = {
 };
 
 const STAGES = [
-  { lane: 'STRATEGIC', name: 'Category signal',            active: ['market'],              action: 'Market Watcher scouts the market continuously — guided buying signals, supplier benchmarks, and risk alerts ingested from paid and public feeds into one platform.', metric: 'dozens of feeds',  sub: '→ one platform',           humanRole: 'Category Manager',     humanDoes: 'Reads the Monday brief instead of building it' },
+  { lane: 'STRATEGIC', name: 'Category signal',            active: ['market'],              action: 'Category Watcher scouts the category continuously — guided buying signals, supplier benchmarks, and risk alerts ingested from paid and public feeds into one platform.', metric: 'dozens of feeds',  sub: '→ one platform',           humanRole: 'Category Manager',     humanDoes: 'Reads the Monday brief instead of building it' },
   { lane: 'STRATEGIC', name: 'Category strategy refresh',  active: ['market','rfx'],        action: 'AI drafts strategy refresh from live signals; Category Manager curates.',  metric: '2–3 weeks',         sub: '→ 2–3 days',               humanRole: 'Category Manager',     humanDoes: 'Curates, challenges and approves the AI draft' },
   { lane: 'STRATEGIC', name: 'RFx pack generation',        active: ['rfx'],                 action: 'Full RFx pack auto-generated from strategy inside Ariba.',                  metric: '1–2 days',          sub: '→ 30 minutes',             humanRole: 'Category Manager',     humanDoes: 'Reviews the pack and approves the go-to-market' },
   { lane: 'STRATEGIC', name: 'Bid intake & normalisation', active: ['rfx'],                 action: 'Bids in Word/PDF/Excel normalised into one common matrix.',                 metric: 'manual days',       sub: '→ automatic',              humanRole: 'Category Manager',     humanDoes: 'Skips spreadsheet work — goes straight to evaluation' },
@@ -707,13 +707,13 @@ const TIMELINE = [
     assisted: [],
     led:      [] },
   { year: '2026',
-    human:    ['ma','business','solesourcing','partnerships','categorystrategy','strategicsourcing','suppliers','others','tacticalsourcing','spend'],
+    human:    ['suppliers','spend','ma','business','others','solesourcing','partnerships','supplierlists','catalogs','categorystrategy','tacticalsourcing','strategicsourcing'],
     assisted: ['marketdata'],
-    led:      ['risks','supplierlists','catalogs'] },
+    led:      ['risks'] },
   { year: '2027',
-    human:    ['ma','business','solesourcing','partnerships','categorystrategy','strategicsourcing','suppliers'],
-    assisted: ['others','tacticalsourcing','spend'],
-    led:      ['risks','supplierlists','catalogs','marketdata'] },
+    human:    ['suppliers','spend','ma','business','others','solesourcing','partnerships','categorystrategy','tacticalsourcing','strategicsourcing'],
+    assisted: ['marketdata','catalogs'],
+    led:      ['risks','supplierlists'] },
 ];
 
 const SCENES = [
@@ -936,7 +936,7 @@ function startTodayAnimations() {
 function renderMeet() {
   const order = ['market','rfx','nego','contract','tail','vendor','srm'];
   const blurbs = {
-    market: 'Guided buying and market scouting in one layer. Continuous benchmarking, risk alerts, and real-time market signals — routing spend decisions and surfacing the right suppliers before a category manager even starts a sourcing event.',
+    market: 'Guided buying and category scouting in one layer. Continuous benchmarking, risk alerts, and real-time category signals — routing spend decisions and surfacing the right suppliers before a category manager even starts a sourcing event.',
     rfx: 'Sourcing events drafted from category strategy. Every bid normalised. Defensible first-pass scoring inside Ariba.',
     nego: 'Best-negotiator playbook for every CM. Prep brief, in-call coach, automatic outcome write-back.',
     contract: 'Reads every contract before lawyers do. Playbook gap analysis, AI redlines, DocuSign zero-touch on standards.',
