@@ -461,9 +461,6 @@ let audioBase = './';
 let currentAudio = null;
 let advanceTimer = null;
 let safetyTimer = null;
-let minTimer = null;
-let minElapsed = false;
-let endFired = false;
 
 // ═══════════════════════════════════════════════════════════════
 //  AUDIO
@@ -929,8 +926,8 @@ function advance() {
 }
 
 function clearTimers() {
-  clearTimeout(minTimer); clearTimeout(safetyTimer); clearTimeout(advanceTimer);
-  minTimer = safetyTimer = advanceTimer = null;
+  clearTimeout(safetyTimer); clearTimeout(advanceTimer);
+  safetyTimer = advanceTimer = null;
 }
 
 function startSegment() {
@@ -942,21 +939,18 @@ function startSegment() {
   const scene = SCENES[sceneIdx];
   const isProc = scene.key === 'process';
   const cacheKey = isProc ? `stage:${stageIdx}` : `scene:${scene.key}`;
-  const minMs = (isProc ? 3500 : 5000) / speed;
-  const silentMs = (isProc ? 7000 : scene.duration) / speed;
-  const maxMs = (isProc ? 25000 : 45000) / speed;
 
-  minElapsed = false; endFired = false;
   let advanced = false;
-  const tryAdv = () => { if (!advanced && minElapsed && endFired) { advanced = true; advance(); } };
+  const doAdvance = () => { if (!advanced) { advanced = true; advance(); } };
 
-  minTimer = setTimeout(() => { minElapsed = true; tryAdv(); }, minMs);
-  safetyTimer = setTimeout(() => { if (!advanced) { advanced = true; advance(); } }, maxMs);
+  // Hard safety cap — only fires if audio completely hangs or fails to load
+  safetyTimer = setTimeout(doAdvance, 300000 / speed);
 
   if (muted) {
-    advanceTimer = setTimeout(() => { if (!advanced) { advanced = true; advance(); } }, silentMs);
+    // No audio — use fixed durations so it still auto-advances
+    advanceTimer = setTimeout(doAdvance, (isProc ? 7000 : scene.duration) / speed);
   } else {
-    playNarration(cacheKey, () => { endFired = true; tryAdv(); });
+    playNarration(cacheKey, doAdvance);
   }
 }
 
