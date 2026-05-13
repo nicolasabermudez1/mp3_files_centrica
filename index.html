@@ -544,18 +544,21 @@
   .tl-kicker { font-size: 10px; font-weight: bold; color: #85DB9C; letter-spacing: 0.28em; text-transform: uppercase; }
   .tl-year-row { display: flex; align-items: center; gap: 14px; }
   .tl-yr-pill {
-    font-size: 18px; font-weight: bold; color: #6b7280;
-    padding: 8px 22px; border-radius: 22px;
+    color: #6b7280;
+    padding: 6px 16px; border-radius: 14px;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.1);
     transition: all 500ms ease;
+    text-align: center; min-width: 130px;
   }
   .tl-yr-pill.on {
     color: #fff; background: rgba(155,43,247,0.35);
     border-color: rgba(155,43,247,0.7);
-    font-size: 26px; padding: 10px 26px;
     box-shadow: 0 0 24px rgba(155,43,247,0.4);
   }
+  .tl-yr-num { font-size: 18px; font-weight: bold; line-height: 1; }
+  .tl-yr-pill.on .tl-yr-num { font-size: 22px; }
+  .tl-yr-sub { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; opacity: 0.75; }
   .tl-yr-arrow { color: #6b7280; font-size: 18px; }
   .tl-cols {
     flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr;
@@ -744,18 +747,18 @@ const ALL_ITEM_IDS = Object.keys(ITEM_LABELS);
 const INPUT_IDS  = ['risks','suppliers','spend','marketdata','ma','business','others'];
 const OUTPUT_IDS = ['solesourcing','partnerships','supplierlists','catalogs','categorystrategy','tacticalsourcing','strategicsourcing'];
 const TIMELINE = [
-  { year: '2026',
+  { year: '2025', label: 'Last year',
     human:    ALL_ITEM_IDS.slice(),
     assisted: [],
     led:      [] },
-  { year: '2027',
+  { year: '2026', label: 'This year · defining the strategy',
     human:    ['suppliers','spend','marketdata','ma','business','others','solesourcing','partnerships','supplierlists','categorystrategy','tacticalsourcing','strategicsourcing'],
     assisted: ['catalogs'],
     led:      ['risks'] },
-  { year: '2028',
-    human:    ['suppliers','spend','ma','business','others','solesourcing','partnerships','categorystrategy','tacticalsourcing','strategicsourcing'],
-    assisted: ['marketdata','catalogs'],
-    led:      ['risks','supplierlists'] },
+  { year: '2027', label: 'Next year · ~40% agentic',
+    human:    ['suppliers','spend','ma','business','others','solesourcing','partnerships','categorystrategy'],
+    assisted: ['marketdata','catalogs','strategicsourcing'],
+    led:      ['risks','supplierlists','tacticalsourcing'] },
 ];
 
 const SCENES = [
@@ -852,7 +855,7 @@ function render() {
   const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  const engineSubTitles = ['The Engine · 2026 → 2028'];
+  const engineSubTitles = ['The Engine · 2025 → 2027'];
   document.getElementById('sceneTag').textContent =
     key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` :
     key === 'engine'  ? (engineSubTitles[stageIdx] || 'The Engine') :
@@ -1250,7 +1253,10 @@ function renderEngine() {
 
 function renderEngineIntro() {
   const yrPills = TIMELINE.map((t, i) =>
-    `<div class="tl-yr-pill${i === 0 ? ' on' : ''}" id="tl-yr-${i}">${t.year}</div>` +
+    `<div class="tl-yr-pill${i === 0 ? ' on' : ''}" id="tl-yr-${i}">
+       <div class="tl-yr-num">${t.year}</div>
+       <div class="tl-yr-sub">${t.label || ''}</div>
+     </div>` +
     (i < TIMELINE.length - 1 ? '<span class="tl-yr-arrow">→</span>' : '')
   ).join('');
 
