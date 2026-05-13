@@ -487,6 +487,62 @@
   .ratio-yr-pip { width: 6px; height: 6px; border-radius: 50%; background: #555; margin: 6px auto 0; transition: background 500ms ease; }
   .ratio-yr.on .ratio-yr-pip { background: #9B2BF7; }
   .ratio-yr-arrow { font-size: 16px; color: #555; padding-top: 4px; }
+
+  /* ── TIMELINE BUCKETS (Engine Stage 2) ── */
+  .engine-timeline-scene {
+    background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%);
+    color: #fff; display: flex; flex-direction: column;
+    padding: 22px 32px; gap: 16px; position: relative; overflow: hidden;
+  }
+  .tl-header { display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; z-index: 1; }
+  .tl-kicker { font-size: 10px; font-weight: bold; color: #85DB9C; letter-spacing: 0.28em; text-transform: uppercase; }
+  .tl-year-row { display: flex; align-items: center; gap: 14px; }
+  .tl-yr-pill {
+    font-size: 18px; font-weight: bold; color: #6b7280;
+    padding: 8px 22px; border-radius: 22px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 500ms ease;
+  }
+  .tl-yr-pill.on {
+    color: #fff; background: rgba(155,43,247,0.35);
+    border-color: rgba(155,43,247,0.7);
+    font-size: 26px; padding: 10px 26px;
+    box-shadow: 0 0 24px rgba(155,43,247,0.4);
+  }
+  .tl-yr-arrow { color: #6b7280; font-size: 18px; }
+  .tl-cols {
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px; position: relative; z-index: 1;
+  }
+  .tl-col {
+    border-radius: 12px; padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: background 400ms ease, border-color 400ms ease;
+  }
+  .tl-col-head {
+    font-size: 11px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase;
+    padding-bottom: 8px; margin-bottom: 2px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tl-col-count { font-size: 16px; font-weight: bold; }
+  .tl-col-body { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .tl-col-human    { background: rgba(40,178,62,0.10);  border-color: rgba(133,219,156,0.4); }
+  .tl-col-human    .tl-col-head { color: #85DB9C; }
+  .tl-col-assisted { background: rgba(54,117,193,0.10); border-color: rgba(54,117,193,0.4);  }
+  .tl-col-assisted .tl-col-head { color: #90c4f0; }
+  .tl-col-led      { background: rgba(155,43,247,0.10); border-color: rgba(155,43,247,0.4);  }
+  .tl-col-led      .tl-col-head { color: #D4B3FF; }
+  .tl-item {
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 6px; padding: 6px 10px;
+    font-size: 12px; font-weight: 600; color: #fff;
+    white-space: nowrap; will-change: transform;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -596,7 +652,7 @@ const STAGES = [
   { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '1–3%',              sub: 'of tail spend saved',     humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
 ];
 
-const ENGINE_STAGES = 3;
+const ENGINE_STAGES = 2;
 
 const ENGINE_INPUTS = [
   { label: 'Risks',        type: 'agentic'  },
@@ -623,10 +679,28 @@ const BADGE_LABELS = {
 };
 const BADGE_CLASS = { agentic: 'badge-agentic', human: 'badge-human', assisted: 'badge-assisted' };
 
-const RATIO_YEARS = [
-  { year: '2026', human: 100, machine: 0   },
-  { year: '2027', human: 75,  machine: 25  },
-  { year: '2028', human: 50,  machine: 50  },
+const ITEM_LABELS = {
+  risks:'Risks', suppliers:'Suppliers', spend:'Spend', marketdata:'Market Data',
+  ma:'M&A', business:'Business', others:'Others',
+  solesourcing:'Sole Sourcing', partnerships:'Partnerships',
+  supplierlists:'Supplier Lists', catalogs:'Catalogs',
+  categorystrategy:'Category Strategy', tacticalsourcing:'Tactical Sourcing',
+  strategicsourcing:'Strategic Sourcing',
+};
+const ALL_ITEM_IDS = Object.keys(ITEM_LABELS);
+const TIMELINE = [
+  { year: '2025',
+    human:    ALL_ITEM_IDS.slice(),
+    assisted: [],
+    led:      [] },
+  { year: '2026',
+    human:    ['ma','business','solesourcing','partnerships','categorystrategy','strategicsourcing','suppliers','others','tacticalsourcing','spend'],
+    assisted: ['marketdata'],
+    led:      ['risks','supplierlists','catalogs'] },
+  { year: '2027',
+    human:    ['ma','business','solesourcing','partnerships','categorystrategy','strategicsourcing','suppliers'],
+    assisted: ['others','tacticalsourcing','spend'],
+    led:      ['risks','supplierlists','catalogs','marketdata'] },
 ];
 
 const SCENES = [
@@ -723,7 +797,7 @@ function render() {
   const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  const engineSubTitles = ['The Engine', 'Human vs Machine', 'The Ratio 2026–2029'];
+  const engineSubTitles = ['The Engine', 'The Balance 2025–2027'];
   document.getElementById('sceneTag').textContent =
     key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` :
     key === 'engine'  ? (engineSubTitles[stageIdx] || 'The Engine') :
@@ -1117,8 +1191,7 @@ function startImpactAnimations() {
 
 function renderEngine() {
   if (stageIdx === 0) return renderEngineIntro();
-  if (stageIdx === 1) return renderEngineBalance();
-  return renderEngineRatio();
+  return renderEngineTimeline();
 }
 
 function _engineCols(showBadges) {
@@ -1170,71 +1243,43 @@ function renderEngineIntro() {
     </div>`;
 }
 
-function renderEngineBalance() {
-  const { inItems, outItems } = _engineCols(true);
+function renderEngineTimeline() {
+  const yrPills = TIMELINE.map((t, i) =>
+    `<div class="tl-yr-pill${i === 0 ? ' on' : ''}" id="tl-yr-${i}">${t.year}</div>` +
+    (i < TIMELINE.length - 1 ? '<span class="tl-yr-arrow">→</span>' : '')
+  ).join('');
+
+  const allItemsHtml = ALL_ITEM_IDS.map(id =>
+    `<div class="tl-item" data-id="${id}">${ITEM_LABELS[id]}</div>`
+  ).join('');
+
   return `
-    <div class="scene-panel engine-scene active">
+    <div class="scene-panel engine-timeline-scene active">
       <div class="engine-gear-bg">⚙</div>
-      <div class="engine-header">
-        <div class="engine-kicker">North Star</div>
-        <div class="engine-title">Finding the right Human–Machine balance</div>
+      <div class="tl-header">
+        <div class="tl-kicker">The North Star · Human → Machine balance</div>
+        <div class="tl-year-row">${yrPills}</div>
       </div>
-      <div class="engine-layout">
-        <div class="engine-col engine-inputs">
-          <div class="engine-col-label">← Inputs</div>
-          ${inItems}
+      <div class="tl-cols">
+        <div class="tl-col tl-col-human">
+          <div class="tl-col-head"><span>💚 Human</span><span class="tl-col-count" id="tl-count-human">14</span></div>
+          <div class="tl-col-body" id="tl-body-human">${allItemsHtml}</div>
         </div>
-        <div class="engine-center">
-          <div class="engine-center-icon">⚙</div>
-          <div class="engine-center-name">The Engine</div>
-          <div class="engine-center-sub">Categorise deliberately</div>
+        <div class="tl-col tl-col-assisted">
+          <div class="tl-col-head"><span>🔀 Machine-Assisted</span><span class="tl-col-count" id="tl-count-assisted">0</span></div>
+          <div class="tl-col-body" id="tl-body-assisted"></div>
         </div>
-        <div class="engine-col engine-outputs">
-          <div class="engine-col-label">Outputs →</div>
-          ${outItems}
+        <div class="tl-col tl-col-led">
+          <div class="tl-col-head"><span>🤖 Machine-Led</span><span class="tl-col-count" id="tl-count-led">0</span></div>
+          <div class="tl-col-body" id="tl-body-led"></div>
         </div>
       </div>
-      <div class="engine-balance-legend">
-        <div class="ebl-item"><div class="ebl-dot badge-agentic" style="background:#9B2BF7;"></div>Fully Agentic</div>
-        <div class="ebl-item"><div class="ebl-dot badge-human" style="background:#28B23E;"></div>Human-Led</div>
-        <div class="ebl-item"><div class="ebl-dot badge-assisted" style="background:#3675C1;"></div>Machine-Assisted</div>
-      </div>
-    </div>`;
-}
-
-function renderEngineRatio() {
-  const yr = RATIO_YEARS[0];
-  const timelineItems = RATIO_YEARS.map((y, i) => `
-    <div class="ratio-yr${i === 0 ? ' on' : ''}" id="ratio-yr-${i}">
-      <div class="ratio-yr-num">${y.year}</div>
-      <div class="ratio-yr-split">${y.human}/${y.machine}</div>
-      <div class="ratio-yr-pip"></div>
-    </div>
-    ${i < RATIO_YEARS.length - 1 ? '<div class="ratio-yr-arrow">→</div>' : ''}`).join('');
-
-  return `
-    <div class="scene-panel engine-ratio-scene active">
-      <div>
-        <div class="ratio-kicker">The North Star</div>
-        <div class="ratio-title">Human-to-machine ratio — finding the right balance</div>
-      </div>
-      <div class="ratio-year-display" id="ratio-year-display">${yr.year}</div>
-      <div class="ratio-bar">
-        <div class="ratio-human-seg" id="ratio-human-seg" style="width:${yr.human}%;">💚 ${yr.human}% Human</div>
-        <div class="ratio-machine-seg" id="ratio-machine-seg">🤖 ${yr.machine}% Machine</div>
-      </div>
-      <div class="ratio-legend">
-        <div class="ratio-legend-item"><div class="ratio-legend-dot" style="background: linear-gradient(90deg,#28B23E,#85DB9C);"></div>Human-led</div>
-        <div class="ratio-legend-item"><div class="ratio-legend-dot" style="background: linear-gradient(90deg,#7B22D4,#B999F6);"></div>Machine-led</div>
-      </div>
-      <div class="ratio-timeline">${timelineItems}</div>
     </div>`;
 }
 
 function startEngineAnimations() {
   if (stageIdx === 0) startEngineIntroAnimations();
-  else if (stageIdx === 1) startEngineBalanceAnimations();
-  else startEngineRatioAnimation();
+  else startEngineTimelineAnimation();
 }
 
 function startEngineIntroAnimations() {
@@ -1252,38 +1297,58 @@ function startEngineIntroAnimations() {
   });
 }
 
-function startEngineBalanceAnimations() {
-  const allCount = ENGINE_INPUTS.length + ENGINE_OUTPUTS.length;
-  ENGINE_INPUTS.forEach((_, i) => {
-    setTimeout(() => {
-      const el = document.getElementById('ebadge-in-' + i);
-      if (el) el.classList.add('vis');
-    }, 400 + i * 200);
-  });
-  ENGINE_OUTPUTS.forEach((_, i) => {
-    setTimeout(() => {
-      const el = document.getElementById('ebadge-out-' + i);
-      if (el) el.classList.add('vis');
-    }, 400 + i * 200);
-  });
-}
+function startEngineTimelineAnimation() {
+  function setTimelineYear(yi) {
+    const state = TIMELINE[yi];
+    const items = Array.from(document.querySelectorAll('.tl-item'));
+    if (!items.length) return;
 
-function startEngineRatioAnimation() {
-  function setYear(yi) {
-    const y = RATIO_YEARS[yi];
-    const seg = document.getElementById('ratio-human-seg');
-    const disp = document.getElementById('ratio-year-display');
-    if (seg) { seg.style.width = y.human + '%'; seg.textContent = '💚 ' + y.human + '% Human'; }
-    const mseg = document.getElementById('ratio-machine-seg');
-    if (mseg) mseg.textContent = '🤖 ' + y.machine + '% Machine';
-    if (disp) disp.textContent = y.year;
-    RATIO_YEARS.forEach((_, j) => {
-      const el = document.getElementById('ratio-yr-' + j);
-      if (el) el.classList.toggle('on', j === yi);
+    // FLIP: record old positions
+    const oldPos = new Map();
+    items.forEach(el => oldPos.set(el.dataset.id, el.getBoundingClientRect()));
+
+    // Move items into target columns
+    const cols = {
+      human:    document.getElementById('tl-body-human'),
+      assisted: document.getElementById('tl-body-assisted'),
+      led:      document.getElementById('tl-body-led'),
+    };
+    if (!cols.human || !cols.assisted || !cols.led) return;
+    const byId = id => document.querySelector(`.tl-item[data-id="${id}"]`);
+    state.human.forEach(id    => { const el = byId(id); if (el) cols.human.appendChild(el); });
+    state.assisted.forEach(id => { const el = byId(id); if (el) cols.assisted.appendChild(el); });
+    state.led.forEach(id      => { const el = byId(id); if (el) cols.led.appendChild(el); });
+
+    // FLIP: invert + play
+    items.forEach(el => {
+      const oldR = oldPos.get(el.dataset.id);
+      const newR = el.getBoundingClientRect();
+      const dx = oldR.left - newR.left;
+      const dy = oldR.top  - newR.top;
+      if (dx === 0 && dy === 0) return;
+      el.style.transition = 'none';
+      el.style.transform  = `translate(${dx}px, ${dy}px)`;
+      requestAnimationFrame(() => {
+        el.style.transition = 'transform 850ms cubic-bezier(0.4,0,0.2,1)';
+        el.style.transform  = 'translate(0,0)';
+      });
     });
+
+    // Update year pills
+    TIMELINE.forEach((_, j) => {
+      const p = document.getElementById('tl-yr-' + j);
+      if (p) p.classList.toggle('on', j === yi);
+    });
+
+    // Update counts
+    const hc = document.getElementById('tl-count-human');    if (hc) hc.textContent = state.human.length;
+    const ac = document.getElementById('tl-count-assisted'); if (ac) ac.textContent = state.assisted.length;
+    const lc = document.getElementById('tl-count-led');      if (lc) lc.textContent = state.led.length;
   }
-  setYear(0);
-  [13000, 26000].forEach((delay, i) => setTimeout(() => setYear(i + 1), delay));
+
+  setTimelineYear(0);
+  setTimeout(() => setTimelineYear(1), 13000);
+  setTimeout(() => setTimelineYear(2), 26000);
 }
 
 // ═══════════════════════════════════════════════════════════════
