@@ -624,10 +624,9 @@ const BADGE_LABELS = {
 const BADGE_CLASS = { agentic: 'badge-agentic', human: 'badge-human', assisted: 'badge-assisted' };
 
 const RATIO_YEARS = [
-  { year: '2026', human: 50,  machine: 50  },
-  { year: '2027', human: 40,  machine: 60  },
-  { year: '2028', human: 30,  machine: 70  },
-  { year: '2029', human: 25,  machine: 75  },
+  { year: '2026', human: 100, machine: 0   },
+  { year: '2027', human: 75,  machine: 25  },
+  { year: '2028', human: 50,  machine: 50  },
 ];
 
 const SCENES = [
@@ -1284,7 +1283,7 @@ function startEngineRatioAnimation() {
     });
   }
   setYear(0);
-  [11000, 22000, 33000].forEach((delay, i) => setTimeout(() => setYear(i + 1), delay));
+  [13000, 26000].forEach((delay, i) => setTimeout(() => setYear(i + 1), delay));
 }
 
 // ═══════════════════════════════════════════════════════════════
