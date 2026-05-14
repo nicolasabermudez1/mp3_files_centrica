@@ -548,7 +548,9 @@
     flex-wrap: wrap; justify-content: center;
     min-height: 44px;
     position: relative; z-index: 1;
+    opacity: 0; transition: opacity 700ms ease;
   }
+  .engine-agents-strip.visible { opacity: 1; }
   .strip-group { display: flex; align-items: center; gap: 8px; }
   .strip-label {
     font-size: 10px; font-weight: bold; letter-spacing: 0.18em;
