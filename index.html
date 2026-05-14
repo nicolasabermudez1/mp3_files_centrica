@@ -474,6 +474,49 @@
   .e-item-human    { background: rgba(40,178,62,0.22);  border-color: rgba(133,219,156,0.6); color: #d6f5dd; }
   .e-item-assisted { background: rgba(54,117,193,0.30); border-color: rgba(54,117,193,0.7);  color: #d2eafb; }
   .e-item-led      { background: rgba(155,43,247,0.30); border-color: rgba(155,43,247,0.7);  color: #ecdcff; }
+  /* Engine slide 2 — agents */
+  .engine-agents-scene {
+    background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%);
+    color: #fff;
+    display: flex; flex-direction: column;
+    padding: 26px 36px; gap: 16px;
+    position: relative; overflow: hidden;
+  }
+  .agents-header { text-align: center; }
+  .agents-title { font-size: 22px; font-weight: bold; color: #fff; margin-top: 4px; }
+  .agents-grid {
+    flex: 1;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .agent-bucket-section {
+    border-radius: 12px; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    border: 1px solid;
+  }
+  .agent-bucket-section.bucket-assisted { background: rgba(54,117,193,0.10);  border-color: rgba(54,117,193,0.4); }
+  .agent-bucket-section.bucket-led      { background: rgba(155,43,247,0.10); border-color: rgba(155,43,247,0.4); }
+  .agent-bucket-head { font-size: 18px; font-weight: bold; }
+  .agent-bucket-section.bucket-assisted .agent-bucket-head { color: #90c4f0; }
+  .agent-bucket-section.bucket-led      .agent-bucket-head { color: #D4B3FF; }
+  .agent-bucket-sub { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: -4px; margin-bottom: 4px; letter-spacing: 0.03em; }
+  .agent-cards-list { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .agent-row {
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; transform: translateX(-10px);
+    transition: opacity 450ms ease, transform 450ms ease;
+  }
+  .agent-row.visible { opacity: 1; transform: translateX(0); }
+  .agent-row-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0; color: #fff;
+  }
+  .agent-row-body { flex: 1; min-width: 0; }
+  .agent-row-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .agent-row-blurb { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; line-height: 1.3; }
   .engine-nonex {
     position: absolute; top: 12px; right: 18px;
     font-size: 10px; color: rgba(255,255,255,0.45);
@@ -732,7 +775,21 @@ const STAGES = [
   { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '1–3%',              sub: 'of tail spend saved',     humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
 ];
 
-const ENGINE_STAGES = 1;
+const ENGINE_STAGES = 2;
+
+const AGENT_BUCKETS = {
+  assisted: ['rfx', 'nego', 'contract', 'srm'],
+  led:      ['market', 'vendor', 'tail'],
+};
+const AGENT_BLURBS = {
+  market:   'Scans the category continuously',
+  rfx:      'Drafts and scores sourcing events',
+  nego:     'Briefs and coaches negotiators',
+  contract: 'Reads contracts, proposes redlines',
+  tail:     'Handles low-value transactions end to end',
+  vendor:   'Pre-qualifies and onboards vendors',
+  srm:      'Prepares supplier reviews and tracks rebates',
+};
 
 const ENGINE_INPUTS = [
   { id: 'risks',      label: 'Risks' },
@@ -886,7 +943,7 @@ function render() {
   const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  const engineSubTitles = ['The Engine · 2025 → 2027'];
+  const engineSubTitles = ['The Engine · 2025 → 2027', 'Who drives the engine'];
   document.getElementById('sceneTag').textContent =
     key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` :
     key === 'engine'  ? (engineSubTitles[stageIdx] || 'The Engine') :
@@ -1279,7 +1336,44 @@ function startImpactAnimations() {
 }
 
 function renderEngine() {
-  return renderEngineIntro();
+  if (stageIdx === 0) return renderEngineIntro();
+  return renderEngineAgents();
+}
+
+function renderEngineAgents() {
+  function cardsFor(bucket) {
+    return AGENT_BUCKETS[bucket].map((k, i) => {
+      const a = AGENTS[k];
+      return `
+        <div class="agent-row" data-i="${i}" style="border-left: 3px solid ${a.color};">
+          <div class="agent-row-icon" style="background: ${a.color};">${a.icon}</div>
+          <div class="agent-row-body">
+            <div class="agent-row-name">${a.name}</div>
+            <div class="agent-row-blurb">${AGENT_BLURBS[k]}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  return `
+    <div class="scene-panel engine-agents-scene active">
+      <div class="agents-header">
+        <div class="engine-kicker">Who drives the engine</div>
+        <div class="agents-title">Seven focus agents · mapped to where they work</div>
+      </div>
+      <div class="agents-grid">
+        <div class="agent-bucket-section bucket-assisted">
+          <div class="agent-bucket-head">🔀 Agent-Assisted</div>
+          <div class="agent-bucket-sub">Machine helps · human in charge</div>
+          <div class="agent-cards-list">${cardsFor('assisted')}</div>
+        </div>
+        <div class="agent-bucket-section bucket-led">
+          <div class="agent-bucket-head">🤖 Agent-Led</div>
+          <div class="agent-bucket-sub">Machine runs autonomously</div>
+          <div class="agent-cards-list">${cardsFor('led')}</div>
+        </div>
+      </div>
+    </div>`;
 }
 
 function renderEngineIntro() {
@@ -1325,27 +1419,23 @@ function renderEngineIntro() {
         ${colHtml('in', inputItemsHtml)}
         <div class="engine-center">
           <div class="engine-center-icon">
-            <svg viewBox="0 0 100 90" width="64" height="58" aria-hidden="true">
-              <g fill="currentColor">
-                <!-- 4 cylinder caps -->
-                <rect x="14" y="4"  width="8" height="7" rx="1"/>
-                <rect x="26" y="4"  width="8" height="7" rx="1"/>
-                <rect x="38" y="4"  width="8" height="7" rx="1"/>
-                <rect x="50" y="4"  width="8" height="7" rx="1"/>
-                <!-- Valve cover -->
-                <rect x="10" y="11" width="52" height="6" rx="1"/>
-                <!-- Main engine block -->
-                <rect x="4"  y="17" width="60" height="22" rx="2"/>
-                <!-- Right-side belt drive / alternator -->
-                <rect x="64" y="20" width="14" height="19" rx="2"/>
-              </g>
-              <!-- 4 distinct exhaust pipes (stroked tubes) -->
-              <g fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round">
-                <path d="M 16 39 Q 12 50 16 62 Q 22 72 30 72"/>
-                <path d="M 28 39 Q 24 52 28 66 Q 34 78 44 78"/>
-                <path d="M 40 39 Q 36 56 40 70 Q 46 82 58 82"/>
-                <path d="M 52 39 Q 48 60 52 74 Q 58 86 72 86"/>
-              </g>
+            <svg viewBox="0 0 105 75" width="64" height="46" fill="currentColor" aria-hidden="true">
+              <!-- Top T-cap (oil filler handle) -->
+              <rect x="20" y="0"  width="22" height="6"  rx="1"/>
+              <!-- Filler tower -->
+              <rect x="25" y="6"  width="12" height="9"/>
+              <!-- Right vertical intake stack -->
+              <rect x="68" y="9"  width="10" height="15"/>
+              <!-- Main engine block (rounded) -->
+              <rect x="5"  y="15" width="90" height="50" rx="4"/>
+              <!-- Left mount foot (juts left) -->
+              <rect x="0"  y="33" width="6"  height="20"/>
+              <!-- Right outlet -->
+              <rect x="94" y="33" width="9"  height="16"/>
+              <!-- Bottom-left foot -->
+              <rect x="14" y="65" width="14" height="8"/>
+              <!-- Bottom-right foot -->
+              <rect x="64" y="65" width="14" height="8"/>
             </svg>
           </div>
           <div class="engine-center-name">Procurement</div>
@@ -1358,7 +1448,15 @@ function renderEngineIntro() {
 }
 
 function startEngineAnimations() {
-  startEngineIntroAnimations();
+  if (stageIdx === 0) startEngineIntroAnimations();
+  else startEngineAgentsAnimations();
+}
+
+function startEngineAgentsAnimations() {
+  const rows = document.querySelectorAll('.agent-row');
+  rows.forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), 200 + i * 250);
+  });
 }
 
 function startEngineIntroAnimations() {
