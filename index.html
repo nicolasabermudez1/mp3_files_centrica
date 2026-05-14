@@ -447,14 +447,14 @@
   }
   .engine-flow-svg .flow-base {
     fill: none;
-    stroke: rgba(255,255,255,0.22);
-    stroke-width: 1.4;
+    stroke: rgba(255,255,255,0.18);
+    stroke-width: 0.7;
     stroke-linecap: round;
+    stroke-dasharray: 0.1 1.6;
     vector-effect: non-scaling-stroke;
   }
   .engine-flow-svg .flow-arrow {
-    fill: rgba(255,255,255,0.85);
-    filter: drop-shadow(0 0 4px rgba(255,255,255,0.4));
+    fill: rgba(255,255,255,0.7);
   }
   .engine-layout-buckets > .engine-col,
   .engine-layout-buckets > .engine-center { position: relative; z-index: 1; }
@@ -497,6 +497,7 @@
     font-size: 11px; font-weight: 600; color: #fff;
     text-align: center; white-space: nowrap;
     will-change: transform; line-height: 1.3;
+    width: 170px; box-sizing: border-box;
   }
   .e-item-human    { background: rgba(40,178,62,0.22);  border-color: rgba(133,219,156,0.6); color: #d6f5dd; }
   .e-item-assisted { background: rgba(54,117,193,0.30); border-color: rgba(54,117,193,0.7);  color: #d2eafb; }
@@ -597,9 +598,35 @@
   .logos-corner .logo-accenture { height: 18px; width: auto; display: block; }
   .logos-corner .logo-divider { width: 1px; height: 18px; background: #d1d5db; }
   .engine-center {
-    width: 180px; flex-shrink: 0;
+    width: 200px; flex-shrink: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; gap: 10px;
+    text-align: center; gap: 8px;
+    padding: 14px 12px;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    transition: background 800ms ease, border-color 800ms ease, box-shadow 800ms ease;
+  }
+  .engine-center.assisted {
+    background: rgba(54,117,193,0.16);
+    border-color: rgba(54,117,193,0.75);
+    box-shadow: 0 0 32px rgba(54,117,193,0.45), inset 0 0 24px rgba(54,117,193,0.18);
+  }
+  .engine-center-mode {
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: rgba(54,117,193,0.55);
+    border: 1px solid rgba(54,117,193,0.85);
+    color: #fff;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+  .engine-center.assisted .engine-center-mode {
+    opacity: 1; transform: translateY(0);
   }
   .engine-center-icon {
     width: 86px; height: 86px; border-radius: 50%;
@@ -608,13 +635,12 @@
     font-size: 40px; box-shadow: 0 0 28px rgba(155,43,247,0.4);
     transition: background 800ms ease, border-color 800ms ease, box-shadow 800ms ease, transform 600ms ease;
   }
-  .engine-center-icon.assisted {
+  .engine-center.assisted .engine-center-icon {
     background: rgba(54,117,193,0.3);
-    border-color: rgba(54,117,193,0.7);
-    box-shadow: 0 0 36px rgba(54,117,193,0.55), 0 0 0 8px rgba(54,117,193,0.18);
-    transform: scale(1.05);
+    border-color: rgba(54,117,193,0.75);
+    box-shadow: 0 0 32px rgba(54,117,193,0.55);
   }
-  .engine-center-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .engine-center-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.3; }
   .engine-center-sub { font-size: 10px; color: #9CA3AF; }
   .engine-balance-legend {
     position: relative; z-index: 1;
@@ -1478,22 +1504,23 @@ function renderEngineIntro() {
             <path id="p-out-3" d="M 54 30 C 70 30, 82 44, 96 48"/>
           </g>
           <g class="flow-arrows">
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0s"   ><mpath href="#p-in-1"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.3s" ><mpath href="#p-in-1"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.4s" ><mpath href="#p-in-2"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.7s" ><mpath href="#p-in-2"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.8s" ><mpath href="#p-in-3"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="2.1s" ><mpath href="#p-in-3"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.2s" ><mpath href="#p-out-1"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.5s" ><mpath href="#p-out-1"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.6s" ><mpath href="#p-out-2"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.9s" ><mpath href="#p-out-2"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.0s" ><mpath href="#p-out-3"/></animateMotion></polygon>
-            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="2.3s" ><mpath href="#p-out-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0s"   ><mpath href="#p-in-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.3s" ><mpath href="#p-in-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.4s" ><mpath href="#p-in-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.7s" ><mpath href="#p-in-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.8s" ><mpath href="#p-in-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="2.1s" ><mpath href="#p-in-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.2s" ><mpath href="#p-out-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.5s" ><mpath href="#p-out-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.6s" ><mpath href="#p-out-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.9s" ><mpath href="#p-out-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.0s" ><mpath href="#p-out-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-0.7,-0.45 0.9,0 -0.7,0.45"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="2.3s" ><mpath href="#p-out-3"/></animateMotion></polygon>
           </g>
         </svg>
         ${colHtml('in', inputItemsHtml)}
         <div class="engine-center">
+          <div class="engine-center-mode">🔀 Agent Assisted</div>
           <div class="engine-center-icon">
             <svg viewBox="0 0 105 75" width="64" height="46" fill="currentColor" aria-hidden="true">
               <!-- Top T-cap (oil filler handle) -->
@@ -1580,9 +1607,9 @@ function startEngineIntroAnimations() {
       if (p) p.classList.toggle('on', j === yi);
     });
 
-    // Engine center highlight: stays default in 2025, lights up as agent-assisted from 2026 onward
-    const eIcon = document.querySelector('.engine-center-icon');
-    if (eIcon) eIcon.classList.toggle('assisted', yi >= 1);
+    // Engine center highlight: stays default in 2025, lights up as Agent-Assisted from 2026 onward
+    const eCenter = document.querySelector('.engine-center');
+    if (eCenter) eCenter.classList.toggle('assisted', yi >= 1);
   }
   const sp = (typeof speed === 'number' && speed > 0) ? speed : 1;
   setEngineYear(0);
