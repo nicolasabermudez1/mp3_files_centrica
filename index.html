@@ -113,6 +113,15 @@
   .stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #555; margin-top: 4px; }
   .stat-divider { width: 1px; height: 48px; background: #e5e7eb; }
   .intro-sub { margin-top: 40px; font-size: 14px; color: #555; }
+  .intro-mascots {
+    position: absolute;
+    bottom: 24px; right: 32px;
+    width: 200px; height: auto;
+    opacity: 0.95;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(0 4px 12px rgba(15,32,103,0.18));
+  }
 
   /* TODAY */
   .today { display: flex; background: #F6F7FA; }
@@ -295,6 +304,17 @@
   .impact-tile-number { font-size: 36px; font-weight: bold; line-height: 1; }
   .impact-tile-label { font-size: 12px; color: #cbd5e1; margin-top: 6px; }
   .impact-tag { margin-top: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #fff; transition: opacity 700ms ease; opacity: 0; }
+  .impact-mascots {
+    position: absolute;
+    bottom: 80px; right: 36px;
+    width: 160px; height: auto;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.4));
+    transition: opacity 900ms ease;
+  }
+  .impact-mascots.revealed { opacity: 0.95; }
   .impact-tag.revealed { opacity: 1; }
 
   /* DEBUG TOAST */
@@ -1084,6 +1104,7 @@ function renderIntro() {
         <div style="text-align: center;"><div class="stat-num" style="color: ${C.green};">1</div><div class="stat-label">Operating model</div></div>
       </div>
       <div class="intro-sub">A walkthrough of the end-to-end procurement system — and what it means for the people inside it.</div>
+      <img class="intro-mascots" src="mascot-family.png" alt="" onerror="this.style.display='none';">
     </div>
   `;
 }
@@ -1417,6 +1438,7 @@ function renderImpact() {
         `).join('')}
       </div>
       <div class="impact-tag" id="impactTag">💡 Procurement stops being an administrative function — and starts being a value engine the business can lean on.</div>
+      <img class="impact-mascots" id="impactMascots" src="mascot-duo.png" alt="" onerror="this.style.display='none';">
     </div>
   `;
 }
@@ -1429,6 +1451,10 @@ function startImpactAnimations() {
     const t = document.getElementById('impactTag');
     if (t) t.classList.add('revealed');
   }, 200 + 6 * 700);
+  setTimeout(() => {
+    const m = document.getElementById('impactMascots');
+    if (m) m.classList.add('revealed');
+  }, 200 + 6 * 700 + 600);
 }
 
 function renderEngine() {
