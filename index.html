@@ -1565,8 +1565,8 @@ function startEngineIntroAnimations() {
   }
   const sp = (typeof speed === 'number' && speed > 0) ? speed : 1;
   setEngineYear(0);
-  setTimeout(() => setEngineYear(1), 35000 / sp);
-  setTimeout(() => setEngineYear(2), 40000 / sp);
+  setTimeout(() => setEngineYear(1), 40000 / sp);
+  setTimeout(() => setEngineYear(2), 50000 / sp);
   // Reveal the 7 agents after 2027 settles
   setTimeout(() => {
     document.querySelectorAll('.agent-chip').forEach((el, i) => {
@@ -1574,7 +1574,7 @@ function startEngineIntroAnimations() {
     });
     const strip = document.getElementById('engineAgentsStrip');
     if (strip) strip.classList.add('visible');
-  }, 45000 / sp);
+  }, 58000 / sp);
 }
 
 
