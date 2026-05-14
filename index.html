@@ -307,6 +307,53 @@
   .impact-tile-number { font-size: 36px; font-weight: bold; line-height: 1; }
   .impact-tile-label { font-size: 12px; color: #cbd5e1; margin-top: 6px; }
   .impact-tag { margin-top: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #fff; transition: opacity 700ms ease; opacity: 0; }
+  /* CLOSING / THANK YOU */
+  .closing {
+    background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%);
+    color: #fff;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 50px 60px;
+    text-align: center;
+    gap: 20px;
+    position: relative;
+  }
+  .closing-kicker {
+    font-size: 13px; font-weight: bold; color: #85DB9C;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    opacity: 0; transform: translateY(-8px);
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+  .closing-kicker.revealed { opacity: 1; transform: translateY(0); }
+  .closing-title {
+    font-size: 56px; font-weight: bold; line-height: 1.1;
+    color: #fff; max-width: 1000px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 800ms ease, transform 800ms ease;
+  }
+  .closing-title.revealed { opacity: 1; transform: translateY(0); }
+  .closing-sub {
+    font-size: 22px; font-weight: 400; line-height: 1.45;
+    color: rgba(255,255,255,0.92); max-width: 820px;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 800ms ease, transform 800ms ease;
+  }
+  .closing-sub.revealed { opacity: 1; transform: translateY(0); }
+  .closing-mascots {
+    width: 280px; height: auto; max-width: 32vw;
+    margin-top: 8px;
+    opacity: 0; transform: scale(0.85);
+    transition: opacity 900ms ease, transform 900ms ease;
+    filter: drop-shadow(0 8px 22px rgba(0,0,0,0.35));
+  }
+  .closing-mascots.revealed { opacity: 0.98; transform: scale(1); }
+  .closing-tag {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: rgba(133,219,156,0.85);
+    opacity: 0; transition: opacity 800ms ease;
+  }
+  .closing-tag.revealed { opacity: 1; }
   .impact-mascots {
     position: absolute;
     bottom: 80px; right: 36px;
@@ -976,6 +1023,7 @@ const SCENES = [
   { key: 'engine',  name: 'The Engine',      duration: 20000 },
   { key: 'human',   name: 'The Human Lift',  duration: 25000 },
   { key: 'impact',  name: 'The Outcome',     duration: 22000 },
+  { key: 'closing', name: 'Thank you',       duration: 15000 },
 ];
 
 const MODULES = [
@@ -986,6 +1034,7 @@ const MODULES = [
   { id: 'process', icon: '🔄', title: 'The End-to-End Process',      desc: '20 stages across strategic and tactical lanes',                    scenes: ['process'] },
   { id: 'human',   icon: '💚', title: 'The Human Lift',              desc: 'What changes for the people inside procurement',                   scenes: ['human']   },
   { id: 'impact',  icon: '📊', title: 'The Outcome',                 desc: 'The numbers behind the transformation',                            scenes: ['impact']  },
+  { id: 'closing', icon: '🙏', title: 'Thank You',                    desc: 'A short close with a thank-you for the time and audience',         scenes: ['closing'] },
 ];
 
 const QUOTES = [
@@ -1002,7 +1051,7 @@ const QUOTES = [
 // ═══════════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════════
-let playlist = ['intro','engine','today','meet','process','human','impact'];
+let playlist = ['intro','engine','today','meet','process','human','impact','closing'];
 let playlistIdx = 0;
 let stageIdx = 0;
 function currentSceneKey() { return playlist[playlistIdx] || 'intro'; }
@@ -1082,12 +1131,14 @@ function render() {
   if (key === 'engine')  canvas.innerHTML = renderEngine();
   if (key === 'human')   canvas.innerHTML = renderHuman();
   if (key === 'impact')  canvas.innerHTML = renderImpact();
+  if (key === 'closing') canvas.innerHTML = renderClosing();
 
-  if (key === 'today')  startTodayAnimations();
-  if (key === 'meet')   startMeetAnimations();
-  if (key === 'engine') startEngineAnimations();
-  if (key === 'human')  startHumanAnimations();
-  if (key === 'impact') startImpactAnimations();
+  if (key === 'today')   startTodayAnimations();
+  if (key === 'meet')    startMeetAnimations();
+  if (key === 'engine')  startEngineAnimations();
+  if (key === 'human')   startHumanAnimations();
+  if (key === 'impact')  startImpactAnimations();
+  if (key === 'closing') startClosingAnimations();
 }
 
 function renderIntro() {
@@ -1444,6 +1495,25 @@ function renderImpact() {
       <img class="impact-mascots" id="impactMascots" src="mascot-duo.png" alt="" onerror="this.style.display='none';">
     </div>
   `;
+}
+
+function renderClosing() {
+  return `
+    <div class="scene-panel closing active">
+      <div class="closing-kicker" id="closingKicker">✦ Thank you</div>
+      <div class="closing-title" id="closingTitle">For hearing our vision.</div>
+      <div class="closing-sub" id="closingSub">We are incredibly excited to get this transformation started. And we cannot wait to build this engine, together.</div>
+      <img class="closing-mascots" id="closingMascots" src="mascot-family.png" alt="" onerror="this.style.display='none';">
+      <div class="closing-tag" id="closingTag">Centrica × Accenture · Procurement Transformation</div>
+    </div>`;
+}
+
+function startClosingAnimations() {
+  setTimeout(() => { const e = document.getElementById('closingKicker');  if (e) e.classList.add('revealed'); }, 200);
+  setTimeout(() => { const e = document.getElementById('closingTitle');   if (e) e.classList.add('revealed'); }, 700);
+  setTimeout(() => { const e = document.getElementById('closingSub');     if (e) e.classList.add('revealed'); }, 1500);
+  setTimeout(() => { const e = document.getElementById('closingMascots'); if (e) e.classList.add('revealed'); }, 2400);
+  setTimeout(() => { const e = document.getElementById('closingTag');     if (e) e.classList.add('revealed'); }, 3200);
 }
 
 function startImpactAnimations() {
