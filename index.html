@@ -1009,10 +1009,10 @@ const TIMELINE = [
     human:    ['suppliers','spend','marketdata','ma','business','others','waveplanning','solesourcing','partnerships','supplierlists','businesspartnering','tacticalsourcing','strategicsourcing'],
     assisted: ['catalogs'],
     led:      ['risks','benchmarking'] },
-  { year: '2027', label: 'Next year · ~40% agentic',
-    human:    ['suppliers','spend','ma','business','others','partnerships','businesspartnering','supplierlists','tacticalsourcing','strategicsourcing'],
-    assisted: ['waveplanning','solesourcing','catalogs'],
-    led:      ['risks','marketdata','benchmarking'] },
+  { year: '2027', label: 'Next year · ~75% agentic',
+    human:    ['ma','others','partnerships','businesspartnering'],
+    assisted: ['waveplanning','business','solesourcing','strategicsourcing'],
+    led:      ['suppliers','spend','risks','marketdata','benchmarking','tacticalsourcing','catalogs','supplierlists'] },
 ];
 
 const SCENES = [
@@ -1716,18 +1716,18 @@ function startEngineIntroAnimations() {
   setTimeout(() => {
     document.querySelectorAll('.engine-stage-hidden').forEach(el => el.classList.add('shown'));
   }, 10000 / sp);
-  // 33s: transition to 2026 (pushed 8s later)
-  setTimeout(() => setEngineYear(1), 33000 / sp);
-  // 43s: transition to 2027
-  setTimeout(() => setEngineYear(2), 43000 / sp);
-  // 53s: reveal the 7 agents
+  // 25s: transition to 2026
+  setTimeout(() => setEngineYear(1), 25000 / sp);
+  // 35s: transition to 2027
+  setTimeout(() => setEngineYear(2), 35000 / sp);
+  // 45s: reveal the 7 agents
   setTimeout(() => {
     document.querySelectorAll('.agent-chip').forEach((el, i) => {
       setTimeout(() => el.classList.add('visible'), (i * 220) / sp);
     });
     const strip = document.getElementById('engineAgentsStrip');
     if (strip) strip.classList.add('visible');
-  }, 53000 / sp);
+  }, 45000 / sp);
 }
 
 
