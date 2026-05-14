@@ -455,6 +455,9 @@
   }
   .engine-layout-buckets > .engine-col,
   .engine-layout-buckets > .engine-center { position: relative; z-index: 1; }
+  /* Initial hidden state for first 10s of engine slide */
+  .engine-stage-hidden { opacity: 0; transition: opacity 700ms ease; }
+  .engine-stage-hidden.shown { opacity: 1; }
   .engine-layout-buckets .engine-col {
     display: flex; flex-direction: column; gap: 8px; flex: 1;
     padding: 0; align-items: stretch;
@@ -1426,15 +1429,15 @@ function renderEngineIntro() {
     return `
       <div class="engine-col">
         <div class="engine-col-label">${side === 'in' ? '← Inputs' : 'Outputs →'}</div>
-        <div class="bucket bucket-human">
+        <div class="bucket bucket-human engine-stage-hidden">
           <div class="bucket-head">💚 Human-Led</div>
           <div class="bucket-body" id="bk-${side}-human">${defaultItems}</div>
         </div>
-        <div class="bucket bucket-assisted">
+        <div class="bucket bucket-assisted engine-stage-hidden">
           <div class="bucket-head">🔀 Agent-Assisted</div>
           <div class="bucket-body" id="bk-${side}-assisted"></div>
         </div>
-        <div class="bucket bucket-led">
+        <div class="bucket bucket-led engine-stage-hidden">
           <div class="bucket-head">🤖 Agent-Led</div>
           <div class="bucket-body" id="bk-${side}-led"></div>
         </div>
@@ -1445,10 +1448,10 @@ function renderEngineIntro() {
     <div class="scene-panel engine-scene active">
       <div class="engine-header">
         <div class="engine-kicker">How we see the future</div>
-        <div class="engine-year-row">${yrPills}</div>
+        <div class="engine-year-row engine-stage-hidden">${yrPills}</div>
       </div>
       <div class="engine-layout engine-layout-buckets">
-        <svg class="engine-flow-svg" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="engine-flow-svg engine-stage-hidden" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <marker id="flowArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.4)"/>
@@ -1466,7 +1469,7 @@ function renderEngineIntro() {
           </g>
         </svg>
         ${colHtml('in', inputItemsHtml)}
-        <div class="engine-center">
+        <div class="engine-center engine-stage-hidden">
           <div class="engine-center-icon">
             <svg viewBox="0 0 105 75" width="64" height="46" fill="currentColor" aria-hidden="true">
               <!-- Top T-cap (oil filler handle) -->
@@ -1502,16 +1505,6 @@ function startEngineAnimations() {
 }
 
 function startEngineIntroAnimations() {
-  document.querySelectorAll('.e-item').forEach((el, i) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(-6px)';
-    setTimeout(() => {
-      el.style.transition = 'opacity 400ms ease, transform 400ms ease';
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    }, 300 + i * 110);
-  });
-
   function setEngineYear(yi) {
     const state = TIMELINE[yi];
     const items = Array.from(document.querySelectorAll('.e-item'));
@@ -1565,16 +1558,22 @@ function startEngineIntroAnimations() {
   }
   const sp = (typeof speed === 'number' && speed > 0) ? speed : 1;
   setEngineYear(0);
-  setTimeout(() => setEngineYear(1), 40000 / sp);
-  setTimeout(() => setEngineYear(2), 50000 / sp);
-  // Reveal the 7 agents after 2027 settles
+  // 10s: reveal year clock, engine center, buckets, items, flow arrows
+  setTimeout(() => {
+    document.querySelectorAll('.engine-stage-hidden').forEach(el => el.classList.add('shown'));
+  }, 10000 / sp);
+  // 25s: transition to 2026
+  setTimeout(() => setEngineYear(1), 25000 / sp);
+  // 35s: transition to 2027
+  setTimeout(() => setEngineYear(2), 35000 / sp);
+  // 45s: reveal the 7 agents
   setTimeout(() => {
     document.querySelectorAll('.agent-chip').forEach((el, i) => {
       setTimeout(() => el.classList.add('visible'), (i * 220) / sp);
     });
     const strip = document.getElementById('engineAgentsStrip');
     if (strip) strip.classList.add('visible');
-  }, 58000 / sp);
+  }, 45000 / sp);
 }
 
 
