@@ -517,6 +517,37 @@
   .agent-row-body { flex: 1; min-width: 0; }
   .agent-row-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
   .agent-row-blurb { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; line-height: 1.3; }
+  /* Engine agents strip at the bottom of slide 1 */
+  .engine-agents-strip {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 8px 4px;
+    flex-wrap: wrap; justify-content: center;
+    min-height: 44px;
+    position: relative; z-index: 1;
+  }
+  .strip-group { display: flex; align-items: center; gap: 8px; }
+  .strip-label {
+    font-size: 10px; font-weight: bold; letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(255,255,255,0.7);
+    padding-right: 4px;
+  }
+  .strip-divider { width: 1px; height: 22px; background: rgba(255,255,255,0.2); }
+  .agent-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px 4px 4px;
+    border-radius: 16px;
+    color: #fff; font-size: 11px; font-weight: 600;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .agent-chip.visible { opacity: 1; transform: translateY(0); }
+  .agent-chip-icon {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .agent-chip-name { white-space: nowrap; }
   .engine-nonex {
     position: absolute; top: 12px; right: 18px;
     font-size: 10px; color: rgba(255,255,255,0.45);
@@ -775,7 +806,7 @@ const STAGES = [
   { lane: 'TACTICAL',  name: 'Quarterly auto re-tender',               active: ['tail'],    action: 'Tail-spend baskets re-bid automatically; loops back.',                      metric: '1–3%',              sub: 'of tail spend saved',     humanRole: 'Category Manager',     humanDoes: 'Reviews the basket each quarter; sets ambition' },
 ];
 
-const ENGINE_STAGES = 2;
+const ENGINE_STAGES = 1;
 
 const AGENT_BUCKETS = {
   assisted: ['rfx', 'nego', 'contract', 'srm'],
@@ -943,7 +974,7 @@ function render() {
   const mod = MODULES.find(m => m.scenes.includes(key));
   const canvas = document.getElementById('canvas');
 
-  const engineSubTitles = ['The Engine · 2025 → 2027', 'Who drives the engine'];
+  const engineSubTitles = ['The Engine · 2025 → 2027'];
   document.getElementById('sceneTag').textContent =
     key === 'process' ? `Stage ${stageIdx + 1} of ${STAGES.length}` :
     key === 'engine'  ? (engineSubTitles[stageIdx] || 'The Engine') :
@@ -1336,42 +1367,24 @@ function startImpactAnimations() {
 }
 
 function renderEngine() {
-  if (stageIdx === 0) return renderEngineIntro();
-  return renderEngineAgents();
+  return renderEngineIntro();
 }
 
-function renderEngineAgents() {
-  function cardsFor(bucket) {
-    return AGENT_BUCKETS[bucket].map((k, i) => {
-      const a = AGENTS[k];
-      return `
-        <div class="agent-row" data-i="${i}" style="border-left: 3px solid ${a.color};">
-          <div class="agent-row-icon" style="background: ${a.color};">${a.icon}</div>
-          <div class="agent-row-body">
-            <div class="agent-row-name">${a.name}</div>
-            <div class="agent-row-blurb">${AGENT_BLURBS[k]}</div>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
+function _engineAgentsStrip() {
+  const chip = k => {
+    const a = AGENTS[k];
+    return `<div class="agent-chip" data-id="${k}" style="background: ${a.color};"><span class="agent-chip-icon">${a.icon}</span><span class="agent-chip-name">${a.name}</span></div>`;
+  };
   return `
-    <div class="scene-panel engine-agents-scene active">
-      <div class="agents-header">
-        <div class="engine-kicker">Who drives the engine</div>
-        <div class="agents-title">Seven focus agents · mapped to where they work</div>
+    <div class="engine-agents-strip" id="engineAgentsStrip">
+      <div class="strip-group">
+        <div class="strip-label">🔀 Assisted by</div>
+        ${AGENT_BUCKETS.assisted.map(chip).join('')}
       </div>
-      <div class="agents-grid">
-        <div class="agent-bucket-section bucket-assisted">
-          <div class="agent-bucket-head">🔀 Agent-Assisted</div>
-          <div class="agent-bucket-sub">Machine helps · human in charge</div>
-          <div class="agent-cards-list">${cardsFor('assisted')}</div>
-        </div>
-        <div class="agent-bucket-section bucket-led">
-          <div class="agent-bucket-head">🤖 Agent-Led</div>
-          <div class="agent-bucket-sub">Machine runs autonomously</div>
-          <div class="agent-cards-list">${cardsFor('led')}</div>
-        </div>
+      <div class="strip-divider"></div>
+      <div class="strip-group">
+        <div class="strip-label">🤖 Led by</div>
+        ${AGENT_BUCKETS.led.map(chip).join('')}
       </div>
     </div>`;
 }
@@ -1443,20 +1456,13 @@ function renderEngineIntro() {
         </div>
         ${colHtml('out', outputItemsHtml)}
       </div>
+      ${_engineAgentsStrip()}
       <div class="engine-nonex">* Lists are non-exhaustive — illustrative</div>
     </div>`;
 }
 
 function startEngineAnimations() {
-  if (stageIdx === 0) startEngineIntroAnimations();
-  else startEngineAgentsAnimations();
-}
-
-function startEngineAgentsAnimations() {
-  const rows = document.querySelectorAll('.agent-row');
-  rows.forEach((el, i) => {
-    setTimeout(() => el.classList.add('visible'), 200 + i * 250);
-  });
+  startEngineIntroAnimations();
 }
 
 function startEngineIntroAnimations() {
@@ -1524,6 +1530,14 @@ function startEngineIntroAnimations() {
   setEngineYear(0);
   setTimeout(() => setEngineYear(1), 35000);
   setTimeout(() => setEngineYear(2), 40000);
+  // Reveal the 7 agents after 2027 settles
+  setTimeout(() => {
+    document.querySelectorAll('.agent-chip').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 220);
+    });
+    const strip = document.getElementById('engineAgentsStrip');
+    if (strip) strip.classList.add('visible');
+  }, 50000);
 }
 
 
