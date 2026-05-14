@@ -599,6 +599,13 @@
     background: rgba(155,43,247,0.25); border: 2px solid rgba(155,43,247,0.5);
     display: flex; align-items: center; justify-content: center;
     font-size: 40px; box-shadow: 0 0 28px rgba(155,43,247,0.4);
+    transition: background 800ms ease, border-color 800ms ease, box-shadow 800ms ease, transform 600ms ease;
+  }
+  .engine-center-icon.assisted {
+    background: rgba(54,117,193,0.3);
+    border-color: rgba(54,117,193,0.7);
+    box-shadow: 0 0 36px rgba(54,117,193,0.55), 0 0 0 8px rgba(54,117,193,0.18);
+    transform: scale(1.05);
   }
   .engine-center-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.3; }
   .engine-center-sub { font-size: 10px; color: #9CA3AF; }
@@ -845,22 +852,24 @@ const AGENT_BLURBS = {
 };
 
 const ENGINE_INPUTS = [
-  { id: 'risks',      label: 'Risks' },
-  { id: 'suppliers',  label: 'Suppliers' },
-  { id: 'spend',      label: 'Spend' },
-  { id: 'marketdata', label: 'Market Data' },
-  { id: 'ma',         label: 'M&A' },
-  { id: 'business',   label: 'Business' },
-  { id: 'others',     label: 'Others' },
+  { id: 'risks',        label: 'Market Risk' },
+  { id: 'suppliers',    label: 'Suppliers' },
+  { id: 'spend',        label: 'Spend' },
+  { id: 'marketdata',   label: 'Market Data' },
+  { id: 'ma',           label: 'M&A' },
+  { id: 'business',     label: 'Business Strategy' },
+  { id: 'others',       label: 'Business Risk' },
+  { id: 'waveplanning', label: 'Wave Planning' },
+  { id: 'benchmarking', label: 'Benchmarking' },
 ];
 const ENGINE_OUTPUTS = [
-  { id: 'solesourcing',      label: 'Sole Sourcing' },
-  { id: 'partnerships',      label: 'Partnerships' },
-  { id: 'supplierlists',     label: 'Supplier Lists' },
-  { id: 'catalogs',          label: 'Catalogs' },
-  { id: 'categorystrategy',  label: 'Category Strategy' },
-  { id: 'tacticalsourcing',  label: 'Tactical Sourcing' },
-  { id: 'strategicsourcing', label: 'Strategic Sourcing' },
+  { id: 'solesourcing',       label: 'Sole Sourcing' },
+  { id: 'partnerships',       label: 'Partnerships' },
+  { id: 'supplierlists',      label: 'Preferred Supplier Lists' },
+  { id: 'catalogs',           label: 'Catalogs' },
+  { id: 'businesspartnering', label: 'Business Partnering' },
+  { id: 'tacticalsourcing',   label: 'Tactical Sourcing' },
+  { id: 'strategicsourcing',  label: 'Strategic Sourcing' },
 ];
 const BADGE_LABELS = {
   human:    '💚 Human',
@@ -877,29 +886,30 @@ function bucketFor(yi, id) {
 }
 
 const ITEM_LABELS = {
-  risks:'Risks', suppliers:'Suppliers', spend:'Spend', marketdata:'Market Data',
-  ma:'M&A', business:'Business', others:'Others',
+  risks:'Market Risk', suppliers:'Suppliers', spend:'Spend', marketdata:'Market Data',
+  ma:'M&A', business:'Business Strategy', others:'Business Risk',
+  waveplanning:'Wave Planning', benchmarking:'Benchmarking',
   solesourcing:'Sole Sourcing', partnerships:'Partnerships',
-  supplierlists:'Supplier Lists', catalogs:'Catalogs',
-  categorystrategy:'Category Strategy', tacticalsourcing:'Tactical Sourcing',
+  supplierlists:'Preferred Supplier Lists', catalogs:'Catalogs',
+  businesspartnering:'Business Partnering', tacticalsourcing:'Tactical Sourcing',
   strategicsourcing:'Strategic Sourcing',
 };
 const ALL_ITEM_IDS = Object.keys(ITEM_LABELS);
-const INPUT_IDS  = ['risks','suppliers','spend','marketdata','ma','business','others'];
-const OUTPUT_IDS = ['solesourcing','partnerships','supplierlists','catalogs','categorystrategy','tacticalsourcing','strategicsourcing'];
+const INPUT_IDS  = ['risks','suppliers','spend','marketdata','ma','business','others','waveplanning','benchmarking'];
+const OUTPUT_IDS = ['solesourcing','partnerships','supplierlists','catalogs','businesspartnering','tacticalsourcing','strategicsourcing'];
 const TIMELINE = [
   { year: '2025', label: 'Last year',
     human:    ALL_ITEM_IDS.slice(),
     assisted: [],
     led:      [] },
   { year: '2026', label: 'This year · defining the strategy',
-    human:    ['suppliers','spend','marketdata','ma','business','others','solesourcing','partnerships','supplierlists','categorystrategy','tacticalsourcing','strategicsourcing'],
+    human:    ['suppliers','spend','marketdata','ma','business','others','waveplanning','solesourcing','partnerships','supplierlists','businesspartnering','tacticalsourcing','strategicsourcing'],
     assisted: ['catalogs'],
-    led:      ['risks'] },
-  { year: '2027', label: 'Next year · ~40% agentic',
-    human:    ['suppliers','spend','ma','business','others','solesourcing','partnerships','categorystrategy'],
-    assisted: ['marketdata','catalogs','strategicsourcing'],
-    led:      ['risks','supplierlists','tacticalsourcing'] },
+    led:      ['risks','benchmarking'] },
+  { year: '2027', label: 'Next year · ~70% agentic',
+    human:    ['ma','business','others','partnerships','businesspartnering'],
+    assisted: ['waveplanning','solesourcing','catalogs','strategicsourcing'],
+    led:      ['risks','suppliers','spend','marketdata','benchmarking','supplierlists','tacticalsourcing'] },
 ];
 
 const SCENES = [
@@ -1555,6 +1565,10 @@ function startEngineIntroAnimations() {
       const p = document.getElementById('tl-yr-' + j);
       if (p) p.classList.toggle('on', j === yi);
     });
+
+    // Engine center highlight: stays default in 2025, lights up as agent-assisted from 2026 onward
+    const eIcon = document.querySelector('.engine-center-icon');
+    if (eIcon) eIcon.classList.toggle('assisted', yi >= 1);
   }
   const sp = (typeof speed === 'number' && speed > 0) ? speed : 1;
   setEngineYear(0);
