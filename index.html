@@ -481,6 +481,18 @@
     background: rgba(0,0,0,0.18); padding: 3px 8px; border-radius: 4px;
     border: 1px solid rgba(255,255,255,0.1);
   }
+  /* Corner logos overlay */
+  .logos-corner {
+    position: absolute; bottom: 70px; left: 18px;
+    z-index: 20; display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.97);
+    padding: 7px 14px; border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    pointer-events: none;
+  }
+  .logos-corner .logo-centrica { height: 18px; width: auto; display: block; }
+  .logos-corner .logo-accenture { height: 18px; width: auto; display: block; }
+  .logos-corner .logo-divider { width: 1px; height: 18px; background: #d1d5db; }
   .engine-center {
     width: 180px; flex-shrink: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -641,6 +653,18 @@
 
   <!-- CANVAS -->
   <div class="canvas" id="canvas"></div>
+
+  <!-- CORNER LOGOS -->
+  <div class="logos-corner" aria-hidden="true">
+    <svg class="logo-centrica" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="32" font-family="Arial Black, Helvetica, Arial, sans-serif" font-weight="900" font-style="italic" font-size="34" fill="#1A2B6B" letter-spacing="-1">centrica</text>
+    </svg>
+    <div class="logo-divider"></div>
+    <svg class="logo-accenture" viewBox="0 0 230 50" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="167,4 184,15 175,18 170,22" fill="#A100FF"/>
+      <text x="0" y="46" font-family="Arial Black, Helvetica, Arial, sans-serif" font-weight="900" font-size="44" fill="#000" letter-spacing="-1">accenture</text>
+    </svg>
+  </div>
 
   <!-- FOOTER -->
   <div class="footer">
