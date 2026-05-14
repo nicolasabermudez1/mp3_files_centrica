@@ -435,23 +435,26 @@
     justify-content: center;
   }
   /* Stacked-bucket layout for the engine slide */
-  .engine-layout-buckets { align-items: stretch; gap: 16px; position: relative; }
+  .engine-layout-buckets {
+    align-items: stretch; gap: 40px; position: relative;
+    padding: 0 60px; justify-content: center;
+  }
+  .engine-layout-buckets .engine-col { max-width: 360px; flex: 1 1 360px; }
   .engine-flow-svg {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     pointer-events: none; z-index: 0;
   }
-  .engine-flow-svg path {
+  .engine-flow-svg .flow-base {
     fill: none;
-    stroke: rgba(255,255,255,0.42);
-    stroke-width: 1.8;
+    stroke: rgba(255,255,255,0.22);
+    stroke-width: 1.4;
     stroke-linecap: round;
-    stroke-dasharray: 4 5;
     vector-effect: non-scaling-stroke;
-    animation: flow-pulse 1.4s linear infinite;
   }
-  @keyframes flow-pulse {
-    to { stroke-dashoffset: -9; }
+  .engine-flow-svg .flow-arrow {
+    fill: rgba(255,255,255,0.85);
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.4));
   }
   .engine-layout-buckets > .engine-col,
   .engine-layout-buckets > .engine-center { position: relative; z-index: 1; }
@@ -1465,21 +1468,28 @@ function renderEngineIntro() {
         <div class="engine-year-row engine-stage-hidden">${yrPills}</div>
       </div>
       <div class="engine-layout engine-layout-buckets">
-        <svg class="engine-flow-svg engine-stage-hidden" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <marker id="flowArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.4)"/>
-            </marker>
-          </defs>
-          <g class="flow-line flow-in">
-            <path d="M 4 12 C 18 12, 30 22, 46 30" marker-end="url(#flowArrow)"/>
-            <path d="M 4 30 C 20 30, 30 30, 46 30" marker-end="url(#flowArrow)"/>
-            <path d="M 4 48 C 18 48, 30 38, 46 30" marker-end="url(#flowArrow)"/>
+        <svg class="engine-flow-svg" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
+          <g class="flow-base">
+            <path id="p-in-1"  d="M 4 12 C 18 12, 30 22, 46 30"/>
+            <path id="p-in-2"  d="M 4 30 C 20 30, 32 30, 46 30"/>
+            <path id="p-in-3"  d="M 4 48 C 18 48, 30 38, 46 30"/>
+            <path id="p-out-1" d="M 54 30 C 70 30, 82 16, 96 12"/>
+            <path id="p-out-2" d="M 54 30 C 68 30, 80 30, 96 30"/>
+            <path id="p-out-3" d="M 54 30 C 70 30, 82 44, 96 48"/>
           </g>
-          <g class="flow-line flow-out">
-            <path d="M 54 30 C 70 30, 82 16, 96 12" marker-end="url(#flowArrow)"/>
-            <path d="M 54 30 C 70 30, 80 30, 96 30" marker-end="url(#flowArrow)"/>
-            <path d="M 54 30 C 70 30, 82 44, 96 48" marker-end="url(#flowArrow)"/>
+          <g class="flow-arrows">
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0s"   ><mpath href="#p-in-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.3s" ><mpath href="#p-in-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.4s" ><mpath href="#p-in-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.7s" ><mpath href="#p-in-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.8s" ><mpath href="#p-in-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="2.1s" ><mpath href="#p-in-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.2s" ><mpath href="#p-out-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.5s" ><mpath href="#p-out-1"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="0.6s" ><mpath href="#p-out-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.9s" ><mpath href="#p-out-2"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="1.0s" ><mpath href="#p-out-3"/></animateMotion></polygon>
+            <polygon class="flow-arrow" points="-1.4,-0.9 1.6,0 -1.4,0.9"><animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto" begin="2.3s" ><mpath href="#p-out-3"/></animateMotion></polygon>
           </g>
         </svg>
         ${colHtml('in', inputItemsHtml)}
