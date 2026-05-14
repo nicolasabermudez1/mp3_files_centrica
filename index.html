@@ -977,10 +977,10 @@ const SCENES = [
 
 const MODULES = [
   { id: 'intro',   icon: '✦',  title: 'Opening',                    desc: 'Vision and operating model overview',                              scenes: ['intro']   },
+  { id: 'engine',  icon: '⚙️', title: 'The Engine',                  desc: 'Inputs, outputs, and the human-to-machine balance over time',      scenes: ['engine']  },
   { id: 'today',   icon: '📅', title: 'The Category Manager Today',  desc: 'How the role is spent today',                                      scenes: ['today']   },
   { id: 'agents',  icon: '🤖', title: 'The Seven Focus Agents',      desc: 'The agents we are bringing in beside the human',                   scenes: ['meet']    },
   { id: 'process', icon: '🔄', title: 'The End-to-End Process',      desc: '20 stages across strategic and tactical lanes',                    scenes: ['process'] },
-  { id: 'engine',  icon: '⚙️', title: 'The Engine',                  desc: 'Inputs, outputs, and the human-to-machine balance over time',      scenes: ['engine']  },
   { id: 'human',   icon: '💚', title: 'The Human Lift',              desc: 'What changes for the people inside procurement',                   scenes: ['human']   },
   { id: 'impact',  icon: '📊', title: 'The Outcome',                 desc: 'The numbers behind the transformation',                            scenes: ['impact']  },
 ];
@@ -999,7 +999,7 @@ const QUOTES = [
 // ═══════════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════════
-let playlist = ['intro','today','meet','process','human','impact'];
+let playlist = ['intro','engine','today','meet','process','human','impact'];
 let playlistIdx = 0;
 let stageIdx = 0;
 function currentSceneKey() { return playlist[playlistIdx] || 'intro'; }
