@@ -15,8 +15,23 @@
     background: #0F2067;
     color: #0F2067;
   }
+  /* Viewport-fit container — scales the entire presentation to any screen ratio */
+  .viewport-fit {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #0F2067;
+    overflow: hidden;
+  }
+  .scaling-wrap {
+    width: 1600px;
+    height: 900px;
+    position: relative;
+    flex-shrink: 0;
+    transform-origin: center center;
+    will-change: transform;
+  }
   .stage {
-    position: fixed;
+    position: absolute;
     inset: 0;
     background: #fff;
     display: flex;
@@ -379,7 +394,7 @@
 
   /* INSTRUCTIONS OVERLAY */
   .instructions {
-    position: fixed; inset: 0; z-index: 200;
+    position: absolute; inset: 0; z-index: 200;
     background: rgba(15,32,103,0.96);
     display: flex; align-items: center; justify-content: center;
     color: #fff; padding: 40px;
@@ -821,6 +836,9 @@
 </head>
 <body>
 
+<div class="viewport-fit">
+<div class="scaling-wrap" id="scalingWrap">
+
 <!-- LAUNCHER / MODULE SELECTOR -->
 <div class="instructions" id="instructions">
   <div class="launcher">
@@ -894,7 +912,27 @@
   </div>
 </div>
 
+</div>
+</div>
+
 <div class="debug-toast" id="debug" style="display: none;"></div>
+
+<script>
+// Viewport-fit scaling: keep the 1600x900 design centered and scaled to fit any screen
+(function setupViewportFit() {
+  const wrap = document.getElementById('scalingWrap');
+  if (!wrap) return;
+  const REF_W = 1600, REF_H = 900;
+  function fit() {
+    const sx = window.innerWidth / REF_W;
+    const sy = window.innerHeight / REF_H;
+    wrap.style.transform = 'scale(' + Math.min(sx, sy) + ')';
+  }
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+  fit();
+})();
+</script>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
