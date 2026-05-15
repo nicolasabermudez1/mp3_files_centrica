@@ -322,6 +322,184 @@
   .impact-tile-number { font-size: 36px; font-weight: bold; line-height: 1; }
   .impact-tile-label { font-size: 12px; color: #cbd5e1; margin-top: 6px; }
   .impact-tag { margin-top: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #fff; transition: opacity 700ms ease; opacity: 0; }
+  /* AGENT DEEP DIVES */
+  .agent-deep-dive {
+    background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, var(--agent-color, #9B2BF7) 130%);
+    color: #fff;
+    display: flex; flex-direction: column;
+    padding: 24px 36px 18px;
+    gap: 14px;
+    position: relative;
+  }
+  .add-header {
+    display: flex; align-items: center; gap: 16px;
+    flex-shrink: 0;
+  }
+  .add-icon {
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: #fff;
+    box-shadow: 0 0 24px var(--agent-color);
+  }
+  .add-titlewrap { display: flex; flex-direction: column; gap: 2px; }
+  .add-name { font-size: 24px; font-weight: bold; color: #fff; line-height: 1.1; }
+  .add-process { font-size: 13px; color: rgba(255,255,255,0.8); letter-spacing: 0.03em; }
+  .add-panels {
+    flex: 1;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    min-height: 0;
+  }
+  .add-panel {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex; flex-direction: column;
+    gap: 10px;
+    transition: border-color 600ms ease, background 600ms ease, opacity 600ms ease;
+    opacity: 0.55;
+  }
+  .add-panel.add-today { opacity: 1; }
+  .add-panel.add-after.panel-active {
+    opacity: 1;
+    border-color: var(--agent-color, #9B2BF7);
+    background: rgba(155,43,247,0.05);
+  }
+  .add-panel-head {
+    font-size: 11px; font-weight: bold;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+  }
+  .add-after .add-panel-head { color: var(--agent-color, #B999F6); }
+  .add-diagram {
+    position: relative;
+    flex: 1; min-height: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+  .add-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 700ms ease;
+  }
+  .add-diagram.show-arrows .add-svg,
+  .add-panel.show-arrows .add-svg { opacity: 1; }
+  .add-arrow {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+  }
+  .add-arrow.today-arrow {
+    stroke: rgba(255,255,255,0.28);
+    stroke-width: 1.2;
+    stroke-dasharray: 2 3;
+  }
+  .add-arrow.after-arrow {
+    stroke: var(--agent-color, #9B2BF7);
+    stroke-width: 1.6;
+    stroke-dasharray: 0.5 2.5;
+    animation: flow-pulse 1.6s linear infinite;
+    filter: drop-shadow(0 0 4px var(--agent-color));
+  }
+  .add-actor {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 500ms ease, transform 500ms ease;
+    max-width: 160px;
+  }
+  .add-actor.visible { opacity: 1; }
+  .add-actor-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .add-actor-label {
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    white-space: nowrap;
+    background: rgba(15,32,103,0.6);
+    padding: 2px 6px; border-radius: 4px;
+    backdrop-filter: blur(2px);
+  }
+  .add-actor.add-hub {
+    z-index: 3;
+  }
+  .add-actor.add-hub .add-actor-icon {
+    width: 62px; height: 62px; border-radius: 14px;
+    background: rgba(155,43,247,0.28);
+    border: 2px solid var(--hub-color, #9B2BF7);
+    font-size: 30px;
+    box-shadow: 0 0 28px var(--hub-color, #9B2BF7);
+  }
+  .add-actor.add-hub .add-actor-label {
+    font-size: 11px;
+    background: var(--hub-color, #9B2BF7);
+    color: #fff;
+    padding: 3px 10px;
+  }
+  .add-artifact {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.92);
+    color: #0F2067;
+    font-size: 9px; font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 500ms ease;
+    white-space: nowrap;
+  }
+  .add-artifact.visible { opacity: 0.9; }
+  .add-artifact.primary {
+    font-size: 11px;
+    padding: 8px 14px;
+    background: #fff;
+    color: #0F2067;
+    border: 2px solid var(--agent-color, #9B2BF7);
+    box-shadow: 0 4px 16px rgba(155,43,247,0.4);
+  }
+  .add-artifact.primary.visible { opacity: 1; }
+  .add-panel-caption {
+    position: absolute;
+    bottom: 4px; left: 8px; right: 8px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.65);
+    font-style: italic;
+    text-align: center;
+    pointer-events: none;
+  }
+  .add-impact {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid var(--agent-color, #9B2BF7);
+    border-radius: 12px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+  .add-impact.revealed { opacity: 1; transform: translateY(0); }
+  .add-impact-number {
+    font-size: 22px; font-weight: bold;
+  }
+  .add-impact-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+
   /* CLOSING / THANK YOU */
   .closing {
     background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, #9B2BF7 130%);
@@ -978,6 +1156,227 @@ const STAGES = [
 
 const ENGINE_STAGES = 1;
 
+const AGENT_DEEP_DIVES = {
+  market: {
+    process: 'Market sensing and category risk monitoring',
+    today: {
+      mode: 'fan-in',
+      caption: 'Manual scraping across nine sources. Static reports. Risks caught late.',
+      actors: [
+        { id: 'cm',  label: 'Category Manager', icon: '👨‍💼', x: 50, y: 50, role: 'center' },
+        { id: 's1', label: 'Trade press',     icon: '📰', x: 18, y: 18 },
+        { id: 's2', label: 'Supplier sites',  icon: '🏭', x: 82, y: 18 },
+        { id: 's3', label: 'Bloomberg / IHS', icon: '📈', x: 88, y: 50 },
+        { id: 's4', label: 'LinkedIn',         icon: '💬', x: 82, y: 82 },
+        { id: 's5', label: 'SAP spend',        icon: '💰', x: 18, y: 82 },
+      ],
+    },
+    after: {
+      mode: 'split-hub',
+      caption: 'Always-on ingestion → live brief and risk alerts to the right people.',
+      hub: { id: 'agent', label: 'Category Watcher', icon: '👁' },
+      sources: [
+        { id: 's1', label: 'Trade press',     icon: '📰', x: 14, y: 22 },
+        { id: 's2', label: 'Supplier sites',  icon: '🏭', x: 14, y: 50 },
+        { id: 's3', label: 'Bloomberg / IHS', icon: '📈', x: 14, y: 78 },
+      ],
+      consumers: [
+        { id: 'cm',   label: 'CM · Monday brief', icon: '👨‍💼', x: 86, y: 32 },
+        { id: 'lead', label: 'Procurement Leadership · alerts', icon: '🛡️', x: 86, y: 68 },
+      ],
+    },
+    metric: 'static report → live signal',
+    metricLabel: 'always-on intelligence',
+  },
+
+  rfx: {
+    process: 'Running a sourcing event from RFx to award',
+    today: {
+      mode: 'fan-in',
+      caption: 'Word, PDF, Excel — normalised by hand. SMEs chased over email.',
+      actors: [
+        { id: 'cm', label: 'Category Manager', icon: '👨‍💼', x: 50, y: 50, role: 'center' },
+        { id: 'sup1', label: 'Supplier · Word bid',  icon: '📄', x: 16, y: 22 },
+        { id: 'sup2', label: 'Supplier · PDF bid',   icon: '📑', x: 16, y: 50 },
+        { id: 'sup3', label: 'Supplier · Excel bid', icon: '📊', x: 16, y: 78 },
+        { id: 'sme1', label: 'Technical SME',          icon: '🛠️', x: 84, y: 25 },
+        { id: 'sme2', label: 'Finance SME',            icon: '💷', x: 84, y: 55 },
+        { id: 'sme3', label: 'Commercial SME',         icon: '🧮', x: 84, y: 80 },
+      ],
+    },
+    after: {
+      mode: 'hub',
+      caption: 'One Ariba-native workspace. Bids normalised. SMEs validate AI scores.',
+      hub: { id: 'agent', label: 'RFx Assistant · Ariba', icon: '📊' },
+      actors: [
+        { id: 'sup1', label: 'Suppliers · submit once', icon: '📄', x: 16, y: 28 },
+        { id: 'sup2', label: 'Common bid matrix',       icon: '🧩', x: 16, y: 72 },
+        { id: 'sme1', label: 'SMEs validate AI score',  icon: '🛠️', x: 84, y: 28 },
+        { id: 'sme2', label: 'Award dashboard',         icon: '🏆', x: 84, y: 72 },
+      ],
+    },
+    metric: '1–2 days → 30 minutes',
+    metricLabel: 'RFx pack ready',
+  },
+
+  nego: {
+    process: 'Preparing for and running a negotiation',
+    today: {
+      mode: 'fan-in',
+      caption: '4–6 hours of prep, nine browser tabs, no support in the call.',
+      actors: [
+        { id: 'cm',  label: 'Category Manager', icon: '👨‍💼', x: 50, y: 50, role: 'center' },
+        { id: 't1', label: '9 browser tabs',  icon: '🌐', x: 15, y: 22 },
+        { id: 't2', label: 'Spend reports',   icon: '📊', x: 15, y: 78 },
+        { id: 't3', label: 'Supplier on call',icon: '📞', x: 85, y: 50 },
+        { id: 't4', label: 'Calculator',      icon: '🧮', x: 38, y: 90 },
+        { id: 't5', label: 'Paper notepad',   icon: '📋', x: 62, y: 90 },
+      ],
+    },
+    after: {
+      mode: 'triad',
+      caption: '15-min AI brief. In-ear coach. Outcome auto-captured into SRM.',
+      hub: { id: 'agent', label: 'Negotiation Buddy', icon: '🤝' },
+      actors: [
+        { id: 'cm',   label: 'Category Manager',     icon: '👨‍💼', x: 28, y: 56 },
+        { id: 'sup',  label: 'Supplier',             icon: '🏭', x: 72, y: 56 },
+        { id: 'brief',label: '15-min prep brief',    icon: '📘', x: 20, y: 88 },
+        { id: 'log',  label: 'Auto-captured outcome',icon: '✅', x: 80, y: 88 },
+      ],
+    },
+    metric: '+1–3% EBITDA',
+    metricLabel: 'per negotiation',
+  },
+
+  contract: {
+    process: 'Contract review and sign-off after award',
+    today: {
+      mode: 'mesh',
+      caption: 'Email tornado across four parties. Tangled redline versions.',
+      actors: [
+        { id: 'cm', label: 'Category Manager', icon: '👨‍💼', x: 22, y: 22 },
+        { id: 'cl', label: 'Centrica Legal',   icon: '⚖️',  x: 78, y: 22 },
+        { id: 'vs', label: 'Vendor Sales',     icon: '💼',  x: 22, y: 82 },
+        { id: 'vl', label: 'Vendor Legal',     icon: '⚖️',  x: 78, y: 82 },
+      ],
+      artifacts: [
+        { label: '📄 v3', x: 42, y: 50 },
+        { label: '📄 v4 redline', x: 58, y: 42 },
+        { label: '📄 v5 redline', x: 50, y: 60 },
+      ],
+    },
+    after: {
+      mode: 'hub',
+      caption: 'One workspace. AI redlines inline. Reminders flow through the hub.',
+      hub: { id: 'agent', label: 'Contracting Agent', icon: '📝' },
+      actors: [
+        { id: 'cm', label: 'Category Manager', icon: '👨‍💼', x: 18, y: 22 },
+        { id: 'cl', label: 'Centrica Legal',   icon: '⚖️',  x: 82, y: 22 },
+        { id: 'vs', label: 'Vendor Sales',     icon: '💼',  x: 18, y: 82 },
+        { id: 'vl', label: 'Vendor Legal',     icon: '⚖️',  x: 82, y: 82 },
+      ],
+      artifacts: [
+        { label: '📄 Shared contract · AI redlines · risk flags inline', x: 50, y: 50, primary: true },
+      ],
+    },
+    metric: '4–6 hours → 5–10 minutes',
+    metricLabel: 'standard contract review',
+  },
+
+  tail: {
+    process: 'Low-value purchase from need to PO',
+    today: {
+      mode: 'chain',
+      caption: 'Long chain. CM in the middle of every two-thousand pound deal.',
+      actors: [
+        { id: 'biz', label: 'Business user',     icon: '🧑‍💻', x: 8,  y: 50 },
+        { id: 'cm',  label: 'Category Manager',  icon: '👨‍💼', x: 28, y: 50 },
+        { id: 'sup', label: 'Suppliers · quotes',icon: '🏭', x: 50, y: 50 },
+        { id: 'neg', label: 'Manual negotiation',icon: '📞', x: 70, y: 50 },
+        { id: 'app', label: 'Approver',          icon: '👔', x: 86, y: 30 },
+        { id: 'po',  label: 'PO',                icon: '📄', x: 86, y: 70 },
+      ],
+    },
+    after: {
+      mode: 'chain',
+      caption: 'Plain-English request → autonomous lane → straight-through PO.',
+      hub: { id: 'agent', label: 'Tail-Spend Agent', icon: '🛒' },
+      actors: [
+        { id: 'biz', label: 'Business user · plain English', icon: '💬', x: 14, y: 50 },
+        { id: 'sup', label: 'Bot-to-bot negotiation',         icon: '🤖', x: 75, y: 30 },
+        { id: 'po',  label: 'Straight-through PO',            icon: '📄', x: 86, y: 72 },
+      ],
+    },
+    metric: '0 CM time',
+    metricLabel: 'on low-value deals',
+  },
+
+  vendor: {
+    process: 'Onboarding a new vendor across Centrica',
+    today: {
+      mode: 'chain',
+      caption: 'Same vendor onboarded 4× across entities. Sequential checks. Weeks.',
+      actors: [
+        { id: 'ven', label: 'Vendor',         icon: '🏢', x: 8,  y: 50 },
+        { id: 'frm', label: 'Form · errors',  icon: '📋', x: 25, y: 50 },
+        { id: 'grp', label: 'Group queue',    icon: '🏛️', x: 45, y: 14 },
+        { id: 'ces', label: 'CES queue',      icon: '🏛️', x: 45, y: 38 },
+        { id: 'phj', label: 'PH Jones queue', icon: '🏛️', x: 45, y: 62 },
+        { id: 'cbs', label: 'CBS queue',      icon: '🏛️', x: 45, y: 86 },
+        { id: 'snc', label: 'Sanctions',      icon: '🛡️', x: 70, y: 25 },
+        { id: 'tax', label: 'Tax',            icon: '💷', x: 70, y: 50 },
+        { id: 'bnk', label: 'Banking',        icon: '🏦', x: 70, y: 75 },
+        { id: 'end', label: 'Onboarded · weeks later', icon: '⏳', x: 90, y: 50 },
+      ],
+    },
+    after: {
+      mode: 'hub',
+      caption: 'One AI-validated flow. Parallel checks. One supplier identity.',
+      hub: { id: 'agent', label: 'Vendor Registration Agent', icon: '👤' },
+      actors: [
+        { id: 'ven', label: 'Vendor · guided form', icon: '🏢', x: 14, y: 50 },
+        { id: 'snc', label: 'Sanctions ✓ parallel', icon: '🛡️', x: 50, y: 14 },
+        { id: 'tax', label: 'Tax ✓ parallel',       icon: '💷', x: 86, y: 30 },
+        { id: 'bnk', label: 'Banking ✓ parallel',   icon: '🏦', x: 86, y: 70 },
+        { id: 'one', label: 'One ID across Group, CES, PH Jones, CBS', icon: '🔗', x: 50, y: 86 },
+      ],
+    },
+    metric: 'weeks → 48 hours',
+    metricLabel: 'rejections 30% → <5%',
+  },
+
+  srm: {
+    process: 'Quarterly business review and rebate management',
+    today: {
+      mode: 'fan-in',
+      caption: 'AM digs through 4 systems. Rebates negotiated but rarely claimed.',
+      actors: [
+        { id: 'am',  label: 'Account Manager',     icon: '👔', x: 50, y: 50, role: 'center' },
+        { id: 'spd', label: 'SAP spend',           icon: '🗄️', x: 15, y: 22 },
+        { id: 'prf', label: 'Performance data',    icon: '📈', x: 15, y: 78 },
+        { id: 'ctr', label: 'Ariba CLM contracts', icon: '📜', x: 85, y: 22 },
+        { id: 'reb', label: 'Rebate clauses',      icon: '💰', x: 85, y: 78 },
+        { id: 'fin', label: 'Finance · claim?',    icon: '🧮', x: 50, y: 90 },
+        { id: 'sup', label: 'Supplier · waiting',  icon: '🏭', x: 50, y: 10 },
+      ],
+    },
+    after: {
+      mode: 'hub',
+      caption: 'Live Supplier 360. Auto QBRs. Rebate tracker fires when claimable.',
+      hub: { id: 'agent', label: 'Supplier 360 · SRM Agent', icon: '📈' },
+      actors: [
+        { id: 'am',  label: 'Account Manager · same view', icon: '👔', x: 18, y: 30 },
+        { id: 'sup', label: 'Supplier · same view',         icon: '🏭', x: 82, y: 30 },
+        { id: 'fin', label: 'Finance · auto-claim',         icon: '🧮', x: 50, y: 88 },
+        { id: 'qbr', label: 'Auto QBR / MBR packs',         icon: '📋', x: 18, y: 78 },
+        { id: 'rbt', label: 'Rebate tracker · alerts',      icon: '💰', x: 82, y: 78 },
+      ],
+    },
+    metric: '+1–2% of spend',
+    metricLabel: 'recovered automatically',
+  },
+};
+
 const AGENT_BUCKETS = {
   assisted: ['rfx', 'nego', 'contract', 'srm'],
   led:      ['market', 'vendor', 'tail'],
@@ -1062,6 +1461,13 @@ const SCENES = [
   { key: 'human',   name: 'The Human Lift',  duration: 25000 },
   { key: 'impact',  name: 'The Outcome',     duration: 22000 },
   { key: 'closing', name: 'Thank you',       duration: 15000 },
+  { key: 'agent-market',   name: 'Deep dive · Category Watcher',   duration: 22000 },
+  { key: 'agent-rfx',      name: 'Deep dive · RFx Assistant',       duration: 22000 },
+  { key: 'agent-nego',     name: 'Deep dive · Negotiation Buddy',   duration: 22000 },
+  { key: 'agent-contract', name: 'Deep dive · Contracting Agent',   duration: 22000 },
+  { key: 'agent-tail',     name: 'Deep dive · Tail-Spend Agent',    duration: 22000 },
+  { key: 'agent-vendor',   name: 'Deep dive · Vendor Registration', duration: 22000 },
+  { key: 'agent-srm',      name: 'Deep dive · SRM Agent',           duration: 22000 },
 ];
 
 const MODULES = [
@@ -1069,6 +1475,13 @@ const MODULES = [
   { id: 'engine',  icon: '⚙️', title: 'The Engine',                  desc: 'Inputs, outputs, and the human-to-machine balance over time',      scenes: ['engine']  },
   { id: 'today',   icon: '📅', title: 'The Category Manager Today',  desc: 'How the role is spent today',                                      scenes: ['today']   },
   { id: 'agents',  icon: '🤖', title: 'The Seven Focus Agents',      desc: 'The agents we are bringing in beside the human',                   scenes: ['meet']    },
+  { id: 'agent-market',   icon: '👁', title: 'Deep dive · Category Watcher',   desc: 'How market sensing changes — actors, hand-offs, and the agent',   scenes: ['agent-market'],   defaultOn: false },
+  { id: 'agent-rfx',      icon: '📊', title: 'Deep dive · RFx Assistant',       desc: 'How RFx execution changes — suppliers, SMEs, and the agent',      scenes: ['agent-rfx'],      defaultOn: false },
+  { id: 'agent-nego',     icon: '🤝', title: 'Deep dive · Negotiation Buddy',   desc: 'How prep and the call change — coach in the ear, auto-capture',  scenes: ['agent-nego'],     defaultOn: false },
+  { id: 'agent-contract', icon: '📝', title: 'Deep dive · Contracting Agent',   desc: 'How contract review changes — four parties, one orchestrator',    scenes: ['agent-contract'], defaultOn: false },
+  { id: 'agent-tail',     icon: '🛒', title: 'Deep dive · Tail-Spend Agent',    desc: 'How tail spend changes — chain replaced by an autonomous lane',   scenes: ['agent-tail'],     defaultOn: false },
+  { id: 'agent-vendor',   icon: '👤', title: 'Deep dive · Vendor Registration', desc: 'How onboarding changes — 4 entity queues to one identity',        scenes: ['agent-vendor'],   defaultOn: false },
+  { id: 'agent-srm',      icon: '📈', title: 'Deep dive · SRM Agent',           desc: 'How QBRs and rebates change — Supplier 360 in one live view',     scenes: ['agent-srm'],      defaultOn: false },
   { id: 'process', icon: '🔄', title: 'The End-to-End Process',      desc: '20 stages across strategic and tactical lanes',                    scenes: ['process'] },
   { id: 'human',   icon: '💚', title: 'The Human Lift',              desc: 'What changes for the people inside procurement',                   scenes: ['human']   },
   { id: 'impact',  icon: '📊', title: 'The Outcome',                 desc: 'The numbers behind the transformation',                            scenes: ['impact']  },
@@ -1105,6 +1518,7 @@ let safetyTimer = null;
 //  AUDIO
 // ═══════════════════════════════════════════════════════════════
 function audioUrl(key) {
+  if (key.startsWith('scene:agent-')) return audioBase + 'agent-' + key.slice(12) + '.mp3';
   if (key.startsWith('scene:'))  return audioBase + 'scene-' + key.slice(6) + '.mp3';
   if (key.startsWith('stage:'))  return audioBase + 'stage-' + String(parseInt(key.slice(6)) + 1).padStart(2,'0') + '.mp3';
   if (key.startsWith('engine:')) return audioBase + 'engine-' + String(parseInt(key.slice(7)) + 1).padStart(2,'0') + '.mp3';
@@ -1170,6 +1584,7 @@ function render() {
   if (key === 'human')   canvas.innerHTML = renderHuman();
   if (key === 'impact')  canvas.innerHTML = renderImpact();
   if (key === 'closing') canvas.innerHTML = renderClosing();
+  if (key.startsWith('agent-')) canvas.innerHTML = renderAgentDeepDive(key.slice(6));
 
   if (key === 'today')   startTodayAnimations();
   if (key === 'meet')    startMeetAnimations();
@@ -1177,6 +1592,7 @@ function render() {
   if (key === 'human')   startHumanAnimations();
   if (key === 'impact')  startImpactAnimations();
   if (key === 'closing') startClosingAnimations();
+  if (key.startsWith('agent-')) startAgentDeepDiveAnimations(key.slice(6));
 }
 
 function renderIntro() {
@@ -1554,6 +1970,137 @@ function startClosingAnimations() {
   setTimeout(() => { const e = document.getElementById('closingTag');     if (e) e.classList.add('revealed'); }, 3200);
 }
 
+// ── AGENT DEEP DIVES ─────────────────────────────────────────
+function _addConnections(view, agentColor, isAfter) {
+  const mode = view.mode;
+  const list = [];
+  const all = view.actors || [];
+  const hub = view.hub ? { ...view.hub, x: 50, y: 50 } : null;
+
+  function add(from, to, idx) {
+    if (!from || !to) return;
+    const dx = to.x - from.x, dy = to.y - from.y;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    const sign = idx % 2 === 0 ? 1 : -1;
+    const curve = mode === 'mesh' ? sign * (4 + (idx % 3) * 3) : 0;
+    const mx = (from.x + to.x)/2 + (-dy/len) * curve;
+    const my = (from.y + to.y)/2 + ( dx/len) * curve;
+    list.push(`<path class="add-arrow ${isAfter ? 'after-arrow' : 'today-arrow'}" d="M ${from.x} ${from.y} Q ${mx} ${my} ${to.x} ${to.y}"/>`);
+  }
+
+  if (mode === 'fan-in') {
+    const center = all.find(a => a.role === 'center') || all[0];
+    all.filter(a => a !== center).forEach((a, i) => add(a, center, i));
+  } else if (mode === 'hub') {
+    all.forEach((a, i) => add(a, hub, i));
+  } else if (mode === 'split-hub') {
+    (view.sources || []).forEach((a, i) => add(a, hub, i));
+    (view.consumers || []).forEach((a, i) => add(hub, a, i + 10));
+  } else if (mode === 'mesh') {
+    let k = 0;
+    for (let i = 0; i < all.length; i++) {
+      for (let j = i + 1; j < all.length; j++) { add(all[i], all[j], k++); add(all[j], all[i], k++); }
+    }
+  } else if (mode === 'chain') {
+    for (let i = 0; i < all.length - 1; i++) add(all[i], all[i+1], i);
+  } else if (mode === 'triad') {
+    if (hub) {
+      all.forEach((a, i) => add(a, hub, i));
+    }
+  }
+  return list.join('');
+}
+
+function _addActorHtml(a, extraClass = '') {
+  return `
+    <div class="add-actor ${extraClass}" style="left:${a.x}%; top:${a.y}%;">
+      <div class="add-actor-icon">${a.icon}</div>
+      <div class="add-actor-label">${a.label}</div>
+    </div>`;
+}
+
+function renderAgentDiagram(view, opts) {
+  const isAfter = !!opts.isAfter;
+  const agentColor = opts.color || '#9B2BF7';
+  const allActors = [
+    ...(view.actors || []),
+    ...(view.sources || []),
+    ...(view.consumers || []),
+  ];
+  const actorHtml = allActors.map(a => _addActorHtml(a)).join('');
+  const hubHtml = view.hub
+    ? `<div class="add-actor add-hub" style="left:50%; top:50%; --hub-color:${agentColor};">
+         <div class="add-actor-icon">${view.hub.icon}</div>
+         <div class="add-actor-label"><strong>${view.hub.label}</strong></div>
+       </div>` : '';
+  const artifactHtml = (view.artifacts || []).map(a =>
+    `<div class="add-artifact ${a.primary ? 'primary' : ''}" style="left:${a.x}%; top:${a.y}%;">${a.label}</div>`
+  ).join('');
+  const arrows = _addConnections(view, agentColor, isAfter);
+
+  return `
+    <div class="add-diagram ${isAfter ? 'is-after' : 'is-today'}">
+      <svg class="add-svg" viewBox="0 0 100 100" preserveAspectRatio="none">${arrows}</svg>
+      ${artifactHtml}
+      ${hubHtml}
+      ${actorHtml}
+      <div class="add-panel-caption">${view.caption || ''}</div>
+    </div>`;
+}
+
+function renderAgentDeepDive(agentId) {
+  const dd = AGENT_DEEP_DIVES[agentId];
+  const agent = AGENTS[agentId];
+  if (!dd || !agent) return '<div style="padding:40px;color:#fff;">Unknown agent: ' + agentId + '</div>';
+  return `
+    <div class="scene-panel agent-deep-dive active" style="--agent-color:${agent.color};">
+      <div class="add-header">
+        <div class="add-icon" style="background:${agent.color};">${agent.icon}</div>
+        <div class="add-titlewrap">
+          <div class="add-name">${agent.name}</div>
+          <div class="add-process">${dd.process}</div>
+        </div>
+      </div>
+      <div class="add-panels">
+        <div class="add-panel add-today">
+          <div class="add-panel-head">📅 Today</div>
+          ${renderAgentDiagram(dd.today, { isAfter: false })}
+        </div>
+        <div class="add-panel add-after">
+          <div class="add-panel-head">✦ With ${agent.name}</div>
+          ${renderAgentDiagram(dd.after, { isAfter: true, color: agent.color })}
+        </div>
+      </div>
+      <div class="add-impact">
+        <span class="add-impact-number" style="color:${agent.color};">${dd.metric}</span>
+        <span class="add-impact-label">${dd.metricLabel}</span>
+      </div>
+    </div>`;
+}
+
+function startAgentDeepDiveAnimations(agentId) {
+  const sp = (typeof speed === 'number' && speed > 0) ? speed : 1;
+  const today = document.querySelector('.add-today');
+  const after = document.querySelector('.add-after');
+  if (today) {
+    const els = today.querySelectorAll('.add-actor, .add-artifact');
+    els.forEach((el, i) => setTimeout(() => el.classList.add('visible'), (200 + i * 150) / sp));
+    setTimeout(() => today.classList.add('show-arrows'), 1800 / sp);
+  }
+  if (after) {
+    setTimeout(() => after.classList.add('panel-active'), 4500 / sp);
+    setTimeout(() => {
+      const els = after.querySelectorAll('.add-actor, .add-artifact');
+      els.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 150 / sp));
+      after.classList.add('show-arrows');
+    }, 5000 / sp);
+  }
+  setTimeout(() => {
+    const imp = document.querySelector('.agent-deep-dive .add-impact');
+    if (imp) imp.classList.add('revealed');
+  }, 8000 / sp);
+}
+
 function startImpactAnimations() {
   document.querySelectorAll('.impact-tile').forEach((el, i) => {
     setTimeout(() => el.classList.add('revealed'), 200 + i * 700);
@@ -1858,7 +2405,7 @@ function initModuleList() {
         <div class="module-card-desc">${mod.desc}</div>
       </div>
       <label class="toggle-wrap">
-        <input type="checkbox" checked>
+        <input type="checkbox" ${mod.defaultOn === false ? '' : 'checked'}>
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
       </label>
     `;
