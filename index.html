@@ -326,44 +326,51 @@
   .agent-deep-dive {
     background: linear-gradient(160deg, #0F2067 0%, #1a2f8a 60%, var(--agent-color, #9B2BF7) 130%);
     color: #fff;
-    display: flex; flex-direction: column;
-    padding: 24px 36px 18px;
-    gap: 14px;
-    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: "header" "panels" "impact";
+    padding: 18px 30px;
+    gap: 12px;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
   }
   .add-header {
-    display: flex; align-items: center; gap: 16px;
-    flex-shrink: 0;
+    grid-area: header;
+    display: flex; align-items: center; gap: 14px;
   }
   .add-icon {
-    width: 56px; height: 56px; border-radius: 12px;
+    width: 48px; height: 48px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 28px; color: #fff;
-    box-shadow: 0 0 24px var(--agent-color);
+    font-size: 24px; color: #fff;
+    box-shadow: 0 0 20px var(--agent-color);
+    flex-shrink: 0;
   }
-  .add-titlewrap { display: flex; flex-direction: column; gap: 2px; }
-  .add-name { font-size: 24px; font-weight: bold; color: #fff; line-height: 1.1; }
-  .add-process { font-size: 13px; color: rgba(255,255,255,0.8); letter-spacing: 0.03em; }
+  .add-titlewrap { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .add-name { font-size: 22px; font-weight: bold; color: #fff; line-height: 1.1; }
+  .add-process { font-size: 12px; color: rgba(255,255,255,0.8); letter-spacing: 0.02em; }
   .add-panels {
-    flex: 1 1 0;
-    display: flex; flex-direction: row;
+    grid-area: panels;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
     min-height: 0;
+    min-width: 0;
   }
   .add-panel {
-    flex: 1 1 0; min-width: 0;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 14px;
-    padding: 14px;
-    display: flex; flex-direction: column;
-    gap: 8px;
+    padding: 12px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 6px;
     transition: border-color 600ms ease, background 600ms ease;
     position: relative;
+    min-height: 0;
+    overflow: hidden;
   }
-  .add-panel.add-after {
-    border-color: rgba(255,255,255,0.18);
-  }
+  .add-panel.add-after { border-color: rgba(255,255,255,0.18); }
   .add-panel.add-after.panel-active {
     border-color: var(--agent-color, #9B2BF7);
     background: rgba(155,43,247,0.05);
@@ -377,9 +384,9 @@
   .add-after .add-panel-head { color: var(--agent-color, #B999F6); }
   .add-diagram {
     position: relative;
-    flex: 1 1 0; min-height: 240px;
-    width: 100%;
+    width: 100%; height: 100%;
     overflow: hidden;
+    min-height: 0;
   }
   .add-svg {
     position: absolute; inset: 0;
@@ -472,24 +479,23 @@
   }
   .add-artifact.primary.visible { opacity: 1; }
   .add-panel-caption {
-    position: absolute;
-    bottom: 4px; left: 8px; right: 8px;
     font-size: 10px;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.7);
     font-style: italic;
     text-align: center;
-    pointer-events: none;
+    padding-top: 4px;
+    line-height: 1.3;
   }
   .add-impact {
-    flex-shrink: 0;
+    grid-area: impact;
     display: flex; align-items: center; justify-content: center;
     gap: 14px;
-    padding: 12px 20px;
+    padding: 10px 20px;
     background: rgba(255,255,255,0.06);
     border: 2px solid var(--agent-color, #9B2BF7);
     border-radius: 12px;
-    opacity: 0.95; transform: translateY(0);
-    transition: opacity 700ms ease, transform 700ms ease, box-shadow 700ms ease;
+    opacity: 0.95;
+    transition: opacity 700ms ease, box-shadow 700ms ease;
   }
   .add-impact.revealed { opacity: 1; box-shadow: 0 0 20px rgba(155,43,247,0.25); }
   .add-impact-number {
@@ -2065,7 +2071,6 @@ function renderAgentDiagram(view, opts) {
       ${artifactHtml}
       ${hubHtml}
       ${actorHtml}
-      <div class="add-panel-caption">${view.caption || ''}</div>
     </div>`;
 }
 
@@ -2086,10 +2091,12 @@ function renderAgentDeepDive(agentId) {
         <div class="add-panel add-today">
           <div class="add-panel-head">📅 Today</div>
           ${renderAgentDiagram(dd.today, { isAfter: false })}
+          <div class="add-panel-caption">${dd.today.caption || ''}</div>
         </div>
         <div class="add-panel add-after">
           <div class="add-panel-head">✦ With ${agent.name}</div>
           ${renderAgentDiagram(dd.after, { isAfter: true, color: agent.color })}
+          <div class="add-panel-caption">${dd.after.caption || ''}</div>
         </div>
       </div>
       <div class="add-impact">
