@@ -613,12 +613,13 @@
     display: flex; flex-direction: column; gap: 5px;
     flex: 1 1 auto; min-height: 0;
     overflow-y: auto; overflow-x: hidden;
-    padding: 2px 8px 2px 0;
+    padding: 2px 10px 2px 0;
+    scrollbar-gutter: stable;
   }
-  .module-list::-webkit-scrollbar { width: 6px; }
-  .module-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 3px; }
-  .module-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
-  .module-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+  .module-list::-webkit-scrollbar { width: 10px; }
+  .module-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.06); border-radius: 5px; }
+  .module-list::-webkit-scrollbar-thumb { background: rgba(155,43,247,0.5); border-radius: 5px; border: 2px solid rgba(15,32,103,0); background-clip: padding-box; }
+  .module-list::-webkit-scrollbar-thumb:hover { background: rgba(155,43,247,0.75); background-clip: padding-box; }
   .module-card {
     background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
     border-radius: 10px; padding: 8px 12px;
@@ -1054,7 +1055,7 @@
     </div>
     <div class="module-list" id="moduleList"></div>
     <div class="launcher-bottom">
-      <div class="launcher-hint">⠿ Drag to reorder &nbsp;·&nbsp; Toggle to include or skip</div>
+      <div class="launcher-hint">⠿ Drag to reorder &nbsp;·&nbsp; Toggle to include or skip &nbsp;·&nbsp; ↕ Scroll for more modules</div>
       <button class="start-btn" id="startBtn">▶ Start presentation</button>
     </div>
     <input id="audioPath" value="./" style="display:none;">
