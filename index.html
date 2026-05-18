@@ -446,6 +446,90 @@
     color: rgba(255,255,255,0.85);
     line-height: 1.25;
     min-width: 0;
+    flex: 1 1 auto;
+  }
+  /* After-side step variants (process-steps-after) */
+  .add-diagram.is-process-steps-after { position: relative; padding-left: 28px; }
+  .add-step.add-step-after {
+    transition: opacity 500ms ease, transform 500ms ease,
+                background 500ms ease, border-color 500ms ease,
+                text-decoration-color 500ms ease;
+  }
+  .add-step.add-step-after .add-step-badge {
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+  .add-step-badge-icon { font-size: 11px; }
+  .add-step-after.add-step-agent {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+    opacity: 0.7;
+  }
+  .add-step-after.add-step-agent .add-step-label {
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.55);
+  }
+  .add-step-after.add-step-agent .add-step-icon { opacity: 0.5; }
+  .add-step-after.add-step-agent .add-step-badge {
+    background: rgba(155,43,247,0.3);
+    color: #D4B3FF;
+    border: 1px solid rgba(155,43,247,0.6);
+  }
+  .add-step-after.add-step-assisted {
+    background: rgba(54,117,193,0.16);
+    border-color: rgba(54,117,193,0.45);
+  }
+  .add-step-after.add-step-assisted .add-step-badge {
+    background: rgba(54,117,193,0.3);
+    color: #d2eafb;
+    border: 1px solid rgba(54,117,193,0.7);
+  }
+  .add-step-after.add-step-human {
+    background: rgba(40,178,62,0.18);
+    border-color: rgba(133,219,156,0.55);
+  }
+  .add-step-after.add-step-human .add-step-label { color: #d6f5dd; font-weight: 600; }
+  .add-step-after.add-step-human .add-step-badge {
+    background: rgba(40,178,62,0.35);
+    color: #d6f5dd;
+    border: 1px solid rgba(133,219,156,0.65);
+  }
+  .add-step-after.is-processing {
+    transform: translateX(4px);
+    box-shadow: 0 0 12px var(--agent-color);
+    border-color: var(--agent-color);
+  }
+  /* Agent traveller — leapfrogs through the after steps */
+  .add-agent-traveller {
+    position: absolute;
+    left: 0; top: 0;
+    width: 28px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 500ms ease, transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    z-index: 5;
+  }
+  .add-agent-traveller.active { opacity: 1; }
+  .add-traveller-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: #fff;
+    box-shadow: 0 0 12px var(--agent-color, #9B2BF7), 0 0 0 2px rgba(255,255,255,0.4);
+  }
+  .add-traveller-icon::after {
+    content: '➤';
+    position: absolute;
+    right: -10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--agent-color, #9B2BF7);
+    font-size: 9px;
   }
   .add-svg {
     position: absolute; inset: 0;
@@ -1260,17 +1344,16 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'split-hub',
-      caption: 'Always-on ingestion → live brief and risk alerts to the right people.',
-      hub: { id: 'agent', label: 'Category Watcher', icon: '👁' },
-      sources: [
-        { id: 's1', label: 'Trade press',     icon: '📰', x: 14, y: 22 },
-        { id: 's2', label: 'Supplier sites',  icon: '🏭', x: 14, y: 50 },
-        { id: 's3', label: 'Bloomberg / IHS', icon: '📈', x: 14, y: 78 },
-      ],
-      consumers: [
-        { id: 'cm',   label: 'CM · Monday brief', icon: '👨‍💼', x: 86, y: 32 },
-        { id: 'lead', label: 'Procurement Leadership · alerts', icon: '🛡️', x: 86, y: 68 },
+      mode: 'process-steps-after',
+      caption: 'Always-on ingestion. The CM reads, never builds.',
+      steps: [
+        { icon: '📰', label: 'Scan trade press',                       status: 'agent' },
+        { icon: '🏭', label: 'Check supplier news on their sites',     status: 'agent' },
+        { icon: '📈', label: 'Pull market indices',                    status: 'agent' },
+        { icon: '💬', label: 'Trawl LinkedIn for supplier moves',      status: 'agent' },
+        { icon: '💰', label: 'Pull spend snapshots',                   status: 'agent' },
+        { icon: '📝', label: 'Compile a live category brief',          status: 'agent' },
+        { icon: '📖', label: 'Read the Monday brief — minutes a week', status: 'human' },
       ],
     },
     metric: 'static report → live signal',
@@ -1294,14 +1377,17 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'hub',
-      caption: 'One Ariba-native workspace. Bids normalised. SMEs validate AI scores.',
-      hub: { id: 'agent', label: 'RFx Assistant · Ariba', icon: '📊' },
-      actors: [
-        { id: 'sup1', label: 'Suppliers · submit once', icon: '📄', x: 16, y: 28 },
-        { id: 'sup2', label: 'Common bid matrix',       icon: '🧩', x: 16, y: 72 },
-        { id: 'sme1', label: 'SMEs validate AI score',  icon: '🛠️', x: 84, y: 28 },
-        { id: 'sme2', label: 'Award dashboard',         icon: '🏆', x: 84, y: 72 },
+      mode: 'process-steps-after',
+      caption: 'One Ariba-native workspace. SMEs validate AI scores.',
+      steps: [
+        { icon: '📝', label: 'Auto-generated RFx pack from strategy',     status: 'agent' },
+        { icon: '📨', label: 'Published in Ariba — no email blasts',      status: 'agent' },
+        { icon: '📥', label: 'Suppliers submit once into the workspace',  status: 'agent' },
+        { icon: '🧩', label: 'Bids auto-normalised into one matrix',      status: 'agent' },
+        { icon: '👥', label: 'SMEs validate the AI score in one view',    status: 'assisted' },
+        { icon: '🔁', label: 'No chasing — everyone in the same view',    status: 'agent' },
+        { icon: '🧮', label: 'Defensible AI score in seconds',            status: 'agent' },
+        { icon: '🏆', label: 'Award decision',                            status: 'human' },
       ],
     },
     metric: '1–2 days → 30 minutes',
@@ -1324,14 +1410,16 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'triad',
-      caption: '15-min AI brief. In-ear coach. Outcome auto-captured into SRM.',
-      hub: { id: 'agent', label: 'Negotiation Buddy', icon: '🤝' },
-      actors: [
-        { id: 'cm',   label: 'Category Manager',     icon: '👨‍💼', x: 28, y: 56 },
-        { id: 'sup',  label: 'Supplier',             icon: '🏭', x: 72, y: 56 },
-        { id: 'brief',label: '15-min prep brief',    icon: '📘', x: 20, y: 88 },
-        { id: 'log',  label: 'Auto-captured outcome',icon: '✅', x: 80, y: 88 },
+      mode: 'process-steps-after',
+      caption: '15-min AI brief. In-ear coach. Outcome auto-captured.',
+      steps: [
+        { icon: '📚', label: 'AI brief pulls supplier history',          status: 'agent' },
+        { icon: '📈', label: 'AI brief pulls live market index',          status: 'agent' },
+        { icon: '👥', label: 'AI brief surfaces behaviour profile',       status: 'agent' },
+        { icon: '🧮', label: 'AI suggests walk-away and target prices',   status: 'agent' },
+        { icon: '📋', label: '15-minute prep brief, ready to read',       status: 'agent' },
+        { icon: '📞', label: 'Run the call — in-ear coach prompts live',  status: 'assisted' },
+        { icon: '✅', label: 'Commitments auto-captured into the record', status: 'agent' },
       ],
     },
     metric: '+1–3% EBITDA',
@@ -1355,17 +1443,17 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'hub',
-      caption: 'One workspace. AI redlines inline. Reminders flow through the hub.',
-      hub: { id: 'agent', label: 'Contracting Agent', icon: '📝' },
-      actors: [
-        { id: 'cm', label: 'Category Manager', icon: '👨‍💼', x: 18, y: 22 },
-        { id: 'cl', label: 'Centrica Legal',   icon: '⚖️',  x: 82, y: 22 },
-        { id: 'vs', label: 'Vendor Sales',     icon: '💼',  x: 18, y: 82 },
-        { id: 'vl', label: 'Vendor Legal',     icon: '⚖️',  x: 82, y: 82 },
-      ],
-      artifacts: [
-        { label: '📄 Shared contract · AI redlines · risk flags inline', x: 50, y: 50, primary: true },
+      mode: 'process-steps-after',
+      caption: 'One shared workspace. AI redlines inline. No version drift.',
+      steps: [
+        { icon: '📝', label: 'CM opens the shared contract workspace',     status: 'assisted' },
+        { icon: '⚖️', label: 'AI proposes redlines, Centrica Legal validates', status: 'assisted' },
+        { icon: '🔗', label: 'Vendor Sales joins the same live document',  status: 'agent' },
+        { icon: '🔀', label: 'Vendor Legal joins — no email forwarding',   status: 'agent' },
+        { icon: '✏️', label: 'Vendor Legal edits live, in place',          status: 'assisted' },
+        { icon: '🤖', label: 'One document, no version drift',             status: 'agent' },
+        { icon: '⚡', label: 'Real-time alignment — no chasing rounds',     status: 'agent' },
+        { icon: '✍️', label: 'Sign off',                                   status: 'human' },
       ],
     },
     metric: '4–6 hours → 5–10 minutes',
@@ -1389,13 +1477,17 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'chain',
-      caption: 'Plain-English request → autonomous lane → straight-through PO.',
-      hub: { id: 'agent', label: 'Tail-Spend Agent', icon: '🛒' },
-      actors: [
-        { id: 'biz', label: 'Business user · plain English', icon: '💬', x: 14, y: 50 },
-        { id: 'sup', label: 'Bot-to-bot negotiation',         icon: '🤖', x: 75, y: 30 },
-        { id: 'po',  label: 'Straight-through PO',            icon: '📄', x: 86, y: 72 },
+      mode: 'process-steps-after',
+      caption: 'Plain-English request. Autonomous lane. Straight-through PO.',
+      steps: [
+        { icon: '💬', label: 'Business user types the request, plain English', status: 'human' },
+        { icon: '🤖', label: 'Agent reads the need and routes it',             status: 'agent' },
+        { icon: '🔍', label: 'Agent shortlists from preferred suppliers',      status: 'agent' },
+        { icon: '📥', label: 'Agent pulls a market benchmark',                 status: 'agent' },
+        { icon: '🤖', label: 'Bot-to-bot negotiation against standard terms', status: 'agent' },
+        { icon: '📋', label: 'PR auto-raised with policy guardrails',         status: 'agent' },
+        { icon: '✅', label: 'Auto-approved within threshold',                 status: 'agent' },
+        { icon: '📄', label: 'Straight-through PO',                            status: 'agent' },
       ],
     },
     metric: '0 CM time',
@@ -1419,15 +1511,17 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'hub',
-      caption: 'One AI-validated flow. Parallel checks. One supplier identity.',
-      hub: { id: 'agent', label: 'Vendor Registration Agent', icon: '👤' },
-      actors: [
-        { id: 'ven', label: 'Vendor · guided form', icon: '🏢', x: 14, y: 50 },
-        { id: 'snc', label: 'Sanctions ✓ parallel', icon: '🛡️', x: 50, y: 14 },
-        { id: 'tax', label: 'Tax ✓ parallel',       icon: '💷', x: 86, y: 30 },
-        { id: 'bnk', label: 'Banking ✓ parallel',   icon: '🏦', x: 86, y: 70 },
-        { id: 'one', label: 'One ID across Group, CES, PH Jones, CBS', icon: '🔗', x: 50, y: 86 },
+      mode: 'process-steps-after',
+      caption: 'AI-validated form. Parallel checks. One supplier identity.',
+      steps: [
+        { icon: '📋', label: 'AI-validated form catches errors at submit',     status: 'assisted' },
+        { icon: '✅', label: 'No rejection loops',                              status: 'agent' },
+        { icon: '🛡️', label: 'Sanctions check ✓ in parallel',                  status: 'agent' },
+        { icon: '💷', label: 'Tax check ✓ in parallel',                        status: 'agent' },
+        { icon: '🏦', label: 'Banking check ✓ in parallel',                    status: 'agent' },
+        { icon: '🔗', label: 'No back-and-forth — submitted clean',            status: 'agent' },
+        { icon: '🏢', label: 'One supplier identity across Group, CES, PH Jones, CBS', status: 'agent' },
+        { icon: '⏱️', label: 'Vendor onboarded in 48 hours',                   status: 'human' },
       ],
     },
     metric: 'weeks → 48 hours',
@@ -1451,15 +1545,17 @@ const AGENT_DEEP_DIVES = {
       ],
     },
     after: {
-      mode: 'hub',
-      caption: 'Live Supplier 360. Auto QBRs. Rebate tracker fires when claimable.',
-      hub: { id: 'agent', label: 'Supplier 360 · SRM Agent', icon: '📈' },
-      actors: [
-        { id: 'am',  label: 'Account Manager · same view', icon: '👔', x: 18, y: 30 },
-        { id: 'sup', label: 'Supplier · same view',         icon: '🏭', x: 82, y: 30 },
-        { id: 'fin', label: 'Finance · auto-claim',         icon: '🧮', x: 50, y: 88 },
-        { id: 'qbr', label: 'Auto QBR / MBR packs',         icon: '📋', x: 18, y: 78 },
-        { id: 'rbt', label: 'Rebate tracker · alerts',      icon: '💰', x: 82, y: 78 },
+      mode: 'process-steps-after',
+      caption: 'Live Supplier 360. Auto QBRs. Rebate tracker that fires.',
+      steps: [
+        { icon: '🗄️', label: 'Spend feeds the live Supplier 360',         status: 'agent' },
+        { icon: '📈', label: 'Performance feeds the live Supplier 360',    status: 'agent' },
+        { icon: '📜', label: 'Contracts feed the live Supplier 360',       status: 'agent' },
+        { icon: '💰', label: 'Rebate tracker fires when claimable',        status: 'agent' },
+        { icon: '📋', label: 'QBR pack auto-generated from live record',   status: 'agent' },
+        { icon: '📨', label: 'Supplier sees the same live view',           status: 'agent' },
+        { icon: '🤝', label: 'Run the QBR meeting on real data',           status: 'human' },
+        { icon: '✅', label: 'Action items auto-captured into the record', status: 'agent' },
       ],
     },
     metric: '+1–2% of spend',
@@ -2112,6 +2208,7 @@ function _addActorHtml(a, extraClass = '') {
 function renderAgentDiagram(view, opts) {
   const isAfter = !!opts.isAfter;
   const agentColor = opts.color || '#9B2BF7';
+  const agentIcon = opts.agentIcon || '🤖';
 
   // Process-steps mode — vertical flow of steps (used for TODAY views)
   if (view.mode === 'process-steps') {
@@ -2124,6 +2221,27 @@ function renderAgentDiagram(view, opts) {
     return `
       <div class="add-diagram is-process-steps">
         <div class="add-step-list">${stepsHtml}</div>
+      </div>`;
+  }
+
+  // Process-steps-after — same steps but with per-step status (agent / assisted / human)
+  // and an "agent traveller" icon that leapfrogs through the list
+  if (view.mode === 'process-steps-after') {
+    const badges = { agent: '🤖', assisted: '🔀', human: '💚' };
+    const labels = { agent: 'AGENT', assisted: 'ASSISTED', human: 'HUMAN' };
+    const stepsHtml = (view.steps || []).map((s, i) => `
+      <div class="add-step add-step-after add-step-${s.status}" data-i="${i}" data-status="${s.status}">
+        <div class="add-step-num">${i + 1}</div>
+        <div class="add-step-icon">${s.icon}</div>
+        <div class="add-step-label">${s.label}</div>
+        <div class="add-step-badge"><span class="add-step-badge-icon">${badges[s.status] || ''}</span><span class="add-step-badge-label">${labels[s.status] || ''}</span></div>
+      </div>`).join('');
+    return `
+      <div class="add-diagram is-process-steps-after" style="--agent-color:${agentColor};">
+        <div class="add-step-list">${stepsHtml}</div>
+        <div class="add-agent-traveller" aria-hidden="true">
+          <div class="add-traveller-icon" style="background:${agentColor};">${agentIcon}</div>
+        </div>
       </div>`;
   }
 
@@ -2174,7 +2292,7 @@ function renderAgentDeepDive(agentId) {
         </div>
         <div class="add-panel add-after">
           <div class="add-panel-head">✦ With ${agent.name}</div>
-          ${renderAgentDiagram(dd.after, { isAfter: true, color: agent.color })}
+          ${renderAgentDiagram(dd.after, { isAfter: true, color: agent.color, agentIcon: agent.icon })}
           <div class="add-panel-caption">${dd.after.caption || ''}</div>
         </div>
       </div>
@@ -2216,11 +2334,50 @@ function startAgentDeepDiveAnimations(agentId) {
 
   if (after) {
     setTimeout(() => after.classList.add('panel-active'), 4500 / sp);
-    setTimeout(() => {
-      const els = after.querySelectorAll('.add-actor, .add-artifact');
-      els.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 150 / sp));
-      after.classList.add('show-arrows');
-    }, 5000 / sp);
+
+    const afterSteps = after.querySelectorAll('.add-step.add-step-after');
+    if (afterSteps.length) {
+      // Process-steps-after: reveal each step with status (stagger),
+      // then loop an agent-traveller icon that leapfrogs through the steps.
+      afterSteps.forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), (5000 + i * 280) / sp);
+      });
+      const revealEnd = 5000 + afterSteps.length * 280;
+      const traveller = after.querySelector('.add-agent-traveller');
+      const stepList = after.querySelector('.add-step-list');
+      if (traveller && stepList) {
+        function moveTo(idx) {
+          const step = afterSteps[idx];
+          if (!step) return;
+          const listRect = stepList.getBoundingClientRect();
+          const stepRect = step.getBoundingClientRect();
+          const top = (stepRect.top - listRect.top) + (stepRect.height / 2) - 12 + stepList.scrollTop;
+          traveller.style.transform = `translateY(${top}px)`;
+          afterSteps.forEach(s => s.classList.remove('is-processing'));
+          step.classList.add('is-processing');
+        }
+        function loop() {
+          afterSteps.forEach((step, i) => {
+            const status = step.getAttribute('data-status');
+            const dwell = status === 'human' ? 250 : (status === 'assisted' ? 600 : 450);
+            setTimeout(() => moveTo(i), i * 750 / sp);
+            void status; void dwell;
+          });
+          setTimeout(() => {
+            afterSteps.forEach(s => s.classList.remove('is-processing'));
+            setTimeout(loop, 1500 / sp);
+          }, (afterSteps.length * 750 + 600) / sp);
+        }
+        setTimeout(() => { traveller.classList.add('active'); loop(); }, (revealEnd + 600) / sp);
+      }
+    } else {
+      // Legacy actor/hub after views
+      setTimeout(() => {
+        const els = after.querySelectorAll('.add-actor, .add-artifact');
+        els.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 150 / sp));
+        after.classList.add('show-arrows');
+      }, 5000 / sp);
+    }
   }
 
   setTimeout(() => {
