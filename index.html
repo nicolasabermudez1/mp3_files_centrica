@@ -388,6 +388,65 @@
     overflow: hidden;
     min-height: 0;
   }
+  .add-diagram.is-process-steps {
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .add-step-list {
+    flex: 1 1 auto; min-height: 0;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    padding: 4px 4px 4px 6px;
+    overflow-y: auto;
+  }
+  .add-step-list::-webkit-scrollbar { width: 4px; }
+  .add-step-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 2px; }
+  .add-step {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 6px;
+    position: relative;
+    opacity: 0; transform: translateX(-6px);
+    transition: opacity 450ms ease, transform 450ms ease, background 300ms ease, border-color 300ms ease;
+    flex-shrink: 0;
+  }
+  .add-step.visible { opacity: 1; transform: translateX(0); }
+  .add-step.flowing {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.32);
+  }
+  .add-step + .add-step::before {
+    content: '↓';
+    position: absolute;
+    top: -8px; left: 14px;
+    color: rgba(255,255,255,0.32);
+    font-size: 9px;
+    line-height: 1;
+  }
+  .add-step-num {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: bold; color: rgba(255,255,255,0.85);
+    flex-shrink: 0;
+  }
+  .add-step.flowing .add-step-num {
+    background: rgba(255,255,255,0.4);
+    color: #0F2067;
+  }
+  .add-step-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 18px; text-align: center;
+  }
+  .add-step-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.25;
+    min-width: 0;
+  }
   .add-svg {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
@@ -1163,7 +1222,7 @@ const STAGES = [
   { lane: 'STRATEGIC', name: 'Category signal',            active: ['market'],              action: 'Category Watcher scouts the category continuously — guided buying signals, supplier benchmarks, and risk alerts ingested from paid and public feeds into one platform.', metric: 'dozens of feeds',  sub: '→ one platform',           humanRole: 'Category Manager',     humanDoes: 'Reads the Monday brief instead of building it' },
   { lane: 'STRATEGIC', name: 'Category strategy refresh',  active: ['market','rfx'],        action: 'AI drafts strategy refresh from live signals; Category Manager curates.',  metric: '2–3 weeks',         sub: '→ 2–3 days',               humanRole: 'Category Manager',     humanDoes: 'Curates, challenges and approves the AI draft' },
   { lane: 'STRATEGIC', name: 'RFx pack generation',        active: ['rfx'],                 action: 'Full RFx pack auto-generated from strategy inside Ariba.',                  metric: '1–2 days',          sub: '→ 30 minutes',             humanRole: 'Category Manager',     humanDoes: 'Reviews the pack and approves the go-to-market' },
-  { lane: 'STRATEGIC', name: 'Bid intake & normalisation', active: ['rfx'],                 action: 'Bids in Word/PDF/Excel normalised into one common matrix.',                 metric: 'manual days',       sub: '→ automatic',              humanRole: 'Category Manager',     humanDoes: 'Skips spreadsheet work — goes straight to evaluation' },
+  { lane: 'STRATEGIC', name: 'Bid intake & normalisation', active: ['rfx'],                 action: 'Mixed-format bids normalised automatically into one common matrix.',                 metric: 'manual days',       sub: '→ automatic',              humanRole: 'Category Manager',     humanDoes: 'Skips spreadsheet work — goes straight to evaluation' },
   { lane: 'STRATEGIC', name: 'First-pass scoring',         active: ['rfx'],                 action: 'Defensible AI score before SMEs open the bid; SMEs validate.',              metric: '–70 to –80%',       sub: 'SME effort',               humanRole: 'SMEs',                 humanDoes: 'Validate the score; add qualitative judgement' },
   { lane: 'STRATEGIC', name: 'Negotiation prep',           active: ['nego','market','srm'], action: 'AI brief: supplier history + market index + behaviour profile.',           metric: '4–6 hours',         sub: '→ 15 minutes',             humanRole: 'Category Manager',     humanDoes: 'Reads brief, sets strategy and walk-away price' },
   { lane: 'STRATEGIC', name: 'Live negotiation',           active: ['nego'],                action: 'In-ear coach fact-checks claims, prompts CM, captures outcome.',            metric: '+1–3%',             sub: 'EBITDA per negotiation',   humanRole: 'Category Manager',     humanDoes: 'Leads the call — agent whispers in the ear' },
@@ -1188,15 +1247,16 @@ const AGENT_DEEP_DIVES = {
   market: {
     process: 'Market sensing and category risk monitoring',
     today: {
-      mode: 'fan-in',
-      caption: 'Manual scraping across nine sources. Static reports. Risks caught late.',
-      actors: [
-        { id: 'cm',  label: 'Category Manager', icon: '👨‍💼', x: 50, y: 50, role: 'center' },
-        { id: 's1', label: 'Trade press',     icon: '📰', x: 18, y: 18 },
-        { id: 's2', label: 'Supplier sites',  icon: '🏭', x: 82, y: 18 },
-        { id: 's3', label: 'Bloomberg / IHS', icon: '📈', x: 88, y: 50 },
-        { id: 's4', label: 'LinkedIn',         icon: '💬', x: 82, y: 82 },
-        { id: 's5', label: 'SAP spend',        icon: '💰', x: 18, y: 82 },
+      mode: 'process-steps',
+      caption: 'Manual scraping across nine sources. Static, stale reports.',
+      steps: [
+        { icon: '📰', label: 'Scan trade press by hand' },
+        { icon: '🏭', label: 'Check supplier news on their sites' },
+        { icon: '📈', label: 'Pull market indices from Bloomberg, IHS' },
+        { icon: '💬', label: 'Trawl LinkedIn for supplier moves' },
+        { icon: '💰', label: 'Pull spend snapshots from internal systems' },
+        { icon: '📝', label: 'Compile a weekly category report' },
+        { icon: '📨', label: 'Distribute — already stale on arrival' },
       ],
     },
     after: {
@@ -1220,16 +1280,17 @@ const AGENT_DEEP_DIVES = {
   rfx: {
     process: 'Running a sourcing event from RFx to award',
     today: {
-      mode: 'fan-in',
-      caption: 'Word, PDF, Excel — normalised by hand. SMEs chased over email.',
-      actors: [
-        { id: 'cm', label: 'Category Manager', icon: '👨‍💼', x: 50, y: 50, role: 'center' },
-        { id: 'sup1', label: 'Supplier · Word bid',  icon: '📄', x: 16, y: 22 },
-        { id: 'sup2', label: 'Supplier · PDF bid',   icon: '📑', x: 16, y: 50 },
-        { id: 'sup3', label: 'Supplier · Excel bid', icon: '📊', x: 16, y: 78 },
-        { id: 'sme1', label: 'Technical SME',          icon: '🛠️', x: 84, y: 25 },
-        { id: 'sme2', label: 'Finance SME',            icon: '💷', x: 84, y: 55 },
-        { id: 'sme3', label: 'Commercial SME',         icon: '🧮', x: 84, y: 80 },
+      mode: 'process-steps',
+      caption: 'Mixed-format bids normalised by hand. SMEs chased over email.',
+      steps: [
+        { icon: '📝', label: 'Draft the RFx from manual templates' },
+        { icon: '📨', label: 'Email the pack to invited suppliers' },
+        { icon: '📥', label: 'Receive bids in mixed formats' },
+        { icon: '🧩', label: 'Normalise every bid by hand into a matrix' },
+        { icon: '👥', label: 'Send to technical and finance SMEs' },
+        { icon: '🔁', label: 'Chase SMEs round after round for input' },
+        { icon: '🧮', label: 'Compile scores by hand' },
+        { icon: '🏆', label: 'Recommend a winner — finally' },
       ],
     },
     after: {
@@ -1250,15 +1311,16 @@ const AGENT_DEEP_DIVES = {
   nego: {
     process: 'Preparing for and running a negotiation',
     today: {
-      mode: 'fan-in',
-      caption: '4–6 hours of prep, nine browser tabs, no support in the call.',
-      actors: [
-        { id: 'cm',  label: 'Category Manager', icon: '👨‍💼', x: 50, y: 50, role: 'center' },
-        { id: 't1', label: '9 browser tabs',  icon: '🌐', x: 15, y: 22 },
-        { id: 't2', label: 'Spend reports',   icon: '📊', x: 15, y: 78 },
-        { id: 't3', label: 'Supplier on call',icon: '📞', x: 85, y: 50 },
-        { id: 't4', label: 'Calculator',      icon: '🧮', x: 38, y: 90 },
-        { id: 't5', label: 'Paper notepad',   icon: '📋', x: 62, y: 90 },
+      mode: 'process-steps',
+      caption: '4–6 hours of prep, then go in alone.',
+      steps: [
+        { icon: '📚', label: 'Research supplier history across systems' },
+        { icon: '📈', label: 'Pull the latest market index' },
+        { icon: '👥', label: 'Ask colleagues for behavioural intel' },
+        { icon: '🧮', label: 'Calculate walk-away and target prices' },
+        { icon: '📋', label: 'Build prep notes from scratch' },
+        { icon: '📞', label: 'Run the call solo, no live support' },
+        { icon: '✍️', label: 'Write up commitments by hand afterwards' },
       ],
     },
     after: {
@@ -1279,18 +1341,17 @@ const AGENT_DEEP_DIVES = {
   contract: {
     process: 'Contract review and sign-off after award',
     today: {
-      mode: 'mesh',
-      caption: 'Email tornado across four parties. Tangled redline versions.',
-      actors: [
-        { id: 'cm', label: 'Category Manager', icon: '👨‍💼', x: 22, y: 22 },
-        { id: 'cl', label: 'Centrica Legal',   icon: '⚖️',  x: 78, y: 22 },
-        { id: 'vs', label: 'Vendor Sales',     icon: '💼',  x: 22, y: 82 },
-        { id: 'vl', label: 'Vendor Legal',     icon: '⚖️',  x: 78, y: 82 },
-      ],
-      artifacts: [
-        { label: '📄 v3', x: 42, y: 50 },
-        { label: '📄 v4 redline', x: 58, y: 42 },
-        { label: '📄 v5 redline', x: 50, y: 60 },
+      mode: 'process-steps',
+      caption: 'Days of email back-and-forth across four parties.',
+      steps: [
+        { icon: '📝', label: 'Category manager drafts contract from playbook' },
+        { icon: '⚖️', label: 'Centrica Legal reviews and redlines line by line' },
+        { icon: '✉️', label: 'Email redlines over to Vendor Sales' },
+        { icon: '🔀', label: 'Vendor Sales forwards to Vendor Legal' },
+        { icon: '⚖️', label: 'Vendor Legal pushes back with their own redlines' },
+        { icon: '🔁', label: 'Compare, merge, re-circulate the new version' },
+        { icon: '🔂', label: 'Repeat — every round adds days' },
+        { icon: '✍️', label: 'Sign-off after every party aligns' },
       ],
     },
     after: {
@@ -1314,15 +1375,17 @@ const AGENT_DEEP_DIVES = {
   tail: {
     process: 'Low-value purchase from need to PO',
     today: {
-      mode: 'chain',
-      caption: 'Long chain. CM in the middle of every two-thousand pound deal.',
-      actors: [
-        { id: 'biz', label: 'Business user',     icon: '🧑‍💻', x: 8,  y: 50 },
-        { id: 'cm',  label: 'Category Manager',  icon: '👨‍💼', x: 28, y: 50 },
-        { id: 'sup', label: 'Suppliers · quotes',icon: '🏭', x: 50, y: 50 },
-        { id: 'neg', label: 'Manual negotiation',icon: '📞', x: 70, y: 50 },
-        { id: 'app', label: 'Approver',          icon: '👔', x: 86, y: 30 },
-        { id: 'po',  label: 'PO',                icon: '📄', x: 86, y: 70 },
+      mode: 'process-steps',
+      caption: 'CM in the middle of every two-thousand pound deal.',
+      steps: [
+        { icon: '✉️', label: 'Business user emails the request' },
+        { icon: '❓', label: 'CM goes back for clarification' },
+        { icon: '🔍', label: 'CM searches the supplier catalog' },
+        { icon: '📥', label: 'Collect quotes from two or three suppliers' },
+        { icon: '📞', label: 'CM negotiates basic terms manually' },
+        { icon: '📋', label: 'Raise a purchase requisition' },
+        { icon: '👔', label: 'Chase the approver chain' },
+        { icon: '📄', label: 'Issue the PO — days later' },
       ],
     },
     after: {
@@ -1342,19 +1405,17 @@ const AGENT_DEEP_DIVES = {
   vendor: {
     process: 'Onboarding a new vendor across Centrica',
     today: {
-      mode: 'chain',
-      caption: 'Same vendor onboarded 4× across entities. Sequential checks. Weeks.',
-      actors: [
-        { id: 'ven', label: 'Vendor',         icon: '🏢', x: 8,  y: 50 },
-        { id: 'frm', label: 'Form · errors',  icon: '📋', x: 25, y: 50 },
-        { id: 'grp', label: 'Group queue',    icon: '🏛️', x: 45, y: 14 },
-        { id: 'ces', label: 'CES queue',      icon: '🏛️', x: 45, y: 38 },
-        { id: 'phj', label: 'PH Jones queue', icon: '🏛️', x: 45, y: 62 },
-        { id: 'cbs', label: 'CBS queue',      icon: '🏛️', x: 45, y: 86 },
-        { id: 'snc', label: 'Sanctions',      icon: '🛡️', x: 70, y: 25 },
-        { id: 'tax', label: 'Tax',            icon: '💷', x: 70, y: 50 },
-        { id: 'bnk', label: 'Banking',        icon: '🏦', x: 70, y: 75 },
-        { id: 'end', label: 'Onboarded · weeks later', icon: '⏳', x: 90, y: 50 },
+      mode: 'process-steps',
+      caption: 'Same vendor onboarded four times across the group. Weeks.',
+      steps: [
+        { icon: '📋', label: 'Vendor fills the long onboarding form' },
+        { icon: '⚠️', label: 'Roughly 30% of applications rejected for missing data' },
+        { icon: '🛡️', label: 'Procurement Ops runs sanctions checks by hand' },
+        { icon: '💷', label: 'Tax checks run sequentially after that' },
+        { icon: '🏦', label: 'Banking checks run last, one by one' },
+        { icon: '🔁', label: 'Send back to vendor for fixes' },
+        { icon: '🏛️', label: 'Repeat for Group, CES, PH Jones, CBS' },
+        { icon: '⏳', label: 'Onboarded — weeks later' },
       ],
     },
     after: {
@@ -1376,16 +1437,17 @@ const AGENT_DEEP_DIVES = {
   srm: {
     process: 'Quarterly business review and rebate management',
     today: {
-      mode: 'fan-in',
-      caption: 'AM digs through 4 systems. Rebates negotiated but rarely claimed.',
-      actors: [
-        { id: 'am',  label: 'Account Manager',     icon: '👔', x: 50, y: 50, role: 'center' },
-        { id: 'spd', label: 'SAP spend',           icon: '🗄️', x: 15, y: 22 },
-        { id: 'prf', label: 'Performance data',    icon: '📈', x: 15, y: 78 },
-        { id: 'ctr', label: 'Ariba CLM contracts', icon: '📜', x: 85, y: 22 },
-        { id: 'reb', label: 'Rebate clauses',      icon: '💰', x: 85, y: 78 },
-        { id: 'fin', label: 'Finance · claim?',    icon: '🧮', x: 50, y: 90 },
-        { id: 'sup', label: 'Supplier · waiting',  icon: '🏭', x: 50, y: 10 },
+      mode: 'process-steps',
+      caption: 'A treasure hunt across systems. Rebates rarely claimed.',
+      steps: [
+        { icon: '🗄️', label: 'Pull spend data from the ERP' },
+        { icon: '📈', label: 'Pull performance data from another system' },
+        { icon: '📜', label: 'Open the contract to find rebate clauses' },
+        { icon: '💰', label: 'Ask Finance whether any rebate was claimed' },
+        { icon: '📋', label: 'Build the QBR deck from scratch' },
+        { icon: '📨', label: 'Send the deck over to the supplier' },
+        { icon: '🤝', label: 'Run the QBR meeting' },
+        { icon: '✍️', label: 'Capture action items somewhere — usually email' },
       ],
     },
     after: {
@@ -1884,7 +1946,7 @@ function renderHuman() {
   const before = [
     'Category strategy (manual updates & business alignment)',
     'Constant connection to business for PRs & POs',
-    'Build RFx in Word', 'Normalise bid spreadsheets', 'Chase suppliers for clarifications',
+    'Build RFx packs by hand', 'Normalise bids manually', 'Chase suppliers for clarifications',
     'Cross-check market prices in tabs', 'Redline NDAs line-by-line', 'Wrestle vendor master forms',
     'Reconcile maverick spend', 'Write QBR decks from scratch',
   ];
@@ -2050,6 +2112,22 @@ function _addActorHtml(a, extraClass = '') {
 function renderAgentDiagram(view, opts) {
   const isAfter = !!opts.isAfter;
   const agentColor = opts.color || '#9B2BF7';
+
+  // Process-steps mode — vertical flow of steps (used for TODAY views)
+  if (view.mode === 'process-steps') {
+    const stepsHtml = (view.steps || []).map((s, i) => `
+      <div class="add-step" data-i="${i}">
+        <div class="add-step-num">${i + 1}</div>
+        <div class="add-step-icon">${s.icon}</div>
+        <div class="add-step-label">${s.label}</div>
+      </div>`).join('');
+    return `
+      <div class="add-diagram is-process-steps">
+        <div class="add-step-list">${stepsHtml}</div>
+      </div>`;
+  }
+
+  // Actor-network modes — used for AFTER (with-agent) views
   const allActors = [
     ...(view.actors || []),
     ...(view.sources || []),
@@ -2111,11 +2189,31 @@ function startAgentDeepDiveAnimations(agentId) {
   const sp = (typeof speed === 'number' && speed > 0) ? speed : 1;
   const today = document.querySelector('.add-today');
   const after = document.querySelector('.add-after');
+
   if (today) {
-    const els = today.querySelectorAll('.add-actor, .add-artifact');
-    els.forEach((el, i) => setTimeout(() => el.classList.add('visible'), (200 + i * 150) / sp));
-    setTimeout(() => today.classList.add('show-arrows'), 1800 / sp);
+    const steps = today.querySelectorAll('.add-step');
+    if (steps.length) {
+      // Reveal each step sequentially
+      steps.forEach((el, i) => setTimeout(() => el.classList.add('visible'), (200 + i * 280) / sp));
+      // Then pulse a "flow" indicator through them on repeat
+      const revealEnd = (200 + steps.length * 280) / sp;
+      function flowOnce(startDelay) {
+        steps.forEach((el, i) => {
+          setTimeout(() => el.classList.add('flowing'), startDelay + i * 380 / sp);
+          setTimeout(() => el.classList.remove('flowing'), startDelay + i * 380 / sp + 700 / sp);
+        });
+      }
+      const cycleLen = steps.length * 380 + 700;
+      const loop = () => { flowOnce(0); setTimeout(loop, cycleLen / sp); };
+      setTimeout(loop, revealEnd + 400 / sp);
+    } else {
+      // Legacy actor/network today views — keep prior reveal
+      const els = today.querySelectorAll('.add-actor, .add-artifact');
+      els.forEach((el, i) => setTimeout(() => el.classList.add('visible'), (200 + i * 150) / sp));
+      setTimeout(() => today.classList.add('show-arrows'), 1800 / sp);
+    }
   }
+
   if (after) {
     setTimeout(() => after.classList.add('panel-active'), 4500 / sp);
     setTimeout(() => {
@@ -2124,6 +2222,7 @@ function startAgentDeepDiveAnimations(agentId) {
       after.classList.add('show-arrows');
     }, 5000 / sp);
   }
+
   setTimeout(() => {
     const imp = document.querySelector('.agent-deep-dive .add-impact');
     if (imp) imp.classList.add('revealed');
